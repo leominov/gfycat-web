@@ -1,0 +1,10 @@
+<div class="grid__container container-fluid">
+  <div class="row" translate>CATEGORIES.GIF_CATEGORIES</div>
+  <div class="row items__group">
+    <a class="item" href="gifs/search/{{category.tag}}" ng-repeat="category in categories.categoriesList">
+      <span class="flex-center-all">{{category.tagText}}</span>
+      <img src="{{category.gfycats[0].thumb360PosterUrl}}" alt="" />
+    </a>
+  </div>
+  <spinner-animation class="blue large center" ng-if="categories.loading"></spinner-animation>
+</div>
