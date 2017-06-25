@@ -1,7 +1,7 @@
-.PHONY: dist serve
+.PHONY: build serve
 
-dist:
-	./node_modules/.bin/webpack public/javascript/desktop/init.js public/dist.js
+build:
+	npm run build
 
 serve:
 	php -S 127.0.0.1 -t public/
