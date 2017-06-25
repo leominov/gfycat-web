@@ -4,4 +4,4 @@ build:
 	npm run build
 
 serve:
-	php -S 127.0.0.1 -t public/
+	php -S 127.0.0.1:8080 -t public/
