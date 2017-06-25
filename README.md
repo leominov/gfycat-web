@@ -2,6 +2,6 @@
 
 ```bash
 $ npm install
-$ make build
-$ make serve
+$ npm run build
+$ npm run serve
 ```

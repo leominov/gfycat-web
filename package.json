@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack public/javascript/desktop/init.js public/dist.js"
+    "build": "webpack public/javascript/desktop/init.js public/dist.js",
+    "serve": "php -S 127.0.0.1:8080 -t public/"
   },
   "repository": {
     "type": "git",
