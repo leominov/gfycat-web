@@ -1,0 +1,12 @@
+<div class="container-fluid team-container">
+  <h2 class="title">Gfycat Team</h2>
+  <div class="row team-member" ng-repeat="member in teamMembers" ng-init="isLast($last)">
+    <div class="col-sm-6 col-xs-12">
+      <a class="name" href="/{{ member.accountName }}">{{ member.name }}</a>
+      <p class="bio">{{ member.bio }}</p>
+    </div>
+    <div class="col-sm-6 col-xs-12">
+      <div class="gfyitem" data-id="{{ member.gfyId }}" data-max-height=400 data-responsive=true></div>
+    </div>
+  </div>
+</div>
