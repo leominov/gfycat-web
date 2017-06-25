@@ -1,0 +1,17 @@
+<div class="gfy-album-thumb stacked-paper" itemscope itemtype="http://schema.org/Article">
+    <a ng-href="{{link}}">
+        <img class="image" data-ng-src="{{imageUrl}}"
+          data-ng-mouseenter="mouseEnter()" data-ng-if="!isVideoShown()"
+          alt="{{altText}}" itemprop="image" itemscope itemtype="http://schema.org/ImageObject">
+        <video loop class="video" autoplay="autoplay" muted
+            ng-attr-poster="{{imageUrl}}"
+            data-ng-mouseleave="mouseLeft()" data-ng-if="isVideoShown()"
+            itemscope itemtype="http://schema.org/VideoObject">
+            <source data-ng-src="{{videoUrl}}" type="video/mp4"/>
+        </video>
+    </a>
+    <div class="album-caption">
+      <h2>{{albumTitle}}</h2>
+      <div class="album-description">{{albumDescription}}</div>
+    </div>
+</div>

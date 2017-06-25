@@ -1,0 +1,52 @@
+<div class="folders" ng-model="currentFolderAlbums">
+
+        <div ng-repeat="item in currentFolderAlbums">
+            <div ng-class="{highlightSelectedGfysFolder: item.selected ==  true}">
+                <div id="item1" data-item-name="Item 1" class="item clearfix">
+                    <div class="chkWrap">
+                        <!--<input type="checkbox" ng-model="item.selected" ng-change="folderSelectedChange(item.selected)">-->
+                    </div>
+                    <div ng-click="goAlbumPage(item)"> <!--ng-click="setFolderView(item,currentFolderRootId)"-->
+                        <div class="thumbWrap">
+                            <i class="icon-png album-lg"></i> <!-- itemImage -->
+                        </div>
+                        <div class="itemDetails">
+                            <h2>
+                                <a align="left" href="#">{{ item.title }}</a>
+                            </h2>
+                            <ul class="itemStats">
+                                <li data-ng-if="!item.gfyCount && busySignal" class="views">
+                                    <spinner-animation color="#999"></spinner-animation>
+                                </li>
+                                <li ng-show="item.gfyCount==1" class="views">
+                                    {{ item.gfyCount }} Gfycat
+                                </li>
+                                <li ng-show="item.gfyCount>1 || (item.gfyCount==0 && !busySignal)" class="views">
+                                    {{ item.gfyCount }} Gfycats
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div data-ng-if="busySignal" class="loading" >
+        <div class="bounce1" ></div>
+        <div class="bounce2" ></div>
+        <div class="bounce3" ></div>
+    </div>
+    <div class="empty" ng-show="(currentFolderAlbums==undefined||currentFolderAlbums.length==0) && !busySignal">
+        <div class="tumbleweed"></div>
+        <i class="glyphicon glyphicon-facetime-video"></i>
+        <h3 ng-show="currentFolderRootId==accountTree.userAlbums[0].id">
+            This Folder Contains No Albums
+        </h3>
+        <p class="hint" data-folder-category="{{ currentFolderRootTitle }}" data-ng-if="!accountTree.searchingAccount">
+            HINT: You can organize your Albums by creating Album Folders
+            <br>
+            <button id="btnUploadToFolder" class="btn btn-default orangeBtn" type="button" ui-sref="uploader" ng-click="setTempUploadFolder(currentFolderTitle,currentFolderId)">
+                {{msgs.folderSuggestUpload}}{{ currentFolderTitle }}
+            </button>
+        </p>
+    </div>
+</div>

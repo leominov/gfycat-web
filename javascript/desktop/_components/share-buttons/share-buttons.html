@@ -1,0 +1,59 @@
+<div id="fb-root"></div>
+<div class="share-button-container">
+  <script>
+    FB = null;
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '958688167485836',
+        xfbml      : true,
+        version    : 'v2.6'
+      });
+      FB.Event.subscribe('edge.create',
+        function(response) {
+          event = {
+            event : 'follow_gfycat_success',
+            channel: 'facebook',
+            device_type: GLOBAL_VARIABLES.isMobile ? 'mobile' : 'desktop'
+          };
+          GFAN.sendEvent(event);
+        }
+      );
+    };
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+  </script>
+  <div id="facebook-container" class="facebook-button-container">
+    <div class="fb-like" data-href="https://www.facebook.com/thegfycat/" data-layout="button" data-action="like" data-show-faces="false" data-share="false"></div>
+  </div>
+  <div id="twitter-container" class="twitter-button-container">
+    <script type="text/javascript">
+      window.twttr = (function (d,s,id) {
+        var t, js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return; 
+        js=d.createElement(s); 
+        js.id=id;
+        js.src="https://platform.twitter.com/widgets.js"; 
+        fjs.parentNode.insertBefore(js, fjs);
+        return window.twttr || (t = { _e: [], ready: function(f){ t._e.push(f) } });
+      }(document, "script", "twitter-wjs"));
+      
+      twttr.ready(
+        function (twttr) {
+          twttr.events.bind('follow', function(evt) {
+            event = {
+              event : 'click_to_follow_gfycat',
+              channel: 'twitter',
+              device_type: GLOBAL_VARIABLES.isMobile ? 'mobile' : 'desktop'
+            };
+            GFAN.sendEvent(event);
+          });
+        }
+      );  
+    </script>
+    <a href="https://twitter.com/gfycat" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @gfycat</a>
+  </div>
+</div>

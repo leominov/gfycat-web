@@ -1,0 +1,87 @@
+<div class='ng-modal login' ng-show='show'>
+  <div class="modalTable">
+    <div class="modalTableCell">
+      <div class='ng-modal-overlay' ng-click='hideModal()'></div>
+      <div class='ng-modal-dialog'>
+        <div class="container-fluid container-login">
+          <div class="row">
+            <div class="col-xs-12" ng-show="!isResetPasswordShown">
+              <div class="title" translate>{{'LOGIN.LOGIN'}}</div>
+              <form class="form" name="loginForm" ng-keyup="onLoginFormKeyup($event)" novalidate>
+                <div class="form-group">
+                  <input class="form-control" type="text" name="username" autocapitalize="off" autocorrect="off"
+                    translate translate-attr-placeholder="{{'LOGIN.USERNAME_OR_EMAIL'}}"
+                    ng-model="account.username" ng-change="clearLoginError()" show-focus="show" required>
+                </div>
+                <div class="form-group">
+                  <input class="form-control" type="password" name="password" autocapitalize="off" autocorrect="off"
+                    translate translate-attr-placeholder="{{'LOGIN.PASSWORD'}}"
+                    ng-model="account.password" ng-change="clearLoginError()" required>
+                  <span class="help-block help-block--input-error" ng-if="isLoginError" translate>
+                    {{'LOGIN.LOGIN_ERROR'}}</span>
+                </div>
+                <div class="form-group">
+                  <span class="checkbox-wrapper">
+                    <span class="checkbox" ng-class="{checked: account.remember_me}">
+                        <input type="checkbox" class="checkbox-input" id="remember_me"
+                        name="_remember_me" ng-model="account.remember_me" />
+                        <i class="ic ic-check ic-check--white"></i>
+                    </span>
+                    <label class="checkbox-label" for="remember_me" translate>{{'LOGIN.REMEMBER_ME'}}</label>
+                  </span>
+                  <span class="link link-forgot-password"><a ng-click="openResetPassword()"translate>
+                    {{'LOGIN.FORGOT_PASSWORD'}}</a></span>
+                </div>
+                <button type="button" class="btn btn-blue-filled btn-block"
+                  ng-class="{'disabled btn-grey-filled': !isLoginFormValid(), pending: isPending.login}"
+                  ng-click="sendAnalytics('login_attempt', {'channel':'email'}); sendLogin()">
+                  <spinner-animation class="white"></spinner-animation>
+                  <span translate>{{'LOGIN.LOG_IN'}}</span>
+                </button>
+                <p class="help-block help-block--options-text" translate>{{'LOGIN.OR'}}</p>
+                <button type="button" class="btn btn-block btn--connect-with-fb" ng-class="{pending: isPending.fbLogin}"
+                  ng-click="sendAnalytics('login_attempt', {'channel':'facebook'}); sendConnectWithFacebook($event)">
+                  <spinner-animation class="white"></spinner-animation>
+                  <span translate>{{'LOGIN.CONNECT_WITH_FACEBOOK'}}</span>
+                </button>
+                <p class="link"><a ng-click="sendAnalytics('click_signup'); openSignUp()" translate>{{'LOGIN.DONT_HAVE_ACCOUNT'}}</a></p>
+              </form>
+            </div>
+            <div class="col-xs-12" ng-show="isResetPasswordShown && !isResetEmailSent" novalidate>
+              <div class="title" translate>{{'RESET_PASSWORD.FORGOT_YOUR_PASSWORD'}}</div>
+              <form class="form" name="resetPasswordForm" ng-keyup="onResetPasswordFormKeyup($event)" novalidate>
+                <div class="form-group form-group--email">
+                    <input class="form-control" type="email" name="email"
+                      translate translate-attr-placeholder="{{'RESET_PASSWORD.EMAIL_ADDRESS'}}"
+                      ng-model="account.email" show-focus="isResetPasswordShown" ng-change="onEmailInputChange()" required>
+                    <i class="field-status-icon" ng-class="{
+                      'field-status-icon--invalid': resetPasswordForm.email.$invalid &&
+                      resetPasswordForm.email.$dirty || isEmailError,
+                      'field-status-icon--valid': resetPasswordForm.email.$valid && !isEmailError}"></i>
+                    <span class="help-block help-block--input-error"
+                      ng-if="resetPasswordForm.email.$error.email || isEmailError">{{emailError}}</span>
+                    <span class="help-block help-block--input-error" ng-if="resetPasswordForm.email.$error.required &&
+                      resetPasswordForm.email.$dirty" translate>{{'RESET_PASSWORD.EMAIL_REQUIRED'}}</span>
+                </div>
+                <button type="button" class="btn btn-blue-filled btn-block"
+                  ng-class="{'disabled btn-grey-filled': !isResetPasswordFormValid(), pending: isPending.resetPassword}"
+                  ng-click="sendResetPassword()">
+                  <spinner-animation class="white"></spinner-animation>
+                  <span translate>{{'RESET_PASSWORD.SEND_RESET_PASSWORD'}}</span>
+                </button>
+              </form>
+            </div>
+            <div class="col-xs-12" ng-show="isResetEmailSent" novalidate>
+              <div class="title" translate>{{'RESET_PASSWORD.RESET_SENT_TITLE'}}</div>
+              <p class="help-block help-block--reset-sent-text" translate>{{'RESET_PASSWORD.RESET_SENT_TEXT'}}</p>
+              <button type="button" class="btn btn-blue-filled btn-block"
+                ng-click="hideModal()" translate>{{'RESET_PASSWORD.OK'}}</button>
+            </div>
+            <div class="close-button" ng-click="hideModal()"></div>
+          </div>
+        </div>
+        <div class='ng-modal-dialog-content' ng-transclude></div>
+      </div>
+    </div>
+  </div>
+</div>

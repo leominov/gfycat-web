@@ -1,0 +1,6 @@
+<div class="autocomplete {{ attrs.class }}" id="{{ attrs.id }}">
+    <input type="text" ng-model="searchParam" placeholder="{{ attrs.placeholder }}" class="form-control" id="{{ attrs.inputid }}"> <!-- class="{{ attrs.inputclass }}" -->
+    <ul data-ng-show="completing && suggestions.length>0">
+        <li suggestion ng-repeat="suggestion in suggestions | filter:searchFilter | limitTo: 50" index="{{ $index }}" val="{{ suggestion }}" ng-class="{ active: ($index === selectedIndex) }" ng-click="select(suggestion)" ng-bind-html="suggestion | highlight:searchParam"></li>
+    </ul>
+</div>

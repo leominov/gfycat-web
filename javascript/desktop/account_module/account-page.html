@@ -1,0 +1,54 @@
+
+<div id="container">
+
+    <!-- This is the Navigation Menu Bar on the left side  -->
+    <account-side-menu></account-side-menu>
+
+    <!-- This Section is for the Account listings functionality-->
+    <section id="content" class="account">
+        <div data-ng-switch="acctViewSettings">
+            <div data-ng-switch-when='editpage'>
+                <account-edit-gfy-page></account-edit-gfy-page>
+            </div>
+            <div data-ng-switch-when='main'>
+                <account-sub-header></account-sub-header>
+                <!-- this is where we are listing the current folders that are visible in our view -->
+                <account-sub-folder-list ng-show="gfyPage.currentPage==1"></account-sub-folder-list>
+                <account-sub-album-list ng-if="currentFolderRootId==accountTree.userAlbums[0].id"></account-sub-album-list>
+                <!-- this is where we list the Gfy Files in Folders or Albums -->
+                <div data-ng-if="currentFolderRootId!=accountTree.userAlbums[0].id" data-ng-switch="usersProfileSettings.infiniteScroller">
+                    <account-folder-files-list data-ng-switch-when="true"></account-folder-files-list>
+                    <account-gfy-pagination data-ng-switch-when="false"></account-gfy-pagination>
+                </div>
+            </div>
+            <div data-ng-switch-when='editalbum'>
+                <!--account-sub-header></account-sub-header-->
+                <!-- this is where we are listing the current folders or Albums that are visible in our view -->
+                <!--account-sub-folder-list ng-show="gfyPage.currentPage==1"></account-sub-folder-list-->
+                <account-edit-album-page></account-edit-album-page>
+            </div>
+            <div data-ng-switch-when='editbookmark'>
+                <!--account-sub-header></account-sub-header-->
+                <!-- this is where we are listing the current folders or Albums that are visible in our view -->
+                <!--account-sub-folder-list ng-show="gfyPage.currentPage==1"></account-sub-folder-list-->
+                <account-edit-bookmark-page></account-edit-bookmark-page>
+            </div>
+
+
+        </div>
+    </section>
+
+    <footer></footer>
+</div>
+
+<!--------- heres a bunch of modals that we can use-->
+
+<!--gfy-modals></gfy-modals-->
+
+
+<script>
+    $(document).ready(function () {
+        //init();
+        $(document).tooltip();
+    });
+</script>

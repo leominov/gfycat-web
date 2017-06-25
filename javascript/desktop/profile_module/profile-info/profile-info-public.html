@@ -1,0 +1,52 @@
+<div class="profile-info-container">
+  <div class="fixed-header">
+    <div class="secondary-container">
+      <div class="left flex-center">
+        <div class="user-image">
+          <img ng-src="{{currInfo.profileImageUrl ? currInfo.profileImageUrl : imageSrc}}">
+        </div>
+        <span class="name">{{currInfo.name || '@'+currInfo.username}}</span>
+        <span class="verified" ng-if="currInfo.verified"><i class="ic ic-check ic-check--white"></i></span>
+      </div>
+      <div class="center flex-center toolbox" ng-class="{mobile: isMobile, desktop: !isMobile}">
+        <div class="item">
+          <button class="tab-btn" ui-sref="profile.gifs.public" ng-class="{active: $state.includes('profile.gifs.public')}" translate>{{'PROFILE.GIFS'}}</button>
+        </div>
+        <div class="item">
+          <button class="tab-btn" ui-sref="profile.albums.public" ng-class="{active: $state.includes('profile.albums')}" translate>{{'PROFILE.ALBUMS'}}</button>
+        </div>
+      </div>
+      <div class="right flex-center">
+        <button class="btn btn-small"
+          ng-class="{'btn-blue': !isFollowing, 'btn-blue-filled': isFollowing, 'pending': isFollowPending}"
+          ng-click="followButtonClick()">
+          <spinner-animation ng-class="{blue: !isFollowing, white: isFollowing}"></spinner-animation>
+          <span class="button-text" ng-if="!isFollowing" translate>{{'PROFILE.FOLLOW'}}</span>
+          <span class="button-text" ng-if="isFollowing" translate>{{'PROFILE.FOLLOWING'}}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="user-image"><img ng-src="{{currInfo.profileImageUrl ? currInfo.profileImageUrl : imageSrc}}"></div>
+  <div class="user-info">
+    <div class="name">{{currInfo.name}}
+      <span ng-hide="currInfo.name">{{currInfo.username}}</span>
+      <span class="verified" ng-if="currInfo.verified"><i class="ic ic-check ic-check--white"></i></span>
+    </div>
+    <span class="gfycat-username">@{{currInfo.username}}</span> |
+    <span class="views" translate translate-value-views="{{toLocaleNumber(currInfo.views)}}">{{'PROFILE.TOTAL_VIEWS'}}</span>
+    <div class="url-wrapper" ng-show="currInfo.profileUrl">
+      <a class="url" ng-href="{{currInfo.profileUrl}}" rel="nofollow" target="_blank">
+        <i class="ic ic-link url-icon"></i>{{formatUrl()}}
+      </a>
+    </div>
+    <div class="description">{{currInfo.description}}</div>
+  </div>
+  <button class="btn btn-large"
+    ng-class="{'btn-blue': !isFollowing, 'btn-blue-filled': isFollowing, 'pending': isFollowPending}"
+    ng-click="followButtonClick()">
+    <spinner-animation ng-class="{blue: !isFollowing, white: isFollowing}"></spinner-animation>
+    <span class="button-text" ng-if="!isFollowing" translate>{{'PROFILE.FOLLOW'}}</span>
+    <span class="button-text" ng-if="isFollowing" translate>{{'PROFILE.FOLLOWING'}}</span>
+  </button>
+</div>

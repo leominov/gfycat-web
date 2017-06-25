@@ -1,0 +1,50 @@
+<div class="static_container">
+  <h2>We'll miss you, Vine</h2>
+  <div>
+    <p>
+      Twitter is shutting down Vine and we hate it! This page gives you an easy way to migrate your Vines — with the full quality you've come to expect. Once the migration is complete, you’ll have the huge reliability benefits and sharing capabilities of Gfycat.
+    </p>
+
+    <p ng-hide="vm.isUserLoggedIn">
+      To get started, please <a href="{{vm.siteUrl}}/login?redirect_uri={{vm.siteUrl}}/vine-transfer">log in</a> to or <a href="{{vm.siteUrl}}/signup?redirect_uri={{vm.siteUrl}}/vine-transfer">sign up</a> for your own Gfycat account.
+    </p>
+  </div>
+
+  <div class="vine-input-container" ng-hide="vm.done === 'success'">
+    <input ng-model="vm.vineUrl" required="true" type="text" class="url-input" placeholder="Paste your Vine profile URL here!" ng-paste="vm.pasteUrl()"></input>
+    <div class="vine-button">
+      <div class="btn btn-blue" ng-click="vm.getVines()" ng-disabled="!vm.isUserLoggedIn || vm.invalidUrl">
+        <spinner-animation ng-if="vm.loading" class="blue"></spinner-animation>
+        <span ng-style="vm.style">Transfer All Vines</span>
+      </div>
+    </div>
+    <div>
+      <span ng-if="vm.invalidUrl">Invalid URL</span>
+    </div>
+  </div>
+  <div ng-switch="vm.done" class="message-container">
+    <div ng-switch-when="success">
+      <h3>Congratulations!</h3>
+      <p>
+         Your Vines are currently being converted. We will notify you by email when the process has completed. You can access your newly converted gifs in your Library.
+      </p>
+    </div>
+    <div ng-switch-when="error">
+      <h3>Apologies!</h3>
+      <p class="message">
+        Something malfunctioned. Please try again.
+      </p>
+    </div>
+    <div ng-switch-default></div>
+  </div>
+  <div ng-if="vm.vineUserProfile" class="vine-profile-container">
+    <div class="vine-profile">
+      <img ng-src="{{vm.vineUserProfile.avatarUrl}}" class="vine-avatar"></img>
+      <h3>{{vm.vineUserProfile.username}}</h3>
+      <span>{{vm.vineUserProfile.authoredPostCount}} Vines to Import</span>
+    </div>
+    <!--<video autoplay loop muted ng-attr-poster="{{vine.thumbnailUrl}}">
+      <source ng-src="{{vine.videoDashUrl}}" type="video/mp4"></source>
+    </video>-->
+  </div>
+</div>

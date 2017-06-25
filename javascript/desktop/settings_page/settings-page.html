@@ -1,0 +1,29 @@
+<div class="settings-container">
+  <div class="menu" ng-class="{inactive: !$state.is('settings')}">
+    <div class="menu-item" ui-sref="settings.account"
+      ng-class="{active: $state.is('settings.account')}">
+      <span translate>{{'SETTINGS.ACCOUNT'}}</span>
+      <i class="open"></i>
+    </div>
+    <div class="menu-item" ui-sref="settings.password"
+      ng-class="{active: $state.is('settings.password')}">
+      <span translate>{{'SETTINGS.PASSWORD'}}</span>
+      <i class="open"></i>
+    </div>
+    <div class="menu-item" ui-sref="settings.notifications"
+      ng-class="{active: $state.is('settings.notifications')}">
+      <span translate>{{'SETTINGS.EMAIL_PREFERENCES'}}</span>
+      <i class="open"></i>
+    </div>
+    <div class="menu-item" ng-if="isVerified" ui-sref="settings.partner"
+      ng-class="{active: $state.is('settings.partner')}">
+      <span translate>{{'SETTINGS.PARTNER_PREFERENCES'}}</span>
+      <i class="open"></i>
+    </div>
+  </div>
+  <div class="current-section" ng-hide="$state.is('settings') ||
+      $state.is('settings.partner') && !isVerified">
+    <i class="back" ui-sref="settings"></i>
+    <div ui-view></div>
+  </div>
+</div>

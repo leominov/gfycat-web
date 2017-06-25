@@ -1,0 +1,23 @@
+<div class="gfy-small-thumb" ng-class="{'round-border': roundBorder}" itemscope itemtype="http://schema.org/Article">
+  <div class="video-container" ng-class="{'no-info': noInfo}">
+    <a ng-href="{{link}}">
+      <img class="image" data-ng-mouseenter="mouseEnter()" data-ng-src="{{imageUrl}}"
+      itemprop="image" itemscope itemtype="http://schema.org/ImageObject">
+      <video data-ng-if="isVideoShown()" autoplay loop class="video above" data-ng-mouseleave="mouseLeft()" muted
+          ng-attr-poster="{{imageUrl}}"
+          itemscope itemtype="http://schema.org/VideoObject">
+          <source data-ng-src="{{videoUrl}}" type="video/mp4"/>
+          <source data-ng-src="{{videoUrlFull}}" type="video/mp4"/>
+          <source data-ng-src="{{videoUrlWebm}}" type="video/webm"/>
+      </video>
+    </a>
+  </div>
+  <div class="video-info" ng-if="!noInfo && infoVisible">
+    <span class="title">{{title}}</span>
+    <span class="tags">
+      <a ng-repeat="tag in data.tags | limitTo: maxNumTags"
+         class="tag" href="/gifs/search/{{tag.split(' ').join('-')}}"
+         target="_self" ng-click="sendTagClickEvent(tag);$event.stopPropagation()">#{{tag}}</a>
+    </span>
+  </div>
+</div>

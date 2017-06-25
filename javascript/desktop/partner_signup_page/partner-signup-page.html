@@ -1,0 +1,124 @@
+<div class="container-fluid container-signup">
+  <div class="row">
+    <div class="col-xs-12 partner-signup">
+      <div class="title" translate>{{'PARTNER_SIGNUP.BECOME_A_PARTNER'}}</div>
+      <form name="signupForm" novalidate class="form"
+        ng-class="{'form-fb': isFacebookSignupOpened}" ng-keyup="onSignupFormKeyup($event)">
+        <div class="form-group">
+          <input class="form-control" type="text" name="contact" show-focus="true"
+            translate translate-attr-placeholder="{{'PARTNER_SIGNUP.CONTACT_NAME'}}" ng-model="notificationEmailProperties.contact_name" required>
+             <i class="field-status-icon" ng-class="{
+              'field-status-icon--invalid': signupForm.contact.$error.required && signupForm.contact.$dirty,
+              'field-status-icon--valid': !signupForm.contact.$error.required}"></i>
+              <span class="help-block help-block--input-error" ng-if="signupForm.contact.$error.required &&
+              signupForm.contact.$dirty" translate>{{'PARTNER_SIGNUP.FIELD_REQUIRED'}}</span>
+        </div>
+        <div ng-if="!loggedIn" class="form-group form-group--email" ng-show="isEmailVisible">
+            <input class="form-control" type="email" name="email" 
+              translate translate-attr-placeholder="{{'PARTNER_SIGNUP.CONTACT_EMAIL'}}"
+              ng-model="account.email" ng-init="account.email=''" ng-change="onEmailInputChange()" required>
+            <i class="field-status-icon" ng-class="{
+              'field-status-icon--invalid': signupForm.email.$invalid && signupForm.email.$dirty || isEmailError,
+              'field-status-icon--valid': signupForm.email.$valid && !isEmailError}"></i>
+            <span class="help-block help-block--input-error"
+              ng-if="signupForm.email.$error.email || isEmailError">{{emailError}}</span>
+            <span class="help-block help-block--input-error" ng-if="signupForm.email.$error.required &&
+              signupForm.email.$dirty" translate>{{'SIGNUP.EMAIL_REQUIRED'}}</span>
+        </div>
+        <div ng-if="loggedIn" class="form-group form-group--email disabled" ng-show="isEmailVisible">
+            <input class="form-control disabled" disabled placeholder="{{notificationEmailProperties.contact_email}}">
+            <i class="field-status-icon field-status-icon--valid"></i>
+        </div>
+        <div ng-if="!loggedIn" class="form-group form-group--username">
+            <input class="form-control" name="username" type="text" autocapitalize="off" autocorrect="off"
+              translate translate-attr-placeholder="{{'PARTNER_SIGNUP.CHOOSE_A_USERNAME'}}"
+              ng-model="account.username" ng-init="account.username=''" ng-keydown="onUsernameInputKeydown($event)"
+              ng-change="onUsernameInputChange()" pattern="[0-9a-zA-Z.\-_]*" ng-minlength="6" maxlength="20" required>
+            <i class="field-status-icon" ng-class="{'field-status-icon--invalid': signupForm.username.$invalid &&
+              signupForm.username.$dirty || usernameError,
+              'field-status-icon--valid': signupForm.username.$valid && !isUsernameError }"></i>
+            <span class="help-block help-block--input-error" ng-if="usernameError && signupForm.username.$valid">
+              {{usernameError}}</span>
+            <span class="help-block help-block--input-error" ng-if="signupForm.username.$error.pattern"
+              translate>{{'SIGNUP.USERNAME_VALID_CHARACTERS'}}</span>
+            <span class="help-block help-block--input-error" ng-if="signupForm.username.$error.required &&
+              signupForm.username.$dirty" translate>{{'SIGNUP.USERNAME_REQUIRED'}}</span>
+            <span class="help-block help-block--input-error" ng-if="signupForm.username.$error.minlength &&
+              !signupForm.username.$error.pattern" translate>{{'SIGNUP.USERNAME_TOO_SHORT'}}</span>
+        </div>
+        <div ng-if="!loggedIn" class="form-group form-group--password">
+            <input class="form-control" type="password" name="password" ng-minlength="4" maxlength="64"
+              translate translate-attr-placeholder="{{'PARTNER_SIGNUP.CHOOSE_A_PASSWORD'}}" ng-model="account.password"
+              ng-change="onPasswordInputChange()" autocapitalize="off" autocorrect="off" required>
+            <i class="field-status-icon" ng-class="{'field-status-icon--invalid': signupForm.password.$invalid &&
+              signupForm.password.$dirty || isPasswordError,
+              'field-status-icon--valid': signupForm.password.$valid && !isPasswordError }"></i>
+            <span class="help-block help-block--input-error" ng-if="isPasswordError && signupForm.password.$valid">
+              {{passwordError}}</span>
+            <span class="help-block help-block--input-error" ng-if="signupForm.password.$error.required &&
+              signupForm.password.$dirty" translate>{{'SIGNUP.PASSWORD_REQUIRED'}}</span>
+            <span class="help-block help-block--input-error" ng-if="signupForm.password.$error.minlength" translate>
+              {{'SIGNUP.PASSWORD_TOO_SHORT'}}</span>
+        </div>
+        <div class="form-group">
+          <input class="form-control" type="text" name="partnername" 
+            translate translate-attr-placeholder="{{'PARTNER_SIGNUP.PARTNER_TYPE_OPTIONS'}}" 
+            ng-model="notificationEmailProperties.partner_name" required>  
+             <i class="field-status-icon" ng-class="{
+              'field-status-icon--invalid': signupForm.partnername.$error.required && signupForm.partnername.$dirty,
+              'field-status-icon--valid': !signupForm.partnername.$error.required}"></i>
+            <span class="help-block help-block--input-error" ng-if="signupForm.partnername.$error.required &&
+              signupForm.partnername.$dirty" translate>{{'PARTNER_SIGNUP.FIELD_REQUIRED'}}</span>
+        </div>
+        <div class="form-group">
+          <input class="form-control" type="text" name="comapny" 
+            translate translate-attr-placeholder="{{'PARTNER_SIGNUP.PARENT_COMPANY'}}"
+            ng-model="notificationEmailProperties.company">  
+        </div>
+        <div class="form-group">
+          <input class="form-control" type="url" name="website" 
+            translate translate-attr-placeholder="{{'PARTNER_SIGNUP.COMPANY_WEBSITE'}}"
+            ng-model="notificationEmailProperties.web_url" required http-prefix>
+            <i class="field-status-icon" ng-class="{
+              'field-status-icon--invalid': (signupForm.website.$error.required || signupForm.website.$error.url) && signupForm.website.$dirty,
+              'field-status-icon--valid': !signupForm.website.$error.required}"></i>
+            <span class="help-block help-block--input-error" ng-if="signupForm.website.$error.required &&
+              signupForm.website.$dirty" translate>{{'PARTNER_SIGNUP.FIELD_REQUIRED'}}</span> 
+              <span class="help-block help-block--input-error" ng-if="signupForm.website.$error.url &&
+              signupForm.website.$dirty" translate>{{'PARTNER_SIGNUP.NOT_VALID_URL'}}</span>   
+        </div>
+        <div class="form-group partner-type-select partner-type-select--desktop">
+         <div class="dropdown-container">
+          <button class="menu-btn" data-toggle="dropdown" id="dropdownMenu5">
+          <span ng-if="!typeSelected" translate>{{'PARTNER_SIGNUP.PARTNER_TYPE'}}</span>
+          <span ng-if="notificationEmailProperties.partner_type === 'Artist'" translate>{{'PARTNER_SIGNUP.ARTIST'}}</span>
+          <span ng-if="notificationEmailProperties.partner_type === 'Brand'" translate>{{'PARTNER_SIGNUP.BRAND'}}</span>
+          <span ng-if="notificationEmailProperties.partner_type === 'Celebrity'" translate>{{'PARTNER_SIGNUP.CELEBRITY'}}</span>
+          <span class="caret"></span></button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu5">
+              <li><a alt="Artist" translate ng-click="setPartnerType('Artist')" class="ng-scope ng-binding">{{'PARTNER_SIGNUP.ARTIST'}}</a></li>
+              <li><a alt="Brand" translate ng-click="setPartnerType('Brand')" class="ng-scope ng-binding">{{'PARTNER_SIGNUP.BRAND'}}</a></li>
+              <li><a alt="Celebrity" translate ng-click="setPartnerType('Celebrity')" class="ng-scope ng-binding">{{'PARTNER_SIGNUP.CELEBRITY'}}</a></li>
+          </ul>
+         </div>
+        </div>
+        <div class="form-group">
+          <span class="checkbox-wrapper">
+            <span class="checkbox" ng-class="{checked: consent}"">
+                <input type="checkbox" ng-Click="toggleConsent()" class="checkbox-input ng-valid ng-dirty ng-valid-parse ng-touched" id="informed_consent" name="informed_consent" >
+                <i class="ic ic-check ic-check--white"></i>
+            </span>
+            <label class="checkbox-label grey-text terms-text" for="informed_consent"><span translate>{{'PARTNER_SIGNUP.TERMS_ACKNOWLEDGEMENT'}}</span><a href="/terms" translate>{{'PARTNER_SIGNUP.TERMS_OF_SERVICE'}}</a><span translate>{{'PARTNER_SIGNUP.AND'}}</span><a href="/partners/terms" translate>{{'PARTNER_SIGNUP.PARTNER_TERMS'}}</a><span translate>{{'PARTNER_SIGNUP.TERMS_ACKNOWLEDGEMENT_AFTER'}}</span></label>
+          </span>
+        </div> 
+        <button type="button" class="btn btn-blue-filled btn-block btn--signup"
+          ng-class="{'disabled btn-grey-filled': !isSignupFormValid() || !consent || !typeSelected, pending: isPending.signup}"
+          ng-click="formSubmit()">
+          <spinner-animation class="white"></spinner-animation>
+          <span translate>{{'PARTNER_SIGNUP.APPLY_NOW'}}</span>
+        </button>
+        <p class="info-paragraph"><span class="grey-text" translate>{{'PARTNER_SIGNUP.HAVE_ANY_QUESTIONS_BEFORE'}}</span><a class="info-link" href="mailto:partners@gfycat.com">partners@gfycat.com</a><span class="grey-text" translate>{{'PARTNER_SIGNUP.HAVE_ANY_QUESTIONS_AFTER'}}</span></p>
+      </form>
+    </div>
+  </div>
+</div>

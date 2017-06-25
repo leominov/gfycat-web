@@ -1,0 +1,46 @@
+<div class="profile-info-container">
+  <div class="fixed-header">
+    <div class="secondary-container">
+      <div class="left flex-center">
+        <div class="user-image">
+          <img ng-src="{{currInfo.profileImageUrl ? currInfo.profileImageUrl : imageSrc}}">
+        </div>
+        <span class="name">{{currInfo.name || '@'+currInfo.username}}</span>
+        <span class="verified" ng-if="currInfo.verified"><i class="ic ic-check ic-check--white"></i></span>
+      </div>
+      <div class="center flex-center toolbox" ng-class="{mobile: isMobile, desktop: !isMobile}">
+        <div class="item">
+          <button class="tab-btn" ui-sref="profile.gifs.public" ng-class="{active: $state.includes('profile.gifs.public')}" translate>{{'PROFILE.GIFS'}}</button>
+        </div>
+        <div class="item">
+          <button class="tab-btn" ui-sref="profile.albums.public" ng-class="{active: $state.includes('profile.albums')}" translate>{{'PROFILE.ALBUMS'}}</button>
+        </div>
+      </div>
+      <div class="right flex-center">
+        <button class="btn btn-blue btn-small" ng-click="openEdit()" translate>{{'PROFILE.EDIT'}}</button>
+      </div>
+    </div>
+  </div>
+  <div class="user-image"><img ng-src="{{currInfo.profileImageUrl ? currInfo.profileImageUrl : imageSrc}}"></div>
+  <div class="user-info">
+    <div class="name">{{currInfo.name}}
+      <span class="add-name" ng-hide="currInfo.name"
+        ng-click="addInfoClick('name')" translate>{{'PROFILE.ADD_NAME'}}</span>
+      <span class="verified" ng-if="currInfo.verified"><i class="ic ic-check ic-check--white"></i></span>
+    </div>
+    <span class="gfycat-username">@{{currInfo.username}}</span> |
+    <span class="views" translate translate-value-views="{{toLocaleNumber(currInfo.views)}}">{{'PROFILE.TOTAL_VIEWS'}}</span>
+    <div class="url-wrapper">
+      <a class="url" ng-href="{{currInfo.profileUrl}}" rel="nofollow" target="_blank">
+        <i class="ic ic-link url-icon"></i>{{formatUrl()}}
+        <span class="add-url" ng-hide="currInfo.profileUrl"
+          ng-click="addInfoClick('url')" translate>{{'PROFILE.ADD_URL'}}</span>
+      </a>
+    </div>
+    <div class="description">{{currInfo.description}}
+      <span class="add-description" ng-hide="currInfo.description"
+        ng-click="addInfoClick('description')" translate>{{'PROFILE.ADD_DESCRIPTION'}}</span>
+    </div>
+  </div>
+  <button class="btn btn-blue btn-large" ng-click="openEdit()" translate>{{'PROFILE.EDIT'}}</button>
+</div>

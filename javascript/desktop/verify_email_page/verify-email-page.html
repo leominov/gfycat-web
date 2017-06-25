@@ -1,0 +1,17 @@
+<div class="container-fluid container-verify-email">
+  <div class="row">
+    <div class="col-xs-12">
+      <div ng-if="isVerified">
+        <div class="title" translate>{{'VERIFY_EMAIL.SUCCESS_TITLE'}}</div>
+        <p class="help-block help-block--reset-success-text" translate>{{'VERIFY_EMAIL.SUCCESS_TEXT'}}</p>
+      </div>
+      <div ng-if="!isVerified">
+        <div class="title" translate>{{'VERIFY_EMAIL.ERROR_TITLE'}}</div>
+        <p class="help-block help-block--reset-success-text" translate>{{'VERIFY_EMAIL.ERROR_TEXT'}}</p>
+      </div>
+      <div class="image" ng-class="{'error': !isVerified}"></div>
+      <button type="button" class="btn btn-blue-filled btn-block"
+        ng-click="goToGfycat()" translate>{{'VERIFY_EMAIL.CONTINUE_TO_GFYCAT'}}</button>
+    </div>
+  </div>
+</div>

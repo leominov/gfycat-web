@@ -1,0 +1,22 @@
+<section class="profile-content">
+  <div class="deckgrid" smart-infinite-scroll-v2 smart-repeat="gif in gifList"
+  more-data="loadMoreInfinite()" more-data-disable="isLoading()"
+  max-columns="4" max-column-width="500" min-column-width="250" border-width="10">
+    <gfy-small-thumb noreflow="true" data="gif" show-video-info="true" round-border="true" video-size="original"
+    link="$parent.$parent.generateUrl(gif)" style="display:block;"></gfy-small-thumb>
+  </div>
+
+  <button class="btn btn-blue btn-large btn-center"
+    style="margin-top: 10px;"
+    ng-if="gifList.cursor && buttonEnabled"
+    ng-class="{'pending': loading}"
+    ng-click="loadMoreInfinite()">
+    <span class="button-text" translate>{{'PROFILE.LOAD_MORE'}}</span>
+  </button>
+
+  <div class="no-result" ng-if="gifList.length === 0">
+    <div class="cat-image"></div>
+    <span class="text" translate>{{'PROFILE.NO_GIFS_PUBLIC'}}</span>
+  </div>
+  <spinner-animation class="blue large center" ng-if="loading"></spinner-animation>
+</section>

@@ -1,0 +1,84 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="header-container header-container--desktop">
+        <div class="left flex-center" itemscope itemtype="http://schema.org/Organization">
+            <a href="/" itemprop="url">
+                <i class="ic ic-logo-big"></i>
+                <i class="ic ic-logo-small"></i>
+            </a>
+            <a href="/" class="text-logo" itemprop="url"><span itemprop="logo" translate>{{'HEADER_BAR.TEXT_LOGO'}}</span></a>
+            <div class="dropdown-container" ng-mouseover="showMenu()">
+                <button class="menu-btn" data-toggle="dropdown" id="dropdownMenu1">
+                    <i class="ic ic-ellipsis ic-ellipsis--blue"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a alt="About" href="/about" target="_self" ng-click="$event.stopPropagation()" translate>{{'HEADER_BAR.ABOUT'}}</a></li>
+                    <li><a alt="Team" target="_self" href="/team" ng-click="$event.stopPropagation()" translate>{{'HEADER_BAR.TEAM'}}</a></li>
+                    <li><a alt="Blog" href="https://medium.com/@Gfycat" ng-click="hideMenu()" target="_blank" translate>{{'HEADER_BAR.BLOG'}}</a></li>
+                    <li><a alt="Jobs" href="/jobs" target="_self" ng-click="$event.stopPropagation()" translate>{{'HEADER_BAR.JOBS'}}</a></li>
+                    <li><a alt="Partners" href="/partners" ng-click="hideMenu()" translate>{{'HEADER_BAR.PARTNERS'}}</a></li>
+                    <li><a alt="FAQ" href="/faq" target="_self" ng-click="$event.stopPropagation()" translate>{{'HEADER_BAR.FAQ'}}</a></li>
+                    <li><a alt="Support" href="/support" target="_self" ng-click="$event.stopPropagation()" translate>{{'HEADER_BAR.SUPPORT'}}</a></li>
+                    <li><a alt="Slack" href="/slack" target="_self" ng-click="$event.stopPropagation()" translate>{{'HEADER_BAR.SLACK'}}</a></li>
+                    <li><a alt="Gifbrewery" href="/gifbrewery" target="_self" ng-click="$event.stopPropagation()" translate>{{'HEADER_BAR.GIFBREWERY'}}</a></li>
+                    <li><a alt="Vine Import" href="/vine-transfer" ng-click="hideMenu()">Vine Import</a></li>
+                    <li><a alt="Api" href="https://developers.gfycat.com" ng-click="hideMenu()" translate>{{'HEADER_BAR.DEVELOPER_API'}}</a></li>
+                    <li><a alt="Terms" target="_self" ng-href="/terms" ng-click="$event.stopPropagation()" translate>{{'HEADER_BAR.TERMS_AND_CONDITIONS'}}</a></li>
+                    <li><a alt="Privacy" href="/privacy" target="_self" ng-click="$event.stopPropagation()" translate>{{'HEADER_BAR.PRIVACY_POLICY'}}</a></li>
+                    <li><a alt="DMCA" href="/dmca" target="_self" ng-click="$event.stopPropagation()" translate>{{'HEADER_BAR.DMCA'}}</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="center flex-center">
+            <div class="input-group" data-ng-controller="autoCtrl">
+                <h2 class="search-header">Search <span class="hide-small">millions of </span><span class="hide-med">user-generated </span>GIFs</h2>
+                <input type="text" class="form-control search-input" id="txtSearch" data-ng-focus="typing($event)" data-ng-blur="notTyping($event)" data-ng-model="search.siteSearch" data-ng-keyup="$event.keyCode == 13 ? searchMainPage(search.siteSearch) : null">
+                <div class="input-group-btn">
+                    <button type="button" class="btn search-btn" aria-label="Left Align" data-ng-click="searchMainPage(search.siteSearch)">
+                        <i class="ic ic-search ic-search--white" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="right flex-center">
+            <div class="item">
+                <button class="upload-btn" alt="Upload" ui-sref="uploader({flow: 'upload'})" ng-click="openUploaderEvent()">
+                    <span class="btn-text" translate>{{'HEADER_BAR.UPLOAD'}}</span>
+                    <i class="ic ic-cloud-upload ic-cloud-upload--blue"></i>
+                </button>
+                <button class="create-btn" alt="Create" ui-sref="uploader({flow: 'create'})" ng-click="openUploaderEvent()">
+                    <span class="btn-text" translate>{{'HEADER_BAR.CREATE'}}</span>
+                    <i class="ic ic-cloud-upload ic-cloud-upload--blue"></i>
+                </button>
+            </div>
+            <div class="item vertical-divider"></div>
+            <div class="item" data-ng-hide="isUserSignedIn()">
+                <a href="{{loginUrl}}" target="_self" ng-click="$event.stopPropagation()">
+                    <button class="login-btn">
+                        <span class="btn-text" translate>{{'HEADER_BAR.LOGIN'}}</span>
+                        <i class="ic ic-guest-user ic-guest-user--blue"></i>
+                    </button>
+                </a>
+            </div>
+            <a ng-click="sendAnalytics('click_signup')" href="/signup">
+                <div class="item" data-ng-hide="isUserSignedIn()">
+                    <button class="default-grey signup-btn" translate>{{'HEADER_BAR.SIGNUP'}}</button>
+                </div>
+            </a>
+            <div class="dropdown-container item" data-ng-show="isUserSignedIn()" ng-mouseover="showMenu()">
+                <button class="default-grey user-menu-btn" data-toggle="dropdown" id="dropdownUser" alt="{{ accountTree.accountName }}">
+                    <span class="btn-text" translate>{{ accountTree.accountName }}</span>
+                    <i class="ic ic-guest-user ic-guest-user--blue"></i>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li><a tabindex="-1" href="#" data-ng-click="hideMenu(); goUserAccount('profile')" translate>{{'HEADER_BAR.PROFILE'}}</a></li>
+                    <li><a tabindex="-1" href="#" data-ng-click="hideMenu(); goUserAccount('library')" translate>{{'LIBRARY.MY_LIBRARY'}}</a></li>
+                    <li><a tabindex="-1" href="#" data-ng-click="hideMenu(); goUserAccount()" translate>{{'HEADER_BAR.MANAGE'}}</a></li>
+                    <li><a tabindex="-1" ui-sref="settings" ng-click="hideMenu()" translate>{{'HEADER_BAR.SETTINGS'}}</a></li>
+                    <li><a tabindex="-1" href="#" data-ng-click="hideMenu(); logout()" translate>{{'HEADER_BAR.SIGNOUT'}}</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>

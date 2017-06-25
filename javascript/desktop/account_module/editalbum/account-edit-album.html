@@ -1,0 +1,191 @@
+<section class="account editAlbum">
+    <div class="container">
+        <div class="row title">
+            <div class="col-xs-12">
+                <label>Album Title <i data-ng-if="albumToEdit.errorTitleSave" class="error glyphicon glyphicon-exclamation-sign" style="color: red;"></i></label>
+                <!--<div class="editable" contenteditable="true">-->
+                <!--{{albumToEdit.title}}-->
+                <!--</div>-->
+                <div class="input-group">
+                    <input class="form-control" type="text" id="title" data-ng-model="albumToEdit.usersAlbumTitle" data-ng-init="albumToEdit.usersAlbumTitle=albumToEdit.title; albumToEdit.usersAlbumTitleTemp=albumToEdit.title;" ng-change="albumEdit.changeOfAlbumInfo(albumToEdit)" placeholder="{{ albumToEdit.title }}" data-char-limit="60" onkeyup="displayCharLimit(this);" ng-class="{'saveError': errorTitleSave,'saveEnabled': titleSaving}"> <!-- ng-init="albumToEdit.usersAlbumTitleTemp={{ gfyitem.title || gfyitem.gfyName }}"  style="border-color: red; box-shadow: 0 0 10px #ff0000;"-->
+                </div>
+            </div>
+        </div>
+        <div class="row url">
+            <div class="col-xs-12">
+                <label>Album Url</label>
+                <div class="input-group">
+                    <input data-ng-if="albumToEdit.linkText!=undefined" class="form-control" type="text" value="https://gfycat.com/{{accountTree.accountName}}/{{albumToEdit.linkText}}" readonly style="cursor: text;">
+                    <input data-ng-if="albumToEdit.linkText==undefined" class="form-control" type="text" value="Album not Titled and Saved, no Url Available yet" readonly style="color: red;">
+                </div>
+            </div>
+        </div>
+        <div class="row description">
+            <div class="col-xs-12">
+                <label>Description <i data-ng-if="albumToEdit.errorDescriptionSave" class="error glyphicon glyphicon-exclamation-sign" style="color: red;"></i></label>
+                <textarea class="form-control" rows="3" id="description" placeholder="Enter Description" data-ng-model="albumToEdit.usersDescription" data-ng-init="albumToEdit.usersDescription=albumToEdit.description; albumToEdit.usersDescriptionTemp=albumToEdit.description;" ng-change="albumEdit.changeOfAlbumInfo(albumToEdit)" data-char-limit="1000" onkeyup="displayCharLimit(this);"></textarea>
+
+                <!--<div class="editable" contenteditable="true">-->
+                <!--{{albumToEdit.description || 'Enter Album Description'}}-->
+                <!--</div>-->
+            </div>
+        </div>
+        <div class="row tagsWrap" data-ng-controller="autoCtrl">
+
+            <div class="col-xs-3 tag">
+                <label>Tag 1 <i data-ng-if="albumToEdit.errorTag1Save" class="error glyphicon glyphicon-exclamation-sign" style="color: red;"></i></label>
+                <autocomplete ng-model="albumToEdit.usersAlbumTag1" ng-click="albumEdit.changeOfAlbumInfo(albumToEdit)" attr-placeholder="Tag 1" ng-init="albumToEdit.usersAlbumTag1=albumToEdit.tags[0]; albumToEdit.tag1=albumToEdit.tags[0];" click-activation="true" data="gfyTags" on-type="doSomething" on-select="doSomethingElse"></autocomplete>
+            </div>
+            <div class="col-xs-3 tag">
+                <label>Tag 2 <i data-ng-if="albumToEdit.errorTag2Save" class="error glyphicon glyphicon-exclamation-sign" style="color: red;"></i></label>
+                <autocomplete ng-model="albumToEdit.usersAlbumTag2" ng-click="albumEdit.changeOfAlbumInfo(albumToEdit)" attr-placeholder="Tag 2" ng-init="albumToEdit.usersAlbumTag2=albumToEdit.tags[1]; albumToEdit.tag2=albumToEdit.tags[1];" click-activation="true" data="gfyTags" on-type="doSomething" on-select="doSomethingElse"></autocomplete>
+            </div>
+            <div class="col-xs-3 tag">
+                <label>Tag 3 <i data-ng-if="albumToEdit.errorTag3Save" class="error glyphicon glyphicon-exclamation-sign" style="color: red;"></i></label>
+                <autocomplete ng-model="albumToEdit.usersAlbumTag3" ng-click="albumEdit.changeOfAlbumInfo(albumToEdit)" attr-placeholder="Tag 3" ng-init="albumToEdit.usersAlbumTag3=albumToEdit.tags[2]; albumToEdit.tag3=albumToEdit.tags[2];" click-activation="true" data="gfyTags" on-type="doSomething" on-select="doSomethingElse"></autocomplete>
+            </div>
+            <div class="col-xs-3 settings">
+                <ul class="list-group">
+                    <!--<li class="list-group-item">-->
+                    <!--<input id="allowComments" type="checkbox" class="checkbox" data-ng-model="albumToEdit.usersAlbumComments" ng-change="albumEdit.changeOfAlbumInfo(albumToEdit)" data-ng-init="albumToEdit.usersAlbumComments=(albumToEdit.allowComments || true); albumToEdit.usersAlbumCommentsTemp=(albumToEdit.allowComments || true);"/><label for="allowComments">Allow Comments</label>-->
+                    <!--</li>-->
+                    <li class="list-group-item">
+                        <input id="publish" type="checkbox" class="checkbox" data-ng-model="albumToEdit.usersAlbumPublish" ng-change="albumEdit.changeOfAlbumInfo(albumToEdit)" data-ng-init="albumToEdit.usersAlbumPublish=albumToEdit.published; albumToEdit.usersAlbumPublishTemp=albumToEdit.published;"/><label for="publish">Publish (visible to public)</label>
+                    </li>
+                    <div class="radioBtnGroup" data-ng-init="albumToEdit.usersAlbumNsfw=albumToEdit.nsfw; albumToEdit.usersAlbumNsfwTemp=albumToEdit.nsfw;" data-ng-style="{true:{'border': 'dashed', 'color': 'black', 'margin-top': '4px', 'background-color': '#eeeeee'},false : {}} [albumToEdit.usersAlbumNsfw==undefined]">
+                        <input type="radio" data-ng-model="albumToEdit.usersAlbumNsfw" ng-change="albumEdit.changeOfAlbumInfo(albumToEdit)" value="Clean">
+                        <label>Clean</label>
+                        <input data-ng-if="albumToEdit.usersAlbumNsfw!='Porn'" type="radio" data-ng-model="albumToEdit.usersAlbumNsfw" ng-change="albumEdit.changeOfAlbumInfo(albumToEdit)" value="NSFW">
+                        <input data-ng-if="albumToEdit.usersAlbumNsfw=='Porn'" type="radio" data-ng-model="albumToEdit.usersAlbumNsfw" ng-change="albumEdit.changeOfAlbumInfo(albumToEdit)" value="Porn">
+                        <label data-ng-if="albumToEdit.usersAlbumNsfw=='Clean' || albumToEdit.usersAlbumNsfw==undefined">Offensive or NSFW</label>
+                        <div data-ng-if="albumToEdit.usersAlbumNsfw=='NSFW' || albumToEdit.usersAlbumNsfw=='Porn'" class="btn-group" data-ng-init="(albumToEdit.usersAlbumNsfw=='NSFW')? button.text='Offensive' : button.text='NSFW'">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                {{button.text}} <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" data-ng-click="button.text='Offensive'; albumToEdit.usersAlbumNsfw='NSFW'; albumEdit.changeOfAlbumInfo(albumToEdit);">Possibly Offensive</a></li>
+                                <li><a href="#" data-ng-click="button.text='NSFW'; albumToEdit.usersAlbumNsfw='Porn'; albumEdit.changeOfAlbumInfo(albumToEdit);">Definitely NSFW</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+        </div>
+        <!--<div class="row stats" style="display: none"> &lt;!&ndash; If we don't need this, no need to delete the HTML (just hide it) &ndash;&gt;-->
+        <!--<div class="col-xs-12">-->
+        <!--<ul class="itemStats">-->
+        <!--<li class="video" title="">-->
+        <!--<i class="glyphicon glyphicon-facetime-video"></i> {{gfyitem.videos}}-->
+        <!--</li>-->
+        <!--<li class="views" title="Total views">-->
+        <!--<i class="glyphicon glyphicon-eye-open"></i> {{gfyitem.views}}-->
+        <!--</li>-->
+        <!--<li class="comments" title="Likes">-->
+        <!--<i class="glyphicon glyphicon-comment"></i> {{gfyitem.comments}}-->
+        <!--</li>-->
+        <!--<li class="shares" title="Shares">-->
+        <!--<i class="glyphicon glyphicon-share-alt"></i> {{gfyitem.shares}}-->
+        <!--</li>-->
+        <!--</ul>-->
+        <!--</div>-->
+        <!--</div>-->
+        <div class="row actions">
+            <div class="col-xs-12 albumHeader">
+                <!-- select all checkbox -->
+                <div class="chkWrap">
+                    <input id="chkSelectAll" type="checkbox" data-ng-click="setAllAlbumSelected()" data-ng-model="albumToEdit.selectAll">
+                </div>
+
+                <!-- batch commands dropdown list -->
+                <div id="ddlBatchCmd" class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="btnBatchCmd" data-toggle="dropdown">Actions<span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="btnBatchCmd">
+                        <li><a tabindex="-1" data-ng-click="deleteSelectedAlbumGfys()" href="#">Delete Selected</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+<!--TODO Jason this empty class is where we are repeating the gfys.... this is similar to the FOLDERS stuff.... the script for rendering the content in the rows is at the bottom of the page-->
+        <div class="row listWrap">
+            <div ui-tree id="tree-root">
+                <ol ui-tree-nodes ng-model="albumToEdit.publishedGfys">
+                    <li ng-repeat="gfyitem in albumToEdit.publishedGfys" ui-tree-node ng-include="'albumGfys'" ></li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="row empty" ng-show="(albumToEdit.publishedGfys.length==undefined || albumToEdit.publishedGfys.length==0)">
+            <!-- TODO: Please don't delete any elements from inside this tag. If this hint isn't being used, the tag should still be in the DOM -->
+            <div class="tumbleweed"></div>
+            <i class="glyphicon glyphicon-facetime-video"></i>
+            <h3>{{msgs.folderEmptyAlbums}}</h3>
+            <p class="hint" data-folder-category="{{ currentFolderRootTitle }}">
+                <!--{{msgs.hintMoveFilesMsg}}-->
+                <!-- TODO: In a previous meeting we had discussed using this space to describe what an album is. Feel free to change the text if you like -->
+                HINT: An Album is a quick and easy way to organize and share a collection of your Gfycats!
+                <br>
+                <button id="btnUploadToFolder" class="btn btn-default orangeBtn" type="button" ui-sref="uploader" ng-click="setTempUploadFolder(currentFolderTitle,currentFolderId)">
+                    {{msgs.folderSuggestUpload}}{{ currentFolderTitle }}
+                </button>
+            </p>
+        </div>
+
+        <div class="loading" data-ng-if="albumToEdit.loading">
+            <div class="bounce1" ></div>
+            <div class="bounce2" ></div>
+            <div class="bounce3" ></div>
+        </div>
+
+        <div class="bottomButtons">
+            <button data-ng-if="!albumEdit.savingUsersAlbumInfo(albumToEdit)" type="button" class="btn btn-default blueBtn" style="width:58px;" ng-click="albumEdit.saveUsersAlbumInfo(albumToEdit)">
+                <span data-ng-if="!albumToEdit.saved">Save</span>
+                <i data-ng-if="albumToEdit.saved && !albumEdit.isErrorSavingUsersAlbumInfo(albumToEdit)" class="success glyphicon glyphicon-ok"></i>
+                <i data-ng-if="albumToEdit.saved && albumEdit.isErrorSavingUsersAlbumInfo(albumToEdit)" class="error glyphicon glyphicon-exclamation-sign"></i>
+            </button>
+            <button data-ng-if="albumEdit.savingUsersAlbumInfo(albumToEdit)" type="button" class="btn btn-default blueBtn pending" style="width:58px;padding:16px 9px;" ng-click="">
+                <spinner-animation color="white"></spinner-animation>
+            </button>
+            <!--place holder button...click all you want-->
+            <!--<button class="btn btn-default cancelBtn" data-ng-click="toggleAlbums()">Cancel</button>-->
+            <button data-ng-if="!albumToEdit.deleting" class="btn btn-default deleteBtn" data-ng-click="deleteAlbum(albumToEdit)" style="width:116px;">Delete Album</button>
+            <button data-ng-if="albumToEdit.deleting" class="btn btn-default deleteBtn pending" data-ng-click="" style="width:116px;padding: 18px 12px;">
+                <spinner-animation color="#d23236"></spinner-animation>
+            </button>
+            <!--place holder button...click all you want-->
+        </div>
+        <div data-ng-if="albumToEdit.saved && albumEdit.isErrorSavingUsersAlbumInfo(albumToEdit) || albumToEdit.errorMsg.length" style="color: red;" data-ng-repeat="itemError in albumToEdit.errorMsg">
+            <div><i class="error glyphicon glyphicon-exclamation-sign"></i> {{itemError}} </div>
+        </div>
+    </div>
+</section>
+
+
+<!--TODO Jason this is the script stuff... -->
+<script type="text/ng-template" id="albumGfys">
+    <div class="row albumItems tree-node">
+        <div class="col-xs-12 tree-node-content">
+            <div class="itemWrap">
+                <div id="item1" class="item clearfix">
+                    <div class="chkWrap">
+                        <input type="checkbox" ng-model="gfyitem.selected" ng-change="gfySelectedChange(gfyitem.selected)" class="ng-pristine ng-valid">
+                    </div>
+                    <div class="index">{{$index+1}}</div>
+
+                        <div class="dragHandle pull-left tree-handle prependIcon" ui-tree-handle data-ng-mousedown="albumEdit.changeOfAlbumInfo(albumToEdit)">
+                        </div>
+                        <div class="thumbWrap" ui-tree-handle data-ng-mousedown="albumEdit.changeOfAlbumInfo(albumToEdit)">
+                            <img class="itemImage" alt="item image" ng-src="https://thumbs.gfycat.com/{{gfyitem.gfyName}}-thumb100.jpg">
+                        </div>
+                        <div class="itemDetails">
+                            <h2 data-ng-click="toggleViewsOff(); toggleEditPage(gfyitem);">
+                                <a class="ng-binding" >{{ gfyitem.title || 'Untitled' }}</a>
+                            </h2>
+                        </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</script>

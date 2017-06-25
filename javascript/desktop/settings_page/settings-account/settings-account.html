@@ -1,0 +1,28 @@
+<div class="account-container">
+  <form class="form" name="changeAccountForm" novalidate ng-keyup="onChangeAccountFormKeyup($event)">
+    <div class="form-group">
+      <label class="input-label" translate>{{'SETTINGS.EMAIL'}}</label>
+      <div class="form-input-group">
+        <input class="form-control" type="email" name="email"
+          translate translate-attr-placeholder="{{'SETTINGS.EMAIL'}}" ng-model="info.email"
+          ng-change="onEmailInputChange()" required>
+        <i class="field-status-icon" ng-class="{'field-status-icon--invalid': changeAccountForm.email.$dirty &&
+          (changeAccountForm.email.$invalid || error.email),
+          'field-status-icon--valid': changeAccountForm.email.$valid && !error.email && isEmailChanged() }"></i>
+        <span class="help-block help-block--input-error" ng-if="changeAccountForm.email.$error.email" translate>
+          {{'SETTINGS.INVALID_EMAIL'}}</span>
+        <span class="help-block help-block--input-error" ng-if="changeAccountForm.email.$valid && error.email" translate>
+          {{emailErrorText}}</span>
+        <span class="help-block help-block--input-error" ng-if="changeAccountForm.email.$dirty &&
+          changeAccountForm.email.$error.required" translate>{{'SETTINGS.EMAIL_REQUIRED'}}</span>
+      </div>
+    </div>
+    <button type="button" class="btn btn-blue btn-block"
+      ng-class="{'disabled btn-grey': isChangeAccountFormError(), pending: isPending}"
+      ng-click="saveChangeAccountForm()">
+      <spinner-animation class="blue"></spinner-animation>
+      <span translate>{{'SETTINGS.SAVE_CHANGES'}}</span>
+    </button>
+  </form>
+  <div class="creation-date"><span translate>{{'SETTINGS.ACCOUNT_CREATED'}}</span> {{info.createDate}}</div>
+</div>

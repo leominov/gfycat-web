@@ -1,0 +1,74 @@
+<div class="container-fluid container-signup">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="title" translate>{{'SIGNUP.SIGN_UP'}}</div>
+      <form name="signupForm" novalidate class="form"
+        ng-class="{'form-fb': isFacebookSignupOpened}" ng-keyup="onSignupFormKeyup($event)">
+        <div class="form-group form-group--email" ng-show="isEmailVisible">
+            <input class="form-control" type="email" name="email"
+              translate translate-attr-placeholder="{{'SIGNUP.EMAIL_ADDRESS'}}" show-focus="isEmailVisible"
+              ng-model="account.email" ng-init="account.email=''" ng-change="onEmailInputChange()" required>
+            <i class="field-status-icon" ng-class="{
+              'field-status-icon--invalid': signupForm.email.$invalid && signupForm.email.$dirty || isEmailError,
+              'field-status-icon--valid': signupForm.email.$valid && !isEmailError}"></i>
+            <span class="help-block help-block--input-error"
+              ng-if="signupForm.email.$error.email || isEmailError">{{emailError}}</span>
+            <span class="help-block help-block--input-error" ng-if="signupForm.email.$error.required &&
+              signupForm.email.$dirty" translate>{{'SIGNUP.EMAIL_REQUIRED'}}</span>
+        </div>
+        <div class="form-group form-group--username">
+            <input class="form-control" name="username" type="text" autocapitalize="off" autocorrect="off"
+              translate translate-attr-placeholder="{{'SIGNUP.USERNAME'}}"
+              ng-model="account.username" ng-init="account.username=''" ng-keydown="onUsernameInputKeydown($event)"
+              ng-change="onUsernameInputChange()" pattern="[0-9a-zA-Z.\-_]*" ng-minlength="6" maxlength="20" required>
+            <i class="field-status-icon" ng-class="{'field-status-icon--invalid': signupForm.username.$invalid &&
+              signupForm.username.$dirty || usernameError,
+              'field-status-icon--valid': signupForm.username.$valid && !isUsernameError }"></i>
+            <span class="help-block help-block--input-error" ng-if="usernameError && signupForm.username.$valid">
+              {{usernameError}}</span>
+            <span class="help-block help-block--input-error" ng-if="signupForm.username.$error.pattern"
+              translate>{{'SIGNUP.USERNAME_VALID_CHARACTERS'}}</span>
+            <span class="help-block help-block--input-error" ng-if="signupForm.username.$error.required &&
+              signupForm.username.$dirty" translate>{{'SIGNUP.USERNAME_REQUIRED'}}</span>
+            <span class="help-block help-block--input-error" ng-if="signupForm.username.$error.minlength &&
+              !signupForm.username.$error.pattern" translate>{{'SIGNUP.USERNAME_TOO_SHORT'}}</span>
+        </div>
+        <div class="form-group form-group--password">
+            <input class="form-control" type="password" name="password" ng-minlength="4" maxlength="64"
+              translate translate-attr-placeholder="{{'SIGNUP.PASSWORD'}}" ng-model="account.password"
+              ng-change="onPasswordInputChange()" autocapitalize="off" autocorrect="off" required>
+            <i class="field-status-icon" ng-class="{'field-status-icon--invalid': signupForm.password.$invalid &&
+              signupForm.password.$dirty || isPasswordError,
+              'field-status-icon--valid': signupForm.password.$valid && !isPasswordError }"></i>
+            <span class="help-block help-block--input-error" ng-if="isPasswordError && signupForm.password.$valid">
+              {{passwordError}}</span>
+            <span class="help-block help-block--input-error" ng-if="signupForm.password.$error.required &&
+              signupForm.password.$dirty" translate>{{'SIGNUP.PASSWORD_REQUIRED'}}</span>
+            <span class="help-block help-block--input-error" ng-if="signupForm.password.$error.minlength" translate>
+              {{'SIGNUP.PASSWORD_TOO_SHORT'}}</span>
+        </div>
+        <button type="button" class="btn btn-blue-filled btn-block btn--signup"
+          ng-class="{'disabled btn-grey-filled': !isSignupFormValid(), pending: isPending.signup}"
+          ng-click="sendAnalytics('signup_attempt', {'channel':'email'}); sendCreate()">
+          <spinner-animation class="white"></spinner-animation>
+          <span translate>{{'SIGNUP.SIGN_UP'}}</span>
+        </button>
+        <p class="help-block help-block--options-text" translate>{{'SIGNUP.OR'}}</p>
+        <button type="button" class="btn btn-block btn--connect-with-fb" ng-class="{pending: isPending.fbSignUp}"
+          ng-click="sendAnalytics('signup_attempt', {'channel':'facebook'}); sendConnectWithFacebook($event)">
+          <spinner-animation class="white"></spinner-animation>
+          <span translate>{{'SIGNUP.CONNECT_WITH_FACEBOOK'}}</span>
+        </button>
+        <button type="button" class="btn btn-blue-filled btn-block btn--finish"
+          ng-class="{'disabled btn-grey-filled': isUsernameError || (isEmailVisible &&
+            (signupForm.email.$invalid || isEmailError)), pending: isPending.fbSignUp}"
+          ng-click="finishSignUpWithFacebook()">
+          <spinner-animation class="white"></spinner-animation>
+          <span translate>{{'SIGNUP.FINISH_REGISTRATION'}}</span>
+        </button>
+        <p class="link"><a ng-click="sendAnalytics('click_login'); openLogin()" translate>{{'SIGNUP.ALREADY_HAVE_ACCOUNT'}}</a></p>
+        <p class="link"><a href="/partners" translate>{{'SIGNUP.PARTNERS'}}</a></p>
+      </form>
+    </div>
+  </div>
+</div>

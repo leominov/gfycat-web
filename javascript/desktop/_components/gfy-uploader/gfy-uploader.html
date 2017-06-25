@@ -1,0 +1,350 @@
+<div class="uploader-container" id="gfyEditor2" ng-controller="VideoUploadController"
+    ng-show="$state.is('uploader') || $state.is('uploader_url')">
+  <div class="modalTable">
+    <form id="fileupload" method="POST" enctype="multipart/form-data" data-file-upload="options" data-ng-class="{'fileupload-processing': processing() || loadingFiles, 'haveStuffInQueue': queue.length}">
+
+      <!-- START OF MAIN UPLOADER -->
+      <div class="" ng-show="!state.multiuploader">
+        <div class='ng-modal-dialog dg-large container-fluid reset-horizontal-center' ng-style='dialogStyle'  data-ng-controller="EditorV2Controller"  ng-init="editDisabled = true">
+          <div class="row uploader-header">
+              <div class='title' translate>
+                {{'UPLOADER.UPLOAD_TITLE'}}
+              </div>
+          </div>
+          <div class="row url-input">
+            <div class="col-xs-8 col-sm-9 url-input-col">
+              <input id="urlFetch" class="form-control" type="text" translate translate-attr-placeholder="{{'UPLOADER.PLACEHOLDER'}}" ng-model="fetchURL" ng-paste="urlPasted($event)" my-enter="submitFetchUrl(fetchURL)" ng-disabled="checkingUrl" ng-class="{ disabled: checkingUrl }">
+              <i class="glyphicon load-url-spinner" ng-show="checkingUrl"></i>
+            </div>
+            <div class="btn btn-default fileinput-button col-xs-4 col-sm-3" ng-class="{disabled: disabled}" id="main-browse-btn" ng-click="sendUploadType('browse')">
+              <span translate>{{'UPLOADER.BROWSE'}}</span>
+              <input type="file" name="file" ng-disabled="disabled" accept="video/*,video/mp4,video/x-m4v,video/*,image/gif,.mkv">
+            </div>
+          </div>
+          <div id="dropzone" class="row tutorial" ng-show="!hasVideo">
+            <div class="col col-xs-4">
+              <div class="create-img center-block">
+                <input id="create-button-id" ng-click="sendUploadType('create')" type="file" name="file" ng-disabled="disabled" accept="video/*,video/mp4,video/x-m4v,video/*,image/gif,.mkv">
+              </div>
+              <p class="intro-text link" translate>{{'UPLOADER.CREATE'}}</p>
+              <p class="intro2-text hidden-xs" translate>{{'UPLOADER.CREATE_TEXT'}}</p>
+            </div>
+            <div class="col col-xs-4" ng-click="switchToMultiuploader();sendUploadType('simpleUpload')">
+              <div class="multiupload-img center-block"></div>
+              <p class="intro-text link" translate>{{'UPLOADER.SIMPLE_UPLOAD'}}</p>
+              <p class="intro2-text hidden-xs" translate>{{'UPLOADER.SIMPLE_UPLOAD_TEXT'}}</p>
+            </div>
+            <div class="col col-xs-4" ng-click="focusURL();sendUploadType('pasteURL')">
+              <div class="pasteurl-img center-block"></div>
+              <p class="intro-text link" translate>{{'UPLOADER.PASTE_URL'}}</p>
+              <p class="intro2-text hidden-xs" translate>{{'UPLOADER.PASTE_URL_TEXT'}}</p>
+            </div>
+          </div>
+          <div class="row editor" ng-show="hasVideo">
+            <div class="col-xs-12">
+              <div class=row>
+                <input id="title" class="form-control title-box" type="text" translate translate-attr-placeholder="{{'UPLOADER.VIDEO_TITLE_PLACEHOLDER'}}" ng-model="state.title" ng-change="">
+              </div>
+              <div class="row alert alert-danger" ng-show="errorMessage">
+                {{errorMessage.description}}
+                <a href="#" class="close" ng-click="errorMessage=null">&times;</a>
+              </div>
+              <div class="row panels">
+                <div class="player col-xs-12 col-sm-9" ng-click="togglePlay()">
+                  <div class="row">
+                    <div class="col-xs-12">
+                        <video webkit-playsinline muted id="yt" src="" class="video-js" controls="false" preload="auto" width="auto" height="auto"></video>
+                        <div class="caption-box">
+                          <!-- <div class="video_caption" my-draggable on-move="captionMoved" player-height="playerHeight"></div> -->
+                          <div class="video_caption" player-height="playerHeight"></div>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="row editor-slider">
+                    <rzslider class="time-slider col-xs-12" rz-slider-ceil="edit_slider.ceil" rz-slider-model="edit_slider.min" rz-slider-on-end="onStartTimeSliderEnd()" rz-slider-on-start="onStartTimeSliderStart()" rz-slider-on-change="onStartTimeSliderChange()" rz-slider-translate="translateStartTime" rz-slider-step="0.01" rz-slider-precision="2">
+                    </rzslider>
+                    <div class="duration-container col-xs-12">
+                      <div class="time-cursor">
+                      </div>
+                      <rzslider class="duration-slider" rz-slider-model="duration_slider" rz-slider-on-start="onDurationSliderStart()" rz-slider-on-end="onDurationSliderEnd()" rz-slider-ceil="max_duration" rz-slider-translate="translateDuration" rz-slider-always-show-bar="true" rz-slider-step="0.01" rz-slider-precision="2">
+                      </rzslider>
+                    </div>
+                  </div>
+                </div>
+                <div class="meta-edit col-xs-12 col-sm-3">
+                  <div class="panel-group" id="accordion">
+
+                    <div class="panel panel-default">
+                      <div class="panel-heading"  data-toggle="collapse" data-parent="#accordion" data-target="#tags">
+                        <span class="panel-title">
+                          <span translate>{{'UPLOADER.TAGS'}}</span>
+                          <span class="toggle-icon ic ic-angle-down"></span>
+                        </span>
+                      </div>
+                      <div id="tags" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                          <input class="tag form-control" type="text" translate translate-attr-placeholder="{{'UPLOADER.ADD_TAG'}}" ng-model="state.tags[0]">
+                          <input class="tag form-control" type="text" translate translate-attr-placeholder="{{'UPLOADER.ADD_TAG'}}" ng-model="state.tags[1]">
+                          <input class="tag form-control" type="text" translate translate-attr-placeholder="{{'UPLOADER.ADD_TAG'}}" ng-model="state.tags[2]">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                      <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#caption">
+                        <span class="panel-title">
+                          <span translate>{{'UPLOADER.CAPTION'}}</span>
+                          <span class="toggle-icon ic ic-angle-left"></span>
+                        </span>
+                      </div>
+                      <div id="caption" class="panel-collapse collapse">
+                        <div class="panel-body">
+                          <div ng-repeat="caption in state.captions" class="caption_module">
+                            <div class="caption_input">
+                              <input class="form-control" type="text" translate translate-attr-placeholder="{{'UPLOADER.CAPTION_PLACEHOLDER'}}" ng-model="caption.text">
+                              <div class="remove" ng-click="remove_caption($index)" ng-show="$index > 0"></div>
+                            </div>
+                            <div class="timing">
+                              <div>
+                                <span translate>{{'UPLOADER.CAPTION_START'}}</span>
+                                <input class="input_start" type="number" ng-model="caption.startSeconds" value="0" min="{{ $index > 0 ? (state.captions[$index - 1].startSeconds +  state.captions[$index - 1].duration) : 0 }}" step="0.1" >
+                              </div>
+                              <div>
+                                <span translate>{{'UPLOADER.CAPTION_DURATION'}}</span>
+                                <!-- max="{{ duration_slider - state.captions[$index].startSeconds }}"  -->
+                                <input class="input_duration" type="number" min="0" ng-model="caption.duration" step="0.1">
+                              </div>
+                            </div>
+                          </div>
+                          <div  class="add-caption" ng-click="add_caption()">
+                              <span class="glyphicon glyphicon-plus" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                      <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#description">
+                        <span class="panel-title">
+                          <span translate>{{'UPLOADER.DESCRIPTION'}}</span>
+                          <span class="toggle-icon ic ic-angle-left"></span>
+                        </span>
+                      </div>
+                      <div id="description" class="panel-collapse collapse">
+                        <div class="panel-body">
+                          <textarea translate translate-attr-placeholder="{{'UPLOADER.DESCRIPTION'}}" ng-model="state.description"></textarea>
+                          <div class="checkbox">
+                            <label>
+                              <input type="checkbox" ng-model="state.private"><span translate>{{'UPLOADER.PRIVATE'}}</span>
+                            </label>
+                          </div>
+                          <div class="checkbox">
+                            <label>
+                              <input type="checkbox" ng-model="state.adultContent"><span translate>{{'UPLOADER.OFFENSIVE'}}</span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end of accordion -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+            <div class="progress-overlay"></div>
+            <div class="row">
+              <a class="btn progress-button" ng-if="hasVideo" ng-class="{disabled : !hasVideo, 'moving' : upload_progress > 0 }" value="upload_progress" ng-click="makeGfyCat()"type="horizontal" complete="Done" type="button" id="make_btn">
+                <div class="progress">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="upload_progress" aria-valuemin="0" aria-valuemax="1" style="width: {{upload_progress*100}}%;">
+                    <span class="progress-bar-text" translate>{{ progress_text }}</span>
+                  </div>
+                  <div ng-if="!hasVideo || upload_progress <= 0" translate>{{'UPLOADER.CREATE'}}</div>
+                </div>
+              </a>
+            </div>
+        </div>
+      </div>
+      <!-- END OF MAIN UPLOADER -->
+
+      <!-- START OF MULTIUPLOADER -->
+       <div class="" ng-show="state.multiuploader">
+          <div class='ng-modal-dialog' ng-style='dialogStyle' data-ng-controller="MultiFileUploadController">
+              <div class="uploader-header">
+                  <div class="back-btn" ng-click='goBack()' translate>
+                    {{'UPLOADER.BACK'}}
+                  </div>
+                  <div class='title' translate>
+                      {{'UPLOADER.UPLOAD_TITLE'}}
+                  </div>
+              </div>
+              <div class="content">
+                  <div class="uploadPanel computer hideTemplateListItems">
+                          <div class="directions">
+                              <div class="wrap"><span translate>{{'UPLOADER.DRAG_VIDEO_HERE'}}</span><div class="fileinput-button browseBtn" ng-class="{disabled: disabled}" ng-click="sendUploadType('browse')">
+                                      <span style="text-transform:lowercase;" translate>{{'UPLOADER.BROWSE'}}</span>
+                                      <input type="file" name="file" multiple ng-disabled="disabled"  accept="video/mp4,video/x-m4v,video/*,image/gif,.mkv">
+                                  </div><span translate>{{'UPLOADER.VIDEO_TO_UPLOAD'}}</span>
+                              </div>
+                          </div>
+                          <ol class="fileList files ng-cloak" style="display:block; z-index:1000;" >
+                              <li id="" ng-repeat="file in queueFilter = (fetchQueue.concat(queue) | filter: { localEdit: false })" ng-class="{'showDetails' : file.encodingComplete}">
+                                  <div class="{{file.$state()}}" data-ng-class="{'encoding': (!file.encodingComplete && !file.error),
+                                                                                 'errorEnc': file.error,
+                                                                                 'warning': file.gfyName && file.existing}">
+                                      <div class="info">
+                                          <div class="statusContent">
+                                              <div data-ng-show="file.$state()=='pending'" class="progress uploadBusy" data-file-upload-progress="file.$progress()">
+                                                  <div class="progress-bar" role="progressbar" aria-valuenow="{{num}}" aria-valuemin="0" aria-valuemax="100" style="width: {{num}}%;">
+                                                      Uploading: {{num}}%
+                                                  </div>
+                                              </div>
+                                              <div data-ng-hide="file.encodingGfyTxt && file.existing || file.stopPolling || file.$state()=='pending'" class="progress uploadEncoding">
+                                                  <div class="progress-bar" role="progressbar" aria-valuenow="{{file.progressPercent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{file.progressPercent}}%;">
+                                                      {{file.encodingGfyTxt}}
+                                                  </div>
+                                              </div>
+                                              <div class="uploadMessage" ng-hide="(file.encodingComplete || file.stopPolling == false) && file.fetching == false">
+                                                <span class="error" ng-show="file.error">
+                                                  <div class="videothumb">
+                                                    <strong>Error</strong>
+                                                  </div>
+                                                  <div class="text">
+                                                    {{file.error}}
+                                                    <button style="display:none" data-ng-controller="FileDestroyController" type="button" class="btn btn-danger destroy" data-ng-click="clear(file)" data-ng-hide="file.$state() == 'pending' ">
+                                                      <i class="glyphicon glyphicon-remove-circle"></i>
+                                                      <span>Clear</span>
+                                                    </button>
+                                                  </div>
+                                                </span>
+                                                <span class="warning" ng-show="file.gfyName && file.existing">
+                                                  <div class="videothumb"><a href="/{{file.gfyName}}" target="_blank">
+                                                    <img ng-if="file.gfyName" ng-src="https://thumbs.gfycat.com/{{file.gfyName}}-poster.jpg" alt="..." class="img" width="100%" height="100%"/>
+                                                    </a>
+                                                  </div>
+                                                  <div class="text">
+                                                    <div>{{msgs.textGfyExists}}</div>
+                                                    <div><a class="gfyLink" ng-copy="onCopyGfyUrl(file.gfyName)" href="/{{file.gfyName}}" target="_blank">gfycat.com/{{file.gfyName}}</a></div>
+                                                  </div>
+                                                  <div class="actions">
+                                                    <a class="duplicate" data-ng-click="duplicateGfycat(file,file.fetching,$index)" title="Create a New duplicate Gfycat">
+                                                      <i class="ic ic-files-o ic-files-o--blue"></i> <span translate>{{'UPLOADER.DUPLICATE'}}</span>
+                                                    </a>
+                                                    <a data-ng-if="!file.savingBookmark" class="bookmark" data-ng-click="doBookmark(file)" title="Bookmark existing Gfycat">
+                                                      <i class="glyphicon glyphicon-bookmark" data-ng-if="!file.bookmarkState"></i><i class="success glyphicon glyphicon-ok" data-ng-if="file.bookmarkState"></i> <span translate>{{'UPLOADER.BOOKMARK'}}<span>
+                                                    </a>
+                                                    <a data-ng-if="file.savingBookmark" class="bookmark" data-ng-click="" title="Bookmark existing Gfycat">
+                                                      <spinner-animation class="blue"></spinner-animation><span translate>{{'UPLOADER.BOOKMARK'}}<span>
+                                                    </a>
+                                                  </div>
+                                                </span>
+                                              </div>
+                                              <div class="detailsPanel" ng-show="file.encodingComplete">
+                                                <div class="videothumb"><a href="/{{file.gfyName}}" target="_blank">
+                                                  <img ng-if="file.gfyName" ng-src="https://thumbs.gfycat.com/{{file.gfyName}}-poster.jpg" alt="..." class="img" width="100%" height="100%"/>
+                                                </a>
+                                                </div>
+                                                  <div class="topRowDetails">
+                                                      <div class="title" data-ng-class="{'error': file.errorTitleSave}">
+                                                          <input type="text" class="form-control" translate translate-attr-placeholder="{{'UPLOADER.ADD_TITLE_PLACEHOLDER'}}"
+                                                            data-ng-model="file.usersGfyTitle" ng-change="gfyEdit().changeOfInfo(file)" maxlength="60">
+                                                          <span class="charsRemaining"></span>
+                                                      </div>
+                                                      <div class="fieldsWrap">
+                                                          <div class="tags" data-ng-controller="autoCtrl">
+                                                              <div data-ng-class="{'error': file.errorTag1Save}">
+                                                                  <autocomplete ng-model="file.usersGfyTag1" ng-click="gfyEdit().changeOfInfo(file)" attr-placeholder="Tag 1" click-activation="true" data="gfyTags" on-type="doSomething" on-select="doSomethingElse"></autocomplete>
+                                                              </div>
+                                                              <div data-ng-class="{'error': file.errorTag2Save}">
+                                                                  <autocomplete ng-model="file.usersGfyTag2" ng-click="gfyEdit().changeOfInfo(file)" attr-placeholder="Tag 2" click-activation="true" data="gfyTags" on-type="doSomething" on-select="doSomethingElse"></autocomplete>
+                                                              </div>
+                                                              <div data-ng-class="{'error': file.errorTag3Save}">
+                                                                  <autocomplete ng-model="file.usersGfyTag3" ng-click="gfyEdit().changeOfInfo(file)" attr-placeholder="Tag 3" click-activation="true" data="gfyTags" on-type="doSomething" on-select="doSomethingElse"></autocomplete>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                    <div class="fieldsWrap">
+                                                        <div data-ng-if="file.errorMsg.length" class="options">
+                                                            <div class="error" style="color: red; word-wrap: break-word;">
+                                                                <div>{{file.errorMsg[0]}}</div>
+                                                                <div data-ng-if="file.errorMsg[1]">{{file.errorMsg[1]}}</div>
+                                                                <div data-ng-if="file.errorMsg[2]">{{file.errorMsg[2]}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="options success">
+                                                            <span class="success">
+                                                                <span><a class="gfyLink" ng-copy="onCopyGfyUrl(file.gfyName)" href="/{{file.gfyName}}" target="_blank">gfycat.com/{{file.gfyName}}</a></span>
+                                                                <div class="more-less">
+                                                                  <a href="" ng-click="file.showmore = !file.showmore">
+                                                                    <div ng-if="!file.showmore">More Settings<span class="toggle-icon ic ic-angle-down ic-angle-down--blue" style="margin-left: 5px;"></span></div>
+                                                                    <div ng-if="file.showmore">Less Settings<span class="toggle-icon ic ic-angle-up ic-angle-up--blue" style="margin-left: 5px;"></span></div>
+                                                                  </a>
+                                                                </div>
+                                                            </span>
+                                                        </div>
+                                                        <div class="options">
+                                                            <!--<span data-ng-if="accountTree.loggedIntoAccount" class="chkbox one input-group">-->
+                                                            <!--<input type="checkbox" data-ng-model="file.usersGfyComments" ng-change="gfyEdit.changeOfInfo(file)" data-ng-init="file.usersGfyComments=true">-->
+                                                            <!--<label>Allow Comments</label>-->
+                                                            <!--</span>-->
+                                                            <span data-ng-if="accountTree.loggedIntoAccount" class="chkbox two input-group">
+                                                                <input type="checkbox" data-ng-model="file.usersGfyPublish" ng-change="gfyEdit().changeOfInfo(file)" data-ng-init="file.usersGfyPublish=ups.autoPublish">
+                                                                <label translate>{{'UPLOADER.PUBLISH_LABEL'}}</label>
+                                                            </span>
+
+
+                                                            <div data-ng-if="file.deleteKey">
+                                                                Delete URL /delete/{{file.deleteKey}}
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="fieldsWrap" ng-if="file.showmore">
+                                                      <div class="description" data-ng-class="{'error': file.errorDescriptionSave}">
+                                                          <input class="form-control" placeholder="Enter Description" data-ng-model="file.usersDescription"
+                                                            ng-change="gfyEdit().changeOfInfo(file)" maxlength="1000"></input>
+                                                          <span class="charsRemaining"></span>
+                                                      </div>
+                                                    </div>
+                                                    <div class="fieldsWrap" ng-if="file.showmore">
+                                                      <div class="radioBtnGroup" data-ng-init="file.usersGfyNsfw='Clean'">
+                                                          <input type="radio" data-ng-model="file.usersGfyNsfw" ng-change="gfyEdit().changeOfInfo(file)" value="Clean">
+                                                          <span style="margin-right: 20px">Clean</span>
+                                                          <input data-ng-if="file.usersGfyNsfw!='Porn'" type="radio" data-ng-model="file.usersGfyNsfw" ng-change="gfyEdit().changeOfInfo(file)" value="NSFW">
+                                                          <input data-ng-if="file.usersGfyNsfw=='Porn'" type="radio" data-ng-model="file.usersGfyNsfw" ng-change="gfyEdit().changeOfInfo(file)" value="Porn">
+                                                          <span data-ng-if="file.usersGfyNsfw=='Clean' || file.usersGfyNsfw==undefined">Possibly Offensive or NSFW</span>
+                                                          <div data-ng-if="file.usersGfyNsfw=='NSFW' || file.usersGfyNsfw=='Porn'" class="btn-group" data-ng-init="(file.usersGfyNsfw=='NSFW')? button.text='Offensive' : button.text='NSFW'">
+                                                              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                                  {{button.text}} <span class="caret"></span>
+                                                              </button>
+                                                              <ul class="dropdown-menu" role="menu">
+                                                                  <li><a href="#" data-ng-click="button.text='Offensive'; file.usersGfyNsfw='NSFW'; gfyEdit().changeOfInfo(file);">Possibly Offensive</a></li>
+                                                                  <li><a href="#" data-ng-click="button.text='NSFW'; file.usersGfyNsfw='Porn'; gfyEdit().changeOfInfo(file);">Definitely NSFW</a></li>
+                                                              </ul>
+                                                          </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                              </div><!-- end of ..-->
+                                          </div>
+                                      </div>
+                                  </div>
+                              </li>
+
+                          </ol>
+                          <div class="clearWrap">
+                              <a href="#" class="clearList" data-ng-if="queueFilter.length" ng-click="submitCancel(queue,fetchQueue);" translate>{{'UPLOADER.CLEAR_GFYCATS'}}</a>
+                          </div>
+                  </div>
+              </div>
+              <button progress-button class="btn" ng-class="{ disabled: !shouldSave(queueFilter) }" ng-click="saveChanges(gfyEdit(),queue.concat(fetchQueue))">SAVE CHANGES</button>
+              <!-- <div class='ng-modal-dialog-content' ng-transclude></div> -->
+          </div>
+      </div>
+      <!-- END OF MULTIUPLOADER -->
+
+    </form>
+
+  </div>
+</div>

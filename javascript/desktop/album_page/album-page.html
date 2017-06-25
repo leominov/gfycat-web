@@ -1,0 +1,18 @@
+<div class="profile-container container-fluid">
+  <section class="profile-list-container">
+    <h2 class="album-title">{{title}}</h2>
+    <div ng-if="!error">
+      <div class="deckgrid" smart-infinite-scroll-v2 smart-repeat="gif in gifList"
+      max-columns="4" max-column-width="500" min-column-width="250" border-width="10">
+        <gfy-small-thumb noreflow="true" data="gif" show-video-info="true" round-border="true" video-size="original"
+        link="$parent.$parent.generateUrl(gif)" style="display:block;"></gfy-small-thumb>
+      </div>
+      <div class="no-result" ng-if="gifList.length === 0">
+        <div class="cat-image"></div>
+        <span class="text" translate>{{'PROFILE.NO_GIFS_PUBLIC'}}</span>
+      </div>
+      <spinner-animation class="blue large center" ng-if="isLoading"></spinner-animation>
+    </div>
+    <not-found ng-if="error" text="PROFILE.ALBUM_NOT_FOUND"></not-found>
+  </section>
+</div>

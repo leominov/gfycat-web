@@ -1,0 +1,118 @@
+<!-- this is a script function to generate a recursive array of items/nodes from the account folders in the BATCH function button-->
+<script type="text/ng-template" id="movelisted">
+    <a data-ng-class="{'noSubFolders': !item.nodes.length}" href="#" data-ng-click="moveSelected(item,'pick')">{{ item.title }}</a>
+    <ul class="dropdown-menu" data-ng-if="item.nodes">
+        <li class="dropdown-submenu" data-ng-repeat="item in item.nodes" data-ng-include="'movelisted'">
+        </li>
+    </ul>
+</script>
+<script type="text/ng-template" id="copytoalbum">
+    <a data-ng-class="{'noSubFolders': !item.nodes.length}" href="#" data-ng-click="moveSelected(item,'addToAlbum')" >{{ item.title }}</a>
+    <ul class="dropdown-menu" data-ng-if="item.nodes">
+        <li class="dropdown-submenu" data-ng-repeat="item in item.nodes" data-ng-include="'copytoalbum'">
+        </li>
+    </ul>
+</script>
+
+
+<!-- this is the main SUB HEADER section ------------------------------------------------------------------------------------------>
+<div class="headerWrap">
+    <div class="left">
+        <h2><span data-ng-show="currentFolderTitle!=currentFolderRootTitle">{{ currentFolderRootTitle }}:&nbsp;</span> {{ currentFolderTitle }}</h2>
+    </div>
+    <div class="right" data-ng-if="currentFolderRootId == accountTree.userFolders[0].id">
+        <!-- this is the "search your library" input control-->
+        <div class="input-group">
+            <input id="txtSearchLibrary" class="form-control" type="search" placeholder="Search your library" data-ng-model="accountTree.usersLibQuery" data-ng-keyup="$event.keyCode == 13 ? doAccountSearch(accountTree.usersLibQuery) : null">
+            <span class="input-group-btn">
+                <!--<button data-ng-show="usersLibQuery!=''" type="reset" class="btn btn-default" data-ng-click="usersLibQuery=''">-->
+                    <!--<span class="glyphicon glyphicon-remove-circle"></span>-->
+                <!--</button>-->
+                <button type="reset" class="btn btn-default" data-ng-click="doAccountSearch(accountTree.usersLibQuery)">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </span>
+        </div>
+    </div>
+</div>
+<!--<pre>{{accountTree.userFolders|json}}</pre>-->
+<!-- page summary information section -->
+<div id="pagingInfo">
+    <div class="left">
+        <!-- show X/total files-->
+        <span for="chkSelectAll" class="title">Viewing
+            <span data-ng-if="usersProfileSettings.infiniteScroller==false" data-ng-show="gfyCount"> {{ gfyPage.viewRangeLow }}-{{gfyPage.viewRangeHigh}} of</span>
+            <span  data-ng-if="usersProfileSettings.infiniteScroller==true"> {{ accountTree.accountGfys.length }} of</span>
+            : {{ gfyCount }} Gfycats</span>
+
+        <span data-ng-show="totalSelected">
+            <i class="glyphicon glyphicon-chevron-right"></i>
+            <span class="selectedCount">{{totalSelected}} selected</span>
+        </span>
+    </div>
+    <div data-ng-if="usersProfileSettings.infiniteScroller==false && currentFolderRootId!=accountTree.userAlbums[0].id" class="right">
+        <span class="lblPerPage">Per page: </span>
+        <a data-ng-repeat="choice in gfyPage.fetchLimits" href="#" class="number" data-ng-class="{selected: gfyPage.isFetchLimiter($index)}" data-ng-click="gfyPage.setFetchLimiter($index); resetCurrentSearch();">{{choice}}</a>
+    </div>
+</div>
+
+<!-- search input for your library -->
+<div id="libraryActions">
+
+    <div id="videoHeader" class="clearfix">
+        <!-- select all checkbox -->
+        <div class="chkWrap" data-ng-show="currentFolderRootId != accountTree.userAlbums[0].id">
+            <input id="chkSelectAll" type="checkbox" data-ng-click="setAllSelected()" data-ng-model="selectAll">
+        </div>
+
+        <!-- batch commands dropdown list -->
+        <div id="ddlBatchCmd" class="dropdown" data-ng-show="currentFolderRootId != accountTree.userAlbums[0].id">
+            <button class="btn btn-default dropdown-toggle" type="button" id="btnBatchCmd" data-toggle="dropdown">Actions<span class="caret"></span></button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="btnBatchCmd">
+                <!--<li data-ng-show="currentFolderRootId == accountTree.userBookmarks[0].id"><a tabindex="-1" data-ng-click="doUnBookMark()" href="#">Remove Bookmark</a></li>-->
+                <!--<li data-ng-show="currentFolderRootId == accountTree.userAlbums[0].id"><a tabindex="-1" data-ng-click="publishSelected(false)" href="#">Unpublish</a></li>-->
+                <!--<li data-ng-show="currentFolderRootId == accountTree.userAlbums[0].id"><a tabindex="-1" data-ng-click="publishSelected(true)" href="#">Publish</a></li>-->
+                <li class="dropdown-submenu">
+                    <a href="#">Move to:</a>
+                    <ul class="dropdown-menu multi-level">
+                        <li class="dropdown-submenu" data-ng-show="currentFolderRootId == accountTree.userFolders[0].id" data-ng-repeat="item in accountTree.userFolders" data-ng-include="'movelisted'"></li>
+                        <!--<li class="divider" data-ng-show="currentFolderRootId == accountTree.userAlbums[0].id"></li>-->
+                        <li class="dropdown-submenu" data-ng-show="currentFolderRootId == accountTree.userAlbums[0].id" data-ng-repeat="item in accountTree.userAlbums" data-ng-include="'movelisted'"></li>
+                        <!--<li class="divider" data-ng-show="currentFolderRootId == accountTree.userBookmarks[0].id"></li>-->
+                        <li class="dropdown-submenu" data-ng-show="currentFolderRootId == accountTree.userBookmarks[0].id" data-ng-repeat="item in accountTree.userBookmarks" data-ng-include="'movelisted'"></li>
+                    </ul>
+                </li>
+                <li data-ng-show="currentFolderRootId == accountTree.userFolders[0].id" data-ng-click="addSelectedToNew('createFolder','moveFolderContents')"><a tabindex="-1" href="#">Move to a new Folder</a></li>
+                <li data-ng-show="currentFolderRootId == accountTree.userFolders[0].id" class="dropdown-submenu">
+                    <a href="#">Add to Album:</a>
+                    <ul class="dropdown-menu multi-level">
+                        <li class="dropdown-submenu" data-ng-repeat="item in accountTree.userAlbums" data-ng-include="'copytoalbum'"></li>
+                    </ul>
+                </li>
+                <li data-ng-show="currentFolderRootId != accountTree.userBookmarks[0].id" data-ng-click="addSelectedToNew('createAlbum','addToAlbum')"><a tabindex="-1" href="#">Add to a new Album</a></li>
+
+            </ul>
+        </div>
+        <!--TODO JASON... when we last met with Rob we had decided to use clickable text here instead of a button for creating an Album-->
+        <!--<a data-ng-show="currentFolderRootId == accountTree.userAlbums[0].id" data-ng-click="newSubAlbum()"><i class="glyphicon glyphicon-plus"></i>Create New Album</a>-->
+
+        <div class="btn-group createNewAlbum" role="group" data-ng-show="currentFolderRootId == accountTree.userAlbums[0].id">
+            <button type="button" class="btn btn-default" data-ng-click="newSubAlbum()">
+                <i class="icon-sprite albums greyAddNew"></i> Create new album
+            </button>
+        </div>
+
+        <div class="sortWrap" data-ng-show="currentFolderRootId == accountTree.userFolders[0].id">
+            <account-sort-filter></account-sort-filter>
+        </div>
+    </div>
+    <!--<li class="" data-ng-show="currentFolderRootId == accountTree.userFolders[0].id" data-ng-repeat="item in accountTree.userFolders" data-ng-include="'movelisted'"></li>-->
+    <!--<li class="" data-ng-show="currentFolderRootId == accountTree.userAlbums[0].id" data-ng-repeat="item in accountTree.userAlbums" data-ng-include="'movelisted'"></li>-->
+    <!--<li class="" data-ng-show="currentFolderRootId == accountTree.userBookmarks[0].id" data-ng-repeat="item in accountTree.userBookmarks" data-ng-include="'movelisted'"></li>-->
+    <!--<pre data-ng-show="currentFolderRootId == accountTree.userFolders[0].id">{{accountTree.userFolders|json}}</pre>-->
+    <!--<pre data-ng-show="currentFolderRootId == accountTree.userAlbums[0].id">{{accountTree.userAlbums|json}}</pre>-->
+    <!--<pre data-ng-show="currentFolderRootId == accountTree.userBookmarks[0].id">{{accountTree.userBookmarks|json}}</pre>-->
+
+
+</div>
+<!--------------------------------------------------------------------------------------------------------------------------------->

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 12 7" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;">
+    <path id="ic_caret_down" d="M0.231,1.33L5.486,6.76C5.633,6.913 5.8,7 6.011,7C6.2,7 6.389,6.913 6.536,6.76L11.789,1.33C11.936,1.178 12,0.981 12,0.785C12,0.567 11.936,0.393 11.789,0.24C11.642,0.087 11.453,0 11.264,0L0.756,0C0.547,0 0.378,0.087 0.231,0.24C0.084,0.393 0,0.567 0,0.785C0,0.981 0.084,1.178 0.231,1.33Z" style="fill:white;"/>
+</svg>

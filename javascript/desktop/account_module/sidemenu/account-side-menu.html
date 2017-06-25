@@ -1,0 +1,195 @@
+<nav class="sidebar left">
+    <h2>User Menu</h2>
+
+    <div class="treeWrap">
+
+
+<!---------------------------------- Nested node template for ROOT FOLDERS -->
+        <script type="text/ng-template" id="nodefolders">
+            <div class="headerBar tree-node" data-ng-if="!node.deleteCheck" data-ng-click="setFolderView(node,accountTree.userFolders[0].id); toggleViewsOff();">
+                <div class="dragHandle pull-left tree-handle prependIcon" ui-tree-handle
+                        onmouseover="if ($('.angular-ui-tree-drag').length == 0) {$(this).next().addClass('highlightTemp trans');}"
+                        onmouseout="$(this).next().removeClass('highlightTemp trans');"
+                        onmousedown="$(this).addClass('dragging');"
+                        onmouseup="$(this).removeClass('dragging');">
+                    <div ng-if="node.id!=accountTree.userFolders[0].id"><span class="ic ic-arrows ic-arrows--black"></span></div>
+                </div>
+                <div data-ng-if="currentFolderRootId==accountTree.userFolders[0].id" class="tree-node-content" droppable drop="handleDrop(node.id,accountTree.userFolders[0].id)" ng-class="{highlightRow: currentFolderId ==  node.id}" data-ng-include="'foldernodecontent'"></div>
+                <div data-ng-if="currentFolderRootId!=accountTree.userFolders[0].id" class="tree-node-content" ng-class="{highlightRow: currentFolderId ==  node.id}" data-ng-include="'foldernodecontent'"></div>
+            </div>
+            <div data-ng-if="node.deleteCheck" id="deleteFolderTooltip" style="margin-left: {{ 0 - node.depthOffset }}px; line-height: 30px;">
+                <spinner-animation data-ng-if="node.deleting" color="#535353" style="position:relative;display:inline-block;"></spinner-animation>
+                <i data-ng-if="!node.deleting" class="glyphicon glyphicon-trash"></i> Delete this folder?<a class="yes" ng-click="removeN(this,'deleteFolder')"> Yes </a><a class="no" ng-click="node.deleteCheck=false"> No</a>
+            </div>
+            <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+                <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodefolders'"></li>
+            </ol>
+        </script>
+<!-------------->
+        <script type="text/ng-template" id="foldernodecontent">
+            <div class="chevrons">
+                <button ng-if="node.nodes && node.nodes.length > 0 && collapsed==true" ng-click="toggle(this)"><span class="glyphicon glyphicon-chevron-right"></span>
+                </button>
+                <button ng-if="node.nodes && node.nodes.length > 0 && collapsed==false" ng-click="toggle(this)"><span class="glyphicon glyphicon-chevron-down"></span>
+                </button>
+            </div>
+            <div ng-if="node.id==accountTree.userFolders[0].id" class="title" ng-class="{activeTitle: node.id==currentFolderRootId}">
+                <i class="glyphicon glyphicon-facetime-video"></i><span>{{node.title}}</span>
+            </div>
+            <div data-ng-if="node.id!=accountTree.userFolders[0].id" class="title" > <!-- ng-dblclick="changeName(node,'renameFolder')" -->
+                <span data-ng-if="!node.nameInput && !node.deleteCheck && !node.renaming" class="folderName" >{{node.title}}</span>
+                <div class="input-group editWrap" data-ng-if="node.nameInput && !node.renaming">
+                    <input type="text" class="form-control" placeholder="{{node.title}}" ng-model="node.newName" data-ng-init="node.newName=node.title" autofocus data-ng-keyup="$event.keyCode == 13 ? changeName(node,'renameFolder') : null" style="border-color: #E76627; box-shadow: 0 0 4px #E76627;">
+                </div>
+                <spinner-animation data-ng-if="node.renaming" color="#535353" style="position:relative;display:inline-block;vertical-align:middle;"></spinner-animation>
+            </div>
+            <div class="actions">
+                <button nodrag ng-if="collapsed==false && node.id!=accountTree.userFolders[0].id && node.nodes.length==0" data-ng-click="doDeleteCheck(node)" class="deleteFolder" title="Delete this folder"><i class="glyphicon glyphicon-trash"></i></button> <!--removeN(this,'deleteFolder') -->
+                <button nodrag ng-if="collapsed==false" ng-click="newSubItem(node,'createFolder')" class="createFolder" title="Create a new folder"><i data-ng-if="!node.addingFolder" class="glyphicon glyphicon-plus"></i>
+                  <spinner-animation data-ng-if="node.addingFolder" color="white" style="position:relative;display:inline-block;"></spinner-animation>
+                </button>
+            </div>
+        </script>
+<!------------------------------------------------>
+<!---------------------------------- Nested node template for ROOT ALBUMS -->
+        <script type="text/ng-template" id="nodealbums">
+            <div data-ng-if="node.folderSubType!='Album' && !node.deleteCheck" class="headerBar tree-node" ng-click="toggleViewsOff(); setFolderView(node,accountTree.userAlbums[0].id); "> <!--data-ng-if="node.folderSubType!='Album'"-->
+                <div class="dragHandle pull-left tree-handle prependIcon" ui-tree-handle
+                     onmouseover="if ($('.angular-ui-tree-drag').length == 0) {$(this).next().addClass('highlightTemp trans');}"
+                     onmouseout="$(this).next().removeClass('highlightTemp trans');"
+                     onmousedown="$(this).addClass('dragging');//$('body').addClass('dragging');"
+                     onmouseup="$(this).removeClass('dragging');">
+                    <div ng-if="node.id!=accountTree.userAlbums[0].id"><span class="ic ic-arrows ic-arrows--black"></span></div>
+                </div>
+                <div class="tree-node-content" ng-class="{highlightRow: currentFolderId == node.id}" data-ng-include="'albumnodecontent'"></div>
+            </div>
+            <div data-ng-if="node.deleteCheck" id="deleteFolderTooltip" style="margin-left: {{ 0 - node.depthOffset }}px; line-height: 30px;">
+                <spinner-animation data-ng-if="node.deleting" color="#535353" style="position:relative;display:inline-block;"></spinner-animation>
+                <i data-ng-if="!node.deleting" class="glyphicon glyphicon-trash"></i> Delete this folder?<a class="yes" ng-click="removeN(this,'deleteAlbumFolder')"> Yes </a><a class="no" ng-click="node.deleteCheck=false"> No</a>
+            </div>
+
+            <div data-ng-if="node.folderSubType=='Album'  && !node.deleteCheck" class="headerBar tree-node" ng-click="toggleViewsOff(); setFolderView(node,accountTree.userAlbums[0].id); goAlbumPage(node);"> <!--data-ng-if="node.folderSubType!='Album'"-->
+                <div class="dragHandle pull-left tree-handle prependIcon" ui-tree-handle
+                     onmouseover="if ($('.angular-ui-tree-drag').length == 0) {$(this).next().addClass('highlightTemp trans');}"
+                     onmouseout="$(this).next().removeClass('highlightTemp trans');"
+                     onmousedown="$(this).addClass('dragging');//$('body').addClass('dragging');"
+                     onmouseup="$(this).removeClass('dragging');">
+                    <div ng-if="node.id!=accountTree.userAlbums[0].id"><span class="ic ic-arrows ic-arrows--black"></span></div>
+                </div>
+                <div data-ng-if="currentFolderRootId==accountTree.userFolders[0].id" class="tree-node-content" droppable drop="handleDrop(node.id,accountTree.userAlbums[0].id)" ng-class="{highlightRow: currentFolderId ==  node.id}" data-ng-include="'albumnodecontent'"></div>
+                <div data-ng-if="currentFolderRootId!=accountTree.userFolders[0].id" class="tree-node-content" ng-class="{highlightRow: currentFolderId ==  node.id}" data-ng-include="'albumnodecontent'"></div>
+            </div>
+            <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+                <!--<li ng-repeat="node in node.nodes" data-ng-if="node.folderSubType!='Album'" ui-tree-node ng-include="'nodealbums'"></li>-->
+                <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodealbums'"></li>
+            </ol>
+        </script>
+<!-------------->
+        <script type="text/ng-template" id="albumnodecontent">
+            <div class="chevrons">
+                <button ng-if="node.nodes && node.nodes.length > 0 && collapsed==true" ng-click="toggle(this)"><span class="glyphicon glyphicon-chevron-right"></span>
+                </button>
+                <button ng-if="node.nodes && node.nodes.length > 0 && collapsed==false" ng-click="toggle(this)"><span class="glyphicon glyphicon-chevron-down"></span>
+                </button>
+            </div>
+            <div ng-if="node.id==accountTree.userAlbums[0].id" class="title" ng-class="{activeTitle: node.id==currentFolderRootId}">
+                <i class="icon-sprite albums"></i><span>{{node.title}}</span>
+            </div>
+            <div data-ng-if="node.id!=accountTree.userAlbums[0].id" class="title"> <!-- ng-dblclick="changeName(node,'renameAlbum')" -->
+                <div data-ng-if="!node.nameInput && !node.deleteCheck && !node.renaming">
+                    <i class="icon-sprite albums" data-ng-if="node.folderSubType=='Album'"></i>
+                    <span class="folderName" >{{node.title}}</span>
+                </div>
+                <div class="input-group editWrap" data-ng-if="node.nameInput && !node.renaming">
+                    <input type="text" class="form-control" placeholder="{{node.title}}" ng-model="node.newName" data-ng-init="node.newName=node.title" autofocus data-ng-keyup="$event.keyCode == 13 ? node.folderSubType=='Album' ? changeName(node,'renameAlbum') : changeName(node,'renameAlbumFolder') : null" style="border-color: #E76627; box-shadow: 0 0 4px #E76627;">
+                </div>
+                <spinner-animation data-ng-if="node.renaming" color="#535353" style="position:relative;display:inline-block;"></spinner-animation>
+            </div>
+            <div class="actions">
+                <button nodrag data-ng-if="collapsed==false && node.id!=accountTree.userAlbums[0].id && node.nodes.length==0 && node.folderSubType!='Album'" data-ng-click="doDeleteCheck(node)" class="deleteFolder" title="Delete this Folder"><i class="glyphicon glyphicon-trash"></i></button> <!-- removeN(this,'deleteAlbumFolder')-->
+                <button nodrag data-ng-if="collapsed==false && node.folderSubType!='Album'" ng-click="newSubItem(node,'createAlbumFolder')" class="createFolder" title="Create a new Folder"><i data-ng-if="!node.addingFolder" class="glyphicon glyphicon-plus"></i>
+                  <spinner-animation data-ng-if="node.addingFolder" color="white" style="position:relative;display:inline-block;"></spinner-animation>
+                </button>
+            </div>
+        </script>
+<!------------------------------------------------>
+<!---------------------------------- Nested node template for ROOT BOOKMARKS -->
+        <script type="text/ng-template" id="nodebookmarks">
+            <div data-ng-if="!node.deleteCheck" class="headerBar tree-node" ng-click="setFolderView(node,accountTree.userBookmarks[0].id); toggleViewsOff();">
+                <div  class="dragHandle pull-left tree-handle prependIcon" ui-tree-handle
+                     onmouseover="if ($('.angular-ui-tree-drag').length == 0) {$(this).next().addClass('highlightTemp trans');}"
+                     onmouseout="$(this).next().removeClass('highlightTemp trans');"
+                     onmousedown="$(this).addClass('dragging');"
+                     onmouseup="$(this).removeClass('dragging');">
+                    <div ng-if="node.id!=accountTree.userBookmarks[0].id"><span class="ic ic-arrows ic-arrows--black"></span></div>
+                </div>
+                <div data-ng-if="currentFolderRootId==accountTree.userBookmarks[0].id" class="tree-node-content" droppable drop="handleDrop(node.id,accountTree.userBookmarks[0].id)" ng-class="{highlightRow: currentFolderId ==  node.id}" data-ng-include="'bookmarknodecontent'"></div>
+                <div data-ng-if="currentFolderRootId!=accountTree.userBookmarks[0].id" class="tree-node-content" ng-class="{highlightRow: currentFolderId ==  node.id}" data-ng-include="'bookmarknodecontent'"></div>
+            </div>
+            <div data-ng-if="node.deleteCheck" id="deleteFolderTooltip" style="margin-left: {{ 0 - node.depthOffset }}px; line-height: 30px;">
+                <spinner-animation data-ng-if="node.deleting" color="#535353" style="position:relative;display:inline-block;"></spinner-animation>
+                <i data-ng-if="!node.deleting" class="glyphicon glyphicon-trash"></i> Delete this folder?<a class="yes" ng-click="removeN(this,'deleteBookmarkFolder')"> Yes </a><a class="no" ng-click="node.deleteCheck=false"> No</a>
+            </div>
+            <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+                <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodebookmarks'"></li>
+            </ol>
+        </script>
+<!-------------->
+        <script type="text/ng-template" id="bookmarknodecontent">
+            <div class="chevrons">
+                <button ng-if="node.nodes && node.nodes.length > 0 && collapsed==true" ng-click="toggle(this)"><span class="glyphicon glyphicon-chevron-right"></span>
+                </button>
+                <button ng-if="node.nodes && node.nodes.length > 0 && collapsed==false" ng-click="toggle(this)"><span class="glyphicon glyphicon-chevron-down"></span>
+                </button>
+            </div>
+            <div ng-if="node.id==accountTree.userBookmarks[0].id" class="title" ng-class="{activeTitle: node.id==currentFolderRootId}">
+                <i class="glyphicon glyphicon-bookmark"></i><span>{{node.title}}</span>
+            </div>
+            <div data-ng-if="node.id!=accountTree.userBookmarks[0].id" class="title"> <!-- ng-dblclick="changeName(node,'renameBookmarkFolder')" -->
+                <span data-ng-if="!node.nameInput && !node.deleteCheck && !node.renaming" class="folderName" >{{node.title}}</span>
+                <div class="input-group editWrap" data-ng-if="node.nameInput && !node.renaming">
+                    <input type="text" class="form-control" placeholder="{{node.title}}" ng-model="node.newName" data-ng-init="node.newName=node.title" autofocus data-ng-keyup="$event.keyCode == 13 ? changeName(node,'renameBookmarkFolder') : null" style="border-color: #E76627; box-shadow: 0 0 4px #E76627;">
+                </div>
+                <spinner-animation data-ng-if="node.renaming" color="#535353" style="position:relative;display:inline-block;vertical-align:middle;"></spinner-animation>
+            </div>
+            <div class="actions">
+                <button nodrag ng-if="collapsed==false && node.id!=accountTree.userBookmarks[0].id && node.nodes.length==0" data-ng-click="doDeleteCheck(node)"><i class="glyphicon glyphicon-trash"></i></button> <!-- removeN(this,'deleteBookmarkFolder')-->
+                <button nodrag ng-if="collapsed==false" ng-click="newSubItem(node,'createBookmarkFolder')"><i data-ng-if="!node.addingFolder" class="glyphicon glyphicon-plus"></i>
+                  <spinner-animation data-ng-if="node.addingFolder" color="white" style="position:relative;display:inline-block;vertical-align:middle;"></spinner-animation>
+                </button>
+            </div>
+        </script>
+<!------------------------------------------------>
+
+
+
+<!------------------------------------------------>
+        <div class="category folders top">
+            <div ui-tree id="tree-root">
+                <ol ui-tree-nodes ng-model="accountTree.userFolders">
+                    <li ng-repeat="node in accountTree.userFolders" ui-tree-node ng-include="'nodefolders'" ></li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="category albums top">
+            <div ui-tree id="tree-root">
+                <ol ui-tree-nodes ng-model="accountTree.userAlbums">
+                    <li ng-repeat="node in accountTree.userAlbums" ui-tree-node ng-include="'nodealbums'"></li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="category bookmarks top">
+            <div ui-tree id="tree-root">
+                <ol ui-tree-nodes ng-model="accountTree.userBookmarks">
+                    <li ng-repeat="node in accountTree.userBookmarks" ui-tree-node ng-include="'nodebookmarks'"></li>
+                </ol>
+            </div>
+        </div>
+<!------------------------------------------------>
+    </div>
+</nav>
+<!--<div id="deleteFolderTooltip">-->
+    <!--<i class="glyphicon glyphicon-trash"></i>Delete this folder?<a class="yes">Yes</a><a class="no" onclick="$(this).parent().attr('style','');">No</a>-->
+<!--</div>-->

@@ -1,0 +1,61 @@
+<div class="partner-preferences-container">
+  <form class="form" name="partnerPreferencesForm" novalidate ng-keyup="onPartnerPreferencesFormKeyup($event)">
+    <div class="form-group">
+      <div class="picture-visibility-switch">
+        <label class="input-label" translate>SETTINGS.IFRAME_PICTURE_VISIBILITY_TITLE</label>
+        <div class="switch" ng-class="{on: isPictureVisible, off: !isPictureVisible}" ng-click="onPictureVisibilityToggle()">
+          <div class="toggle"></div>
+          <input type="checkbox" ng-model="isPictureVisible" name="iframePictureVisibility">
+        </div>
+      </div>
+      <p class="help-block help-block--options-text help-block--picture-visibility" translate>SETTINGS.PICTURE_VISIBILITY_DESCRIPTION</p>
+    </div>
+    <div class="form-group">
+      <div class="domain-restriction-switch">
+        <label class="input-label" translate>SETTINGS.DOMAIN_RESTRICTION_TITLE</label>
+        <div class="switch" ng-class="{on: !isDomainRestricted, off: isDomainRestricted}" ng-click="onDomainToggle()">
+          <div class="toggle"></div>
+          <input type="checkbox" ng-model="isDomainRestricted" name="domainRestriction">
+        </div>
+      </div>
+      <p class="help-block help-block--options-text" translate>SETTINGS.DOMAIN_RESTRICTION_LIST</p>
+      <div class="form-input-group">
+        <input class="form-control" type="text" name="domainsList" ng-disabled="!isDomainRestricted"
+          translate translate-attr-placeholder="SETTINGS.DOMAINS" ng-model="data.domainsList"
+          ng-change="onDomainsListInputChange()" required autocomplete="off" ng-trim="false">
+        <i class="field-status-icon" ng-class="{'field-status-icon--invalid': error.domains}"></i>
+        <span class="help-block help-block--input-error" ng-if="error.domains" translate>
+          SETTINGS.INVALID_DOMAINS_LIST</span>
+      </div>
+      <p class="help-block help-block--options-text" translate>SETTINGS.DOMAINS_LIST_EXAMPLE</p>
+    </div>
+    <div class="form-group">
+      <div class="geo-restriction-switch">
+        <label class="input-label" translate>SETTINGS.GEO_RESTRICTION_TITLE</label>
+        <div class="switch" ng-class="{on: !isGeoRestricted, off: isGeoRestricted}" ng-click="onGeoToggle()">
+          <div class="toggle"></div>
+          <input type="checkbox" ng-model="isGeoRestricted" name="geoRestriction">
+        </div>
+      </div>
+      <p class="help-block help-block--options-text" translate>SETTINGS.ALLOW_GIF_IN</p>
+      <button type="button" id="country-dropdown" class="btn btn-block country-dropdown"
+        ng-class="{'btn-grey disabled': !isGeoRestricted, 'btn-dark-grey': isGeoRestricted}" ng-click="toggleCountryDropdown()"><span translate>SETTINGS.COUNTRIES</span> <span class="caret"></span></button>
+      <ul class="country-list dropdown-menu" id="country-list" ng-show="isCountryDropdownOpened">
+        <li ng-repeat="country in countries" class="small country-item" ng-click="onCountryClick($event, $index)">
+          <span class="checkbox" ng-class="{checked: countryCodes[country.code].checked}">
+            <input type="checkbox" class="checkbox-input"
+              value="countryCodes[country.code].checked" ng-model="countryCodes[country.code].checked">
+              <i class="ic ic-check ic-check--white"></i>
+          </span>
+            &nbsp;{{country.name}}
+        </li>
+      </ul>
+    </div>
+    <button type="button" ng-disabled="isSaveButtonDisabled()" class="btn btn-blue btn-block"
+      ng-class="{'disabled btn-grey': isDisabled, 'pending': isPending}"
+      ng-click="savePartnerPreferencesForm()">
+      <spinner-animation class="blue"></spinner-animation>
+      <span translate>SETTINGS.SAVE_CHANGES</span>
+    </button>
+  </form>
+</div>

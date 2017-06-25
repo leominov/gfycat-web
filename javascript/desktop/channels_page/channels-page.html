@@ -1,0 +1,12 @@
+<div class="grid__container container-fluid">
+  <div class="row" translate>
+    {{'MORE_PAGE.CHANNELS'}}
+  </div>
+  <div class="row items__group" infinite-scroll='feeds.channels.nextPage(12)' infinite-scroll-distance='1' infinite-scroll-disable='channels.busy'>
+    <a class="item" href="/tag/{{channel.tag}}" data-ng-repeat="channel in feeds.channels.tags">
+      <span class="flex-center-all">{{channel.tag}}</span>
+      <img src="{{channel.gfycats[0].thumb360PosterUrl}}" alt="" />
+    </a>
+  </div>
+  <spinner-animation class="blue large center"></spinner-animation>
+</div>

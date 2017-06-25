@@ -1,0 +1,552 @@
+<section class="gfy-table-container">
+
+  <!--Spinner animation-->
+  <spinner-animation class="blue large center-flex" ng-if="isLoading"></spinner-animation>
+
+  <!--Modal confirmation dialogues-->
+  <div class="profile-modal-overlay" ng-if="albumModal.shown || deleteModal.shown" ng-click="albumModal.shown = false; albumModal.title = ''; deleteModal.shown = false;" hotkey="{esc: closeModals}">
+    <!--Create album modal-->
+    <div class="profile-modal" ng-click="$event.stopPropagation()" ng-if="albumModal.shown">
+      <button class="cancel" ng-click="albumModal.shown = false; albumModal.title = ''">
+        <i class="ic ic-close ic-close--grey" aria-hidden="true"></i>
+      </button>
+      <form class="center" name="createAlbumForm">
+        <span class="title center-item" translate>LIBRARY.CREATE_ALBUM</span>
+        <input class="text center-item" type="text" translate translate-attr-placeholder="LIBRARY.ALBUM_NAME_PROMPT" ng-model="albumModal.title" ng-required="true" ng-minlength="1" ng-maxlength="100" show-focus="albumModal.shown" ng-keyup="submitModal($event, createAlbumForm.$valid)"></input>
+        <button type="button" class="btn btn-blue-filled btn-block create-button"
+          ng-class="{'disabled btn-grey-filled': isButtonDisabled || !createAlbumForm.$valid, pending: isPending.createAlbum}"
+          ng-click="submitAlbumCreate(createAlbumForm.$valid)">
+          <spinner-animation class="white"></spinner-animation>
+          <span translate>{{'LIBRARY.CREATE_BUTTON'}}</span>
+        </button>
+      </form>
+    </div>
+    <!-- Delete modal -->
+    <div class="profile-modal" ng-click="$event.stopPropagation()" ng-if="deleteModal.shown">
+      <button class="cancel" ng-click="deleteModal.shown = false;">
+        <i class="ic ic-close ic-close--grey" aria-hidden="true"></i>
+      </button>
+      <div class="center" ng-if="gifList.type !== 'albums'">
+        <span class="title center-item" translate>LIBRARY.DELETE_BUTTON</span>
+        <span class="center-item" translate translate-value-number="{{selectedCounter}}" ng-attr-translate-value-noun="{{selectedCounter === 1 ? ('LIBRARY.GIF' | translate) : ('LIBRARY.GIFS' | translate)}}">LIBRARY.DELETE_PROMPT</span>
+        <button type="button" class="btn btn-blue-filled btn-block create-button" ng-disabled="isButtonDisabled"
+          ng-class="{'disabled btn-grey-filled': isButtonDisabled, pending: isPending.delete}" ng-click="delete()">
+          <spinner-animation class="white"></spinner-animation>
+          <span translate>{{'LIBRARY.DELETE_BUTTON'}}</span>
+        </button>
+      </div>
+      <div class="center" ng-if="gifList.type === 'albums'">
+        <span class="title center-item" translate>LIBRARY.DELETE_BUTTON</span>
+        <span class="center-item" translate translate-value-number="{{selectedCounter}}" ng-attr-translate-value-noun="{{selectedCounter === 1 ? ('LIBRARY.ALBUM' | translate) : ('LIBRARY.ALBUMS' | translate)}}">LIBRARY.DELETE_PROMPT</span>
+        <button type="button" class="btn btn-blue-filled btn-block create-button" ng-disabled="isButtonDisabled"
+          ng-class="{'disabled btn-grey-filled': isButtonDisabled, pending: isPending.delete}" ng-click="deleteAlbum()">
+          <spinner-animation class="white"></spinner-animation>
+          <span translate>{{'LIBRARY.DELETE_BUTTON'}}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Detail Modal -->
+  <div class="profile-modal-overlay mobile" ng-if="detailsModal.shown" ng-click="cleanView()">
+    <div class="no-display" id="library-copy">https://gfycat.com/{{detailed.gfyName}}</div>
+    <div class="no-display" id="album-copy">https://gfycat.com/{{userName}}/{{detailed.linkText}}</div>
+    <div class="detail-modal" ng-click="$event.stopPropagation()" ng-if="detailsModal.shown">
+      <div ngclipboard data-clipboard-action="copy" data-clipboard-target="#library-copy" ng-if="gifList.type !== 'albums'" ontouchstart="">
+        <span class="text detail-select cursor-pointer center-item ic-copy hover-text" translate>LIBRARY.COPY</span>
+      </div>
+      <div ngclipboard data-clipboard-action="copy" data-clipboard-target="#album-copy" ng-if="gifList.type === 'albums'" ontouchstart="">
+        <span class="text detail-select cursor-pointer center-item ic-copy hover-text" translate>LIBRARY.COPY</span>
+      </div>
+      <div ng-click="showFullOverlay('rename')">
+        <span class="text detail-select cursor-pointer center-item hover-text" translate>LIBRARY.RENAME</span>
+      </div>
+      <div ng-click="showFullOverlay('edit_tags')">
+        <span class="text detail-select cursor-pointer center-item hover-text" translate>LIBRARY.EDIT_TAGS</span>
+      </div>
+      <div ng-click="showFullOverlay('edit_description')" ng-if="gifList.type === 'albums'">
+        <span class="text detail-select cursor-pointer center-item hover-text" translate>LIBRARY.EDIT_DESCRIPTION</span>
+      </div>
+      <div ng-if="publishEnabled" ng-click="togglePrivacy(1); cleanView()">
+        <span class="text detail-select cursor-pointer center-item hover-text" translate>LIBRARY.PUBLISH_BUTTON</span>
+      </div>
+      <div ng-if="!publishEnabled" ng-click="togglePrivacy(0); cleanView()">
+        <span class="text detail-select cursor-pointer center-item hover-text" translate>LIBRARY.HIDE_BUTTON</span>
+      </div>
+      <div ng-click="delete(); cleanView()" ng-if="gifList.type !== 'albums'">
+        <span class="text detail-select cursor-pointer center-item hover-text" translate>LIBRARY.DELETE_BUTTON</span>
+      </div>
+      <div ng-click="deleteAlbum(); cleanView()" ng-if="gifList.type === 'albums'">
+        <span class="text detail-select cursor-pointer center-item hover-text" translate>LIBRARY.DELETE_BUTTON</span>
+      </div>
+      <div ng-click="showFullOverlay('add_to_album')" ng-if="gifList.type !== 'albums'">
+        <span class="text detail-select cursor-pointer center-item hover-text" translate>LIBRARY.ADD_TO_ALBUM</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mobile-full-overlay mobile" ng-if="overlayModal.shown">
+    <button class="overlay-cancel" ng-click="cleanView()">
+      <i class="ic ic-close ic-close--grey"></i>
+    </button>
+    <!-- Rename Overlay -->
+    <div class="overlay-content" ng-if="overlayModal.overlay === 'rename' ">
+      <div class="overlay-title" translate>LIBRARY.RENAME</div>
+      <div>
+        <input class="inplace-edit gif-title" type="text" ng-model="detailed.titleString" ng-click="$event.stopPropagation()" ng-blur="blur($event, true)" ng-focus="focus($event)" ng-keyup="keyup($event)" translate translate-attr-placeholder="LIBRARY.TITLE_PROMPT"></input>
+      </div>
+      <button type="button" class="btn btn-blue-filled btn-block create-button" ng-disabled="isButtonDisabled"
+        ng-class="{'disabled btn-grey-filled': isButtonDisabled || !detailed.titleString, pending: isPending.rename}"
+        ng-click="renameTitle(detailed.titleString); cleanView()">
+        <spinner-animation class="white"></spinner-animation>
+        <span translate>{{'LIBRARY.RENAME'}}</span>
+      </button>
+    </div>
+    <!-- Edit Tags Overlay -->
+    <div class="overlay-content" ng-if="overlayModal.overlay === 'edit_tags' ">
+      <div class="overlay-title" translate>LIBRARY.EDIT_TAGS</div>
+      <div class="input-container">
+        <input class="inplace-edit gif-tag" type="text" ng-model="detailed.tagsString" ng-click="$event.stopPropagation()" ng-blur="blur($event, true)" ng-focus="focus($event)" ng-keyup="keyup($event)" translate translate-attr-placeholder="LIBRARY.TAG_PROMPT"></input>
+      </div>
+      <button type="button" class="btn btn-blue-filled btn-block create-button" ng-disabled="isButtonDisabled"
+        ng-class="{'disabled btn-grey-filled': isButtonDisabled || !detailed.tagsString, pending: isPending.edit_tags}"
+        ng-click="editTags(detailed.tagsString); cleanView()">
+        <spinner-animation class="white"></spinner-animation>
+        <span translate>{{'LIBRARY.EDIT_TAGS'}}</span>
+      </button>
+    </div>
+    <!-- Description Overlay -->
+    <div class="overlay-content" ng-if="overlayModal.overlay === 'edit_description' ">
+      <div class="overlay-title" translate>UPLOADER.DESCRIPTION</div>
+      <div class="input-container">
+        <input class="inplace-edit gif-tag" type="text" ng-model="detailed.descriptionString" ng-click="$event.stopPropagation()" ng-blur="blur($event, true)" ng-focus="focus($event)" ng-keyup="keyup($event)" translate translate-attr-placeholder="LIBRARY.DESCRIPTION_PROMPT"></input>
+      </div>
+      <button type="button" class="btn btn-blue-filled btn-block create-button" ng-disabled="isButtonDisabled"
+        ng-class="{'disabled btn-grey-filled': isButtonDisabled || !detailed.descriptionString, pending: isPending.edit_description}"
+        ng-click="editDescription(detailed.descriptionString); cleanView()">
+        <spinner-animation class="white"></spinner-animation>
+        <span translate>{{'LIBRARY.EDIT_DESCRIPTION'}}</span>
+      </button>
+    </div>
+    <!-- Add to Album Overlay -->
+    <div class="overlay-content" ng-if="overlayModal.overlay === 'add_to_album' ">
+      <div class="overlay-title" translate>LIBRARY.ADD_TO_ALBUM</div>
+      <div class="input-container">
+        <div class="overlay-item separator cursor-pointer hover-text" ng-click="showFullOverlay('create_album')" translate>LIBRARY.CREATE_ALBUM</div>
+        <div class="overlay-item cursor-pointer hover-text" ng-repeat="album in albumList" ng-click="addToAlbum(album.id, album.title)">{{album.title}}</div>
+      </div>
+    </div>
+    <!-- Create Album Overlay -->
+    <form class="overlay-content" ng-if="overlayModal.overlay === 'create_album' " name="createAlbumForm">
+      <div class="overlay-title" translate>LIBRARY.CREATE_ALBUM</div>
+      <input class="inplace-edit" type="text" translate translate-attr-placeholder="LIBRARY.ALBUM_NAME_PROMPT" ng-model="albumModal.title" ng-required="true" ng-minlength="1" ng-maxlength="100" ng-keyup="submitModal($event, createAlbumForm.$valid)"></input>
+      <button type="button" class="btn btn-blue-filled btn-block create-button" ng-disabled="isButtonDisabled"
+        ng-class="{'disabled btn-grey-filled': isButtonDisabled || !albumModal.title, pending: isPending.createAlbum}"
+        ng-click="submitAlbumCreate(createAlbumForm.$valid)">
+        <spinner-animation class="white"></spinner-animation>
+        <span translate>{{'LIBRARY.CREATE_BUTTON'}}</span>
+      </button>
+    </form>
+  </div>
+
+  <!--Menu bar for navigation and actions-->
+  <div class="background"></div>
+  <div class="gfy-table-options">
+    <!--Navigation-->
+    <div class="menu-nav" ng-if="!checkSelected()">
+      <!-- Mobile Dropdown Nav -->
+      <div class="dropdown dropdown-nav mobile" ng-if="!isMobileSearching">
+        <div class="dropdown-overlay mobile" ng-if="isHighlighted()"></div>
+        <div id="dropdown-title-nav" class="dropdown-title" ng-click="toggleMenu('nav')" ng-cloak>
+          <span ng-if="!isMobileSorting()" class="cursor-default">{{gifList.current}}</span>
+          <span ng-if="isMobileSorting()" class="cursor-default" translate>LIBRARY.SORT_BY</span>
+          <i id="menu-nav-caret" ng-if="!isMobileSorting()" class="ic ic-caret-down ic-caret-down--white" aria-hidden="true"></i>
+        </div>
+        <div id="menu-nav-dropdown" class="dropdown-content" ng-class="{shown: shown}" ng-click="toggleMenu('nav')">
+          <a class="cursor-pointer separator" ng-class="{active: (gifList.type === 'library')}" ng-click="showLibrary()" translate>LIBRARY.MY_LIBRARY</a>
+          <a class="cursor-pointer" ng-class="{active: (gifList.type === 'albums')}" ng-click="showAlbums()" translate>LIBRARY.MY_ALBUMS</a>
+          <a class="dropdown-content-item" ng-repeat="album in albumList | orderBy: 'title'" ng-class="{active: (albumList.title === album.title)}" ng-click="showAlbum(album.id, album.title)">{{album.title}}</a>
+        </div>
+      </div>
+      <div class="dropdown dropdown-nav non-mobile" ng-click="toggleMenu('nav')" ng-mouseenter="shown=true" ng-mouseleave="shown=false">
+        <div class="dropdown-title" ng-cloak>
+          <span class="cursor-default">{{gifList.current}}</span>
+          <span ng-if="gifList.type === 'library' && gifCount" translate translate-value-count="{{gifCount}}">{{'LIBRARY.TOTAL_GIFS'}}</span>
+          <i class="ic ic-caret-down ic-caret-down--white" aria-hidden="true"></i>
+        </div>
+        <div id="menu-nav-dropdown" class="dropdown-content" ng-class="{shown: shown}">
+          <a class="cursor-pointer separator" ng-class="{active: (gifList.type === 'library')}" ng-click="showLibrary()" translate>LIBRARY.MY_LIBRARY</a>
+          <a class="cursor-pointer" ng-class="{active: (gifList.type === 'albums')}" ng-click="showAlbums()" translate>LIBRARY.MY_ALBUMS</a>
+          <a class="dropdown-content-item" ng-repeat="album in albumList | orderBy: 'title'"  ng-class="{active: (albumList.title === album.title)}" ng-click="showAlbum(album.id, album.title)">{{album.title}}</a>
+        </div>
+      </div>
+      <div class="input-group non-mobile">
+        <input class="search float-left" type="text" translate translate-attr-placeholder="LIBRARY.SEARCH" translate-value-term="{{gifList.current}}" ng-keyup="searchKey($event, input.searchText)" ng-model="input.searchText">
+        <button ng-if="!input.searchText" type="button" class="btn search-btn" aria-label="Left Align" data-ng-click="search(input.searchText)">
+            <i class="ic ic-search ic-search--white" aria-hidden="true"></i>
+        </button>
+        <button ng-if="input.searchText" type="button" class="btn search-btn" aria-label="Left Align" data-ng-click="cancelSearch()">
+            <i class="ic ic-close ic-close--white" aria-hidden="true"></i>
+        </button>
+      </div>
+      <!-- Mobile SearchBar -->
+      <div class="input-group mobile" ng-if="isMobileSearching">
+        <input class="search float-left" type="text" translate translate-attr-placeholder="LIBRARY.SEARCH" translate-value-term="{{gifList.current}}" ng-keyup="searchKey($event, input.searchText)" ng-model="input.searchText">
+        <button type="button" class="btn search-btn" aria-label="Left Align" data-ng-click="cancelSearch()">
+          <i class="ic ic-close ic-close--white" aria-hidden="true"></i>
+        </button>
+      </div>
+      <button ng-if="!isMobileSearching" type="button" class="btn search-btn toggleSearchBar mobile" ng-click="toggleSearch(true)">
+        <i class="ic ic-search ic-search--white" aria-hidden="true"></i>
+      </button>
+      <div class="dropdown dropdown-sort mobile" ng-click="toggleMenu('sort')">
+        <div id="dropdown-title-sort" class="dropdown-title" ng-cloak>
+          <i class="ic ic-filter ic-filter--white" aria-hidden="true"></i>
+        </div>
+        <div id="menu-sort-dropdown" class="dropdown-content" ng-class="{shown: shown}" ng-click="toggleMenu('sort')">
+          <a ng-click="sort('createDate')" ng-class="{active: (predicate === 'createDate')}" translate>LIBRARY.DATE</a>
+          <a ng-click="sort('title')" ng-class="{active: (predicate === 'title')}" translate>LIBRARY.NAME</a>
+          <a class="separator" ng-click="sort('views')" ng-class="{active: (predicate === 'views')}" translate>LIBRARY.VIEWS</a>
+          <a ng-click="setReverse(false)" ng-class="{active:!reverse}" translate>LIBRARY.ASC</a>
+          <a ng-click="setReverse(true)" ng-class="{active:reverse}" translate>LIBRARY.DESC</a>
+        </div>
+      </div>
+    </div>
+
+    <!--Actionable items-->
+    <div class="menu noselect" ng-if="checkSelected()">
+      <div class="selected-count-wrapper">
+        <span class="selected-count cursor-default" translate translate-value-number="{{selectedCounter}}">LIBRARY.SELECTED</span>
+      </div>
+      <div class="selectors">
+        <div class="menu-item dropdown add-to-album" ng-if="gifList.type === 'library'" ng-click="toggleMenu('action')" ng-mouseenter="shown=true" ng-mouseleave="shown=false">
+          <div class="dropdown-title cursor-default non-mobile">
+            <i class="ic ic-album ic-album--white" aria-hidden="true"></i>
+            <span class="text" translate>LIBRARY.ADD_TO_ALBUM</span>
+          </div>
+          <div id="menu-action-dropdown" class="dropdown-content non-mobile" ng-class="{shown: shown}">
+            <a class="separator" ng-click="showAlbumModal()" translate>LIBRARY.CREATE_ALBUM</a>
+            <a ng-repeat="album in albumList" ng-click="addToAlbum(album.id, album.title)">{{album.title}}</a>
+          </div>
+        </div>
+        <div class="menu-item dropdown privacy non-mobile">
+          <div class="dropdown-title cursor-pointer" ng-if="publishEnabled" ng-click="togglePrivacy(1)">
+            <i class="ic ic-globe ic-globe--white" aria-hidden="true"></i>
+            <span class="text" translate>LIBRARY.PUBLISH_BUTTON</span>
+          </div>
+          <div class="dropdown-title cursor-pointer non-mobile" ng-if="!publishEnabled" ng-click="togglePrivacy(0)">
+            <i class="ic ic-lock ic-lock--white" aria-hidden="true"></i>
+            <span class="text" translate>LIBRARY.HIDE_BUTTON</span>
+          </div>
+        </div>
+        <div class="menu-item dropdown delete non-mobile" ng-if="gifList.type === 'library'">
+          <div class="dropdown-title cursor-pointer delete-padding" ng-click="showDeleteConfirmation()">
+            <i class="ic ic-trash ic-trash--white" aria-hidden="true"></i>
+            <span class="text" translate>LIBRARY.DELETE_BUTTON</span>
+          </div>
+        </div>
+        <div class="menu-item dropdown add-to-album non-mobile" ng-if="gifList.type === 'albums'">
+          <div class="dropdown-title cursor-pointer" ng-click="deleteModal.shown = true">
+            <i class="ic ic-trash ic-trash--white" aria-hidden="true"></i>
+            <span class="text" translate ng-attr-translate-value-noun="{{selectedCounter === 1 ? ('LIBRARY.ALBUM' | translate) : ('LIBRARY.ALBUMS' | translate)}}">LIBRARY.DELETE</span>
+          </div>
+        </div>
+        <div class="menu-item dropdown remove-from-album non-mobile" ng-if="gifList.type === 'album'">
+          <div class="dropdown-title cursor-pointer" ng-click="removeFromAlbum(gifList.albumId)">
+            <i class="ic ic-trash ic-trash--white" aria-hidden="true"></i>
+            <span class="text" translate>LIBRARY.REMOVE_FROM_ALBUM</span>
+          </div>
+        </div>
+        <div class="menu-item dropdown done">
+          <span class="dropdown-title cancel cursor-pointer" data-ng-click="cleanView()" translate>LIBRARY.DONE_BUTTON</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Action Bar -->
+  <div class="mobile-action-bar mobile" ng-if="checkSelected() && !detailsModal.shown">
+    <div class="menu-item dropdown delete cursor-pointer" ng-if="gifList.type === 'library'">
+      <div class="dropdown-title" ng-click="showDeleteConfirmation()">
+        <i class="ic ic-trash ic-trash--white" aria-hidden="true"></i>
+        <span class="text" translate>LIBRARY.DELETE_BUTTON</span>
+      </div>
+    </div>
+    <div class="menu-item dropdown add-to-album cursor-pointer" ng-if="gifList.type === 'library'" ng-click="toggleMenu('action')" ng-mouseenter="shown=true" ng-mouseleave="shown=false">
+      <div class="dropdown-title" ng-click="showFullOverlay('add_to_album')">
+        <i class="ic ic-album ic-album--white" aria-hidden="true"></i>
+        <span class="text" translate>LIBRARY.ADD_TO_ALBUM</span>
+      </div>
+    </div>
+    <div class="menu-item dropdown delete-center cursor-pointer" ng-if="gifList.type === 'albums'">
+      <div class="dropdown-title" ng-click="deleteModal.shown = true">
+        <i class="ic ic-trash ic-trash--white" aria-hidden="true"></i>
+        <span class="text" translate ng-attr-translate-value-noun="{{selectedCounter === 1 ? ('LIBRARY.ALBUM' | translate) : ('LIBRARY.ALBUMS' | translate)}}">LIBRARY.DELETE</span>
+      </div>
+    </div>
+    <div class="menu-item dropdown delete-center cursor-pointer" ng-if="gifList.type === 'album'">
+      <div class="dropdown-title" ng-click="removeFromAlbum(gifList.albumId)">
+        <i class="ic ic-trash ic-trash--white" aria-hidden="true"></i>
+        <span class="text" translate>LIBRARY.REMOVE_FROM_ALBUM</span>
+      </div>
+    </div>
+  </div>
+
+  <!--Gif list view-->
+  <div class="fixed-header noselect">
+    <div class="gfy-table-cell-static">
+      <div class="item check-box-header">
+        <input class="table-header" type="checkbox" ng-model="input.allSelected" ng-true-value="true" ng-false-value="false" ng-change="toggleAllSelected()">
+      </div>
+      <div ng-if="gifList.type === 'album'" class="item order-header" ng-click="sort('order')" ng-class="{reverse:reverse}">
+        <span class="sortable" translate>LIBRARY.ORDER</span>
+        <span ng-if="predicate === 'order' && !reverse">
+          <i class="ic ic-arrow-up ic-arrow-up--grey" aria-hidden="true"></i>
+        </span>
+         <span ng-if="predicate === 'order' && reverse">
+          <i class="ic ic-arrow-down ic-arrow-down--grey" aria-hidden="true"></i>
+        </span>
+      </div>
+    </div>
+
+    <div class="flex-wrap">
+      <div class="item title-header" ng-click="sort('title')" ng-class="{reverse:reverse}">
+        <span class="sortable" translate>LIBRARY.NAME</span>
+        <span ng-if="predicate === 'title' && !reverse">
+          <i class="ic ic-arrow-up ic-arrow-up--grey" aria-hidden="true"></i>
+        </span>
+        <span ng-if="predicate === 'title' && reverse">
+          <i class="ic ic-arrow-down ic-arrow-down--grey" aria-hidden="true"></i>
+        </span>
+      </div>
+      <div ng-if="gifList.type !== 'albums'" class="item date-header" ng-click="sort('createDate')" ng-class="{reverse:reverse}">
+        <span class="sortable" translate>LIBRARY.DATE</span>
+        <span ng-if="predicate === 'createDate' && !reverse">
+          <i class="ic ic-arrow-up ic-arrow-up--grey" aria-hidden="true"></i>
+        </span>
+        <span ng-if="predicate === 'createDate' && reverse">
+          <i class="ic ic-arrow-down ic-arrow-down--grey" aria-hidden="true"></i>
+        </span>
+      </div>
+      <div class="views-header-outer">
+        <div ng-if="gifList.type !== 'albums'" class="item views-header" ng-click="sort('views')" ng-class="{reverse:reverse}">
+          <span class="sortable" translate>LIBRARY.VIEWS</span>
+          <span ng-if="predicate === 'views' && !reverse">
+            <i class="ic ic-arrow-up ic-arrow-up--grey" aria-hidden="true"></i>
+          </span>
+          <span ng-if="predicate === 'views' && reverse">
+            <i class="ic ic-arrow-down ic-arrow-down--grey" aria-hidden="true"></i>
+          </span>
+        </div>
+      </div>
+      <div class="item privacy-header" ng-click="sort('published')" ng-class="{reverse:reverse}">
+        <span class="sortable" translate>LIBRARY.PRIVACY</span>
+        <span ng-if="predicate === 'published' && !reverse">
+          <i class="ic ic-arrow-up ic-arrow-up--grey" aria-hidden="true"></i>
+        </span>
+        <span ng-if="predicate === 'published' && reverse">
+          <i class="ic ic-arrow-down ic-arrow-down--grey" aria-hidden="true"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="gfy-table-flex" ng-if="gifList.type !== 'albums'" infinite-scroll="moreData()" infinite-scroll-disabled="moreDataDisabled()">
+    <div>
+      <div ng-repeat="gif in gifList | orderBy:predicate:reverse | filter:input.searchText track by gif.gfyId+$index" class="gfy-table-row-flex" id="{{gif.gfyId}}"
+      ng-class="{selected: gif.selected, draggable: gif.isDragged}" ng-click="updateSelection(gif)" ng-controller="listItemController" ng-mouseenter="mouseEnter()" data-ng-mouseleave="mouseLeft()" ng-cloak>
+        <div class="drop-zone" ng-drop="true" ng-drop-success="onDropComplete(gif.order, gif)">
+          <div class="drag-wrapper justify-mobile" ng-drag="gifList.type === 'album' && predicate === 'order' && !windowWidth(760)" ng-drag-data="gif" ng-drag-start="dragStart()"  ng-drag-success="onDragComplete(gif.order, $data)" ng-drag-stop="dragStop()">
+            <div class="center-flex gfy-table-cell-static">
+              <div class="check-box-outer" ng-cancel-drag>
+                <div class="noselect check-box">
+                  <input class="cursor-pointer" type="checkbox" ng-model="gif.selected" ng-click="$event.stopPropagation()" ng-change="updateSelection(gif, true)">
+                </div>
+              </div>
+              <div class="draggable-container" ng-class="{grab: predicate === 'order'}">
+                <div ng-click="$event.stopPropagation()" ng-click="false" class="order-outer non-mobile" ng-class="{nodrag: predicate !== 'order'}" ng-if="gifList.type === 'album'">
+                  <div class="order-wrapper">{{gif.order+1}}</div>
+                </div>
+                <!-- Mobile Thumbnail Wrapper -->
+                <div class="noselect thumbnail-wrapper mobile" ng-cancel-drag>
+                  <div class="center-flex table-thumbnail cursor-pointer">
+                    <spinner-animation class="blue large within" ng-if="isDeleting(gif.gfyId)"></spinner-animation>
+                    <a ng-href="https://gfycat.com/{{gif.gfyName}}" target="_self">
+                      <img class="img" ng-if="!isDeleting(gif.gfyId)" src="{{gif.thumb100PosterUrl}}"></img>
+                    </a>
+                  </div>
+                </div>
+                <div class="noselect thumbnail-outer non-mobile">
+                  <div ng-click="$event.stopPropagation()" class="table-thumbnail cursor-pointer">
+                    <img class="img" src="{{gif.thumb100PosterUrl}}" ng-class="{behind: isVideoShown()}"></img>
+                    <video data-ng-if="isVideoShown()" autoplay loop class="vid" muted
+                    itemscope itemtype="http://schema.org/VideoObject" ng-attr-poster="{{gif.thumb100PosterUrl}}">
+                      <source data-ng-src="{{gif.mobileUrl}}" type="video/mp4"/>
+                      <source data-ng-src="{{gif.mp4Url}}" type="video/mp4"/>
+                      <source data-ng-src="{{gif.webmUrl}}" type="video/webm"/>
+                    </video>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Mobile Title Wrapper -->
+            <div class="title-wrapper mobile" ng-cancel-drag>
+              <div class="name">
+                <span class="name noselect">{{gif.titleString}}</span>
+              </div>
+              <div class="font-small">
+                <span class="tags noselect">{{addHashTags(gif.tags)}}</span>
+              </div>
+              <div class="font-small">
+                <span class="date cursor-default noselect">{{toLocaleDate(gif.createDate * 1000)}}.</span>
+                <span class="views cursor-default noselect" translate translate-value-views="{{toLocaleNumber(gif.views)}}">PROFILE.TOTAL_VIEWS</span>
+              </div>
+            </div>
+            <div class="center-flex details-wrapper mobile cursor-pointer" ng-cancel-drag>
+              <div ng-click="showDetailsModal(gif); $event.stopPropagation(); gif.selected = true;">
+                <i class="ic ic-ellipsis ic-ellipsis--blue details" aria-hidden="true"></i>
+              </div>
+            </div>
+            <div class="gfy-table-cell-flex non-mobile" ng-cancel-drag>
+              <div class="name-outer">
+                <div class="name-wrapper">
+                  <input class="inplace-edit gif-title" type="text" ng-model="gif.titleString" ng-click="$event.stopPropagation()" ng-blur="blur($event, true)" ng-focus="focus($event)" ng-keyup="keyup($event)" translate translate-attr-placeholder="LIBRARY.TITLE_PROMPT"></input>
+                  <div>
+                    <input class="inplace-edit gif-tag" type="text" ng-model="gif.tagsString" ng-click="$event.stopPropagation()" ng-blur="blur($event, true)" ng-focus="focus($event)" ng-keyup="keyup($event)" translate translate-attr-placeholder="LIBRARY.TAG_PROMPT"></input>
+                  </div>
+                  <div class="gif-url-wrapper" ng-click="$event.stopPropagation()">
+                    <i class="ic ic-copy ic-copy--grey cursor-pointer" aria-hidden="true" ng-click="copyToClipboard($event, gif.gfyName)" ngclipboard data-clipboard-text="https://gfycat.com/{{gif.gfyName}}"></i>
+                    <a class="gif-url" href="https://gfycat.com/{{gif.gfyName}}" target="_blank" ng-click="$event.stopPropagation()">https://gfycat.com/{{gif.gfyName}}</a>
+                  </div>
+                </div>
+              </div>
+              <div class="date-outer">
+                <div class="date cursor-default noselect">{{toLocaleDate(gif.createDate * 1000)}}</br>{{gif.createDate * 1000 | date:'h:mm a'}}</div>
+              </div>
+              <div class="views-outer">
+                <div class="views cursor-default noselect">{{toLocaleNumber(gif.views)}}</div>
+              </div>
+              <div class="cursor-default noselect privacy-outer">
+                <div class="privacy">
+                  <span ng-if="gif.published == 1" ng-cancel-drag translate>LIBRARY.PUBLIC</span>
+                  <span ng-if="gif.published != 1" ng-cancel-drag translate>LIBRARY.HIDDEN</span>
+                  <i class="ic ic-globe ic-globe--grey float-right" aria-hidden="true" ng-if="gif.published == 1" ng-cancel-drag></i>
+                  <i class="ic ic-lock ic-lock--grey float-right" aria-hidden="true" ng-if="gif.published != 1" ng-cancel-drag></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- End of search footer -->
+      <div class="end-of-page">
+        <div ng-if="(loading && !loaded) || isPending.search">
+          <div class="spinner-wrapper center-flex">
+            <div>
+              <spinner-animation class="blue large center"></spinner-animation>
+            </div>
+          </div>
+        </div>
+        <div class="end-of-page-image" ng-if="(gifList.length === 0 || loaded || gifList.type !== 'library') && !(loading && !loaded)">
+          <div class="center-flex wrapper">
+            <div>
+              <div class="image"></div>
+              <span class="text" translate>{{'SEARCH_PAGE.REACHED_END'}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Album list view-->
+  <div class="gfy-table-flex" ng-if="gifList.type === 'albums'" infinite-scroll="moreData()" infinite-scroll-disabled="moreDataDisabled()">
+    <div>
+      <div ng-repeat="gif in gifList | orderBy:predicate:reverse | filter:input.searchText track by gif.gfyId+$index" class="gfy-table-row-flex justify-mobile album-item" id="{{gif.id}}"
+      ng-class="{selected: gif.selected}" ng-click="updateSelection(gif)" ng-controller="listItemController" ng-mouseenter="mouseEnter()" data-ng-mouseleave="mouseLeft()" ng-cloak >
+        <div class="center-flex gfy-table-cell-static">
+          <div class="center-flex check-box-outer">
+            <div class="noselect check-box">
+              <input class="cursor-pointer" type="checkbox" ng-model="gif.selected" ng-click="$event.stopPropagation()" ng-change="updateSelection(gif, true)">
+            </div>
+          </div>
+          <div class="image-container noselect center-flex non-mobile">
+            <div class="center-flex table-thumbnail cursor-pointer">
+              <img class="img" ng-click="$event.stopPropagation(); showAlbum(gif.id, gif.title)" src="{{gif['coverImageUrl-mobile']}}"></img>
+            </div>
+          </div>
+          <div class="noselect thumbnail-wrapper mobile">
+            <div class="center-flex table-thumbnail cursor-pointer">
+              <spinner-animation class="blue large within" ng-if="isDeleting(gif.linkText)"></spinner-animation>
+              <a ng-href="https://gfycat.com/{{userName}}/{{gif.linkText}}">
+                <img class="img" ng-if="!isDeleting(gif.linkText)" src="{{gif.thumb100PosterUrl}}"></img>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="title-wrapper mobile">
+          <div class="name">
+            <span class="name noselect">{{gif.titleString}}</span>
+          </div>
+          <div class="font-small">
+            <span class="tags noselect">{{addHashTags(gif.tags)}}</span>
+          </div>
+          <div class="font-small">
+            <span class="date cursor-default noselect">{{gif.descriptionString}}</span>
+          </div>
+        </div>
+        <div class="center-flex details-wrapper mobile cursor-pointer">
+          <div ng-click="showDetailsModal(gif); $event.stopPropagation(); gif.selected = true;">
+            <i class="ic ic-ellipsis ic-ellipsis--blue details" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="gfy-table-cell-flex non-mobile">
+          <div class="name-outer">
+            <div class="name-wrapper">
+              <input class="inplace-edit gif-title" type="text" ng-model="gif.titleString" ng-click="$event.stopPropagation()" ng-blur="blur($event, true)" ng-focus="focus($event)" ng-keyup="keyup($event)" translate translate-attr-placeholder="LIBRARY.TITLE_PROMPT"></input>
+              <div>
+                <input class="inplace-edit gif-tag" type="text" ng-model="gif.tagsString" ng-click="$event.stopPropagation()" ng-blur="blur($event, true)" ng-focus="focus($event)" ng-keyup="keyup($event)" translate translate-attr-placeholder="LIBRARY.TAG_PROMPT"></input>
+              </div>
+              <div>
+                <input class="inplace-edit gif-tag" type="text" ng-model="gif.descriptionString" ng-click="$event.stopPropagation()" ng-blur="blur($event, true)" ng-focus="focus($event)" ng-keyup="keyup($event)" translate translate-attr-placeholder="LIBRARY.DESCRIPTION_PROMPT"></input>
+              </div>
+              <div class="gif-url-wrapper" ng-click="$event.stopPropagation()">
+                <i class="ic ic-copy ic-copy--grey cursor-pointer" aria-hidden="true" ng-click="copyToClipboard($event, gif.linkText)" ngclipboard data-clipboard-text="https://gfycat.com/{{userName}}/{{gif.linkText}}"></i>
+                <a class="gif-url" href="https://gfycat.com/{{userName}}/{{gif.linkText}}" target="_blank" ng-click="$event.stopPropagation()">https://gfycat.com/{{userName}}/{{gif.linkText}}</a>
+              </div>
+            </div>
+          </div>
+          <div class="cursor-default noselect privacy-outer non-mobile" ng-cancel-drag>
+            <div class="privacy">
+              <span ng-if="gif.published == 1" translate>LIBRARY.PUBLIC</span>
+              <span ng-if="gif.published != 1" translate>LIBRARY.HIDDEN</span>
+              <i class="ic ic-globe ic-globe--grey float-right" aria-hidden="true" ng-if="gif.published == 1"></i>
+              <i class="ic ic-lock ic-lock--grey float-right" aria-hidden="true" ng-if="gif.published != 1"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- End of search footer -->
+      <div class="end-of-page">
+        <div ng-if="(loading && !loaded) || isPending.search">
+          <div class="spinner-wrapper center-flex">
+            <div>
+              <spinner-animation class="blue large center"></spinner-animation>
+            </div>
+          </div>
+        </div>
+        <div class="end-of-page-image" ng-if="(gifList.length === 0 || loaded || gifList.type !== 'library') && !(loading && !loaded)">
+          <div class="center-flex wrapper">
+            <div>
+              <div class="image"></div>
+              <span class="text" translate>{{'SEARCH_PAGE.REACHED_END'}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

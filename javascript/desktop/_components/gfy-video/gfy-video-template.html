@@ -1,0 +1,91 @@
+
+<div class='ng-modal-dialog' ng-style="setOriginalWidth()" ng-mousemove="pageMouseMove($event)" ng-mouseup="pageMouseUp($event)" ng-mouseleave="pageMouseLeave($event)">
+    <div class="header">
+        <div align="left" class='ng-modal-title'>Gfy Player</div>
+        <div class='ng-modal-close'>
+            <span ng-click='switchToVid();dial()'>
+                <b>Close & view on gfycat.com</b> &#215;
+            </span>
+        </div>
+    </div>
+
+    <!-- stuff goes here -->
+    <div class="content"  >
+        <div class="vidWrap" >
+            <video ng-if = "gfyModalMachine.modalAlbumPlayerShown" style="display: block;"  id="modalVid" autoplay loop ng-click="playPause()" preload="none" ng-attr-poster="//thumbs.gfycat.com/{{ gfyobject.gfyName }}-poster.jpg" ng-mousedown="mouseDownVid($event)" ng-mouseup="mouseUpVid($event)" ng-mousemove="mouseMoveVid($event)" ng-dblclick="dblClickVid()">
+                <source ng-src="{{trustResource(gfyobject.webmUrl)}}" type="video/webm" />
+                <source ng-src="{{trustResource(gfyobject.mp4Url)}}" type="video/mp4" />
+            </video>
+            <div style=" height: 40px; margin-bottom: -20px; margin-top: -20px; z-index: 10100; position: absolute; width: 100%; cursor: pointer;" ng-mousedown="scrubMouseDown($event)" ng-mouseenter="scrubMouseEnter()" ng-mouseleave="scrubMouseLeave()">
+                <div ng-if="showLoadingBar" class="progress" style="height: 5px;border-radius: 0; border: 0; margin: 0; margin-top: 0px; position: absolute; top:20px; width: 100%; background-color: transparent;">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="{{loadedPercent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{loadedPercent}}%; transition-duration: 0.3s; background-color: red;">
+                        <span class="sr-only">{{loadedPercent}}% Complete</span>
+                    </div>
+                </div>
+                <div ng-if="overScrub || mouseIsDown" id="scrubBar" class="progress" style="height: 5px;border-radius: 0; border: 0; margin: 0; position: absolute; width: 100%; top: 20px; background-color: transparent;">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="{{currentPlayPercent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{currentPlayPercent}}%; transition-duration: 0.3s;">
+                        <span class="sr-only">60% Complete</span>
+                    </div>
+                </div>
+            </div>
+            <img id="gfycatgif" data-ng-src="{{trustResource(gifSource)}}" style="display: none; color:blue; width: 100%; position: relative; vertical-align: middle;" />
+            <div class="loading">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+            </div>
+            <div id="stopped" style="display:none">Mouse stopped</div>
+        </div>
+        <div class="menuBar">
+            <div class="left">
+                <button class="btn btn-default direction reverse" ng-click="forwardReverse()" ng-if="!isReverse&&!showGif">
+                    <i class="glyphicon glyphicon-backward"></i> Reverse playback
+                </button>
+                <button class="btn btn-default direction forward" ng-click="forwardReverse()" ng-if="isReverse&&!showGif">
+                    <i class="glyphicon glyphicon-forward"></i> Forward playback
+                </button>
+                <div class="dropdown speed" ng-if="!showGif">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                        Speed
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                        <li role="presentation" data-ng-click="setSpeed(0.25)"><a role="menuitem" tabindex="-1" href="#">0.25x</a></li>
+                        <li role="presentation" data-ng-click="setSpeed(0.5)"><a role="menuitem" tabindex="-1" href="#">0.5x</a></li>
+                        <li role="presentation" data-ng-click="setSpeed(1)"><a role="menuitem" tabindex="-1" href="#">1x</a></li>
+                        <li role="presentation" data-ng-click="setSpeed(2)"><a role="menuitem" tabindex="-1" href="#">2x</a></li>
+                        <li role="presentation" data-ng-click="setSpeed(3)"><a role="menuitem" tabindex="-1" href="#">3x</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="right">
+                <button class="btn btn-default viewFormat gif" ng-if="!showGif" ng-click="switchToGif()">
+                    <i class="icon-png turtle"></i> View as gif
+                </button>
+                <button class="btn btn-default viewFormat gfy" ng-if="showGif" ng-click="switchToVid()">
+                    <i class="icon-png rabbit"></i> View as gfycat
+                </button>
+                <i class="glyphicon glyphicon-fullscreen" title="Expand" ng-if="!showGif" ng-click="fullScreen()"></i>
+            </div>
+        </div>
+        <div class="next arrow" ng-show="gfyModalMachine.modalAlbumPlayerShown" ng-click="albumNextButton()" style="display: block;">
+            <div class="table">
+                <div class="tableCell">
+                    <i class="icon-sprite arrow-lg-darker right"></i>
+                </div>
+            </div>
+        </div>
+        <div class="prev arrow" ng-show="gfyModalMachine.modalAlbumPlayerShown" ng-click="albumPrevButton()" style="display: block;">
+            <div class="table">
+                <div class="tableCell">
+                    <i class="icon-sprite arrow-lg-darker left"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+    </div>
+
+    <div class='ng-modal-dialog-content' ng-transclude></div>
+</div>

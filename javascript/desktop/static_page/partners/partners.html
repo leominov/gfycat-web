@@ -1,0 +1,143 @@
+<div class="static_container container-fluid partners-container">
+    <div class="row title-row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <span class="title">Gfycat Partners</span>
+      </div>
+    </div>
+    <div class="row content-block">
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+        <p>
+          Are you an artist, brand or company, celebrity, or viral creator? Connect with us and become
+          a Gfycat partner! Take advantage of our easy-to-use, high speed, high quality delivery
+          format to host all your new and existing GIFs on your own branded channel.
+        </p>
+        <p>
+          Easily share your Gfycat-hosted GIFs to autoplay on Facebook, Twitter, and other social
+          sites along with easy page embeds and partner-specific features! As a partner, we'll be
+          able to better understand your needs and tailor features and tools to meet them.
+        </p>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <a href="/partners/signup" class="partner-btn">Become a Partner Today</a>
+      </div>
+    </div>
+
+
+    <!-- Quote Carousel -->
+    <div class="quotes-container">
+      <div class="row" id="quotes-row">
+        <div class="carousel-wrapper">
+          <div class="carousel slide" data-ride="carousel" id="quote-carousel">
+            <!-- Bottom Carousel Indicators -->
+            <ol class="carousel-indicators">
+              <li data-target="#quote-carousel" data-slide-to="0" class="active"></li>
+              <li data-target="#quote-carousel" data-slide-to="1"></li>
+              <li data-target="#quote-carousel" data-slide-to="2"></li>
+              <li data-target="#quote-carousel" data-slide-to="3"></li>
+            </ol>
+            
+            <!-- Carousel Slides / Quotes -->
+            <div class="carousel-inner">
+            
+              <!-- Quote 1 -->
+              <div class="item active">
+                <blockquote>
+                  <div class="row">
+                    <div class="col-sm-3 text-center">
+                      <img class="img-circle" src="https://profiles.gfycat.com/446fdd1cf51c4e709e4273d66f872acb394eb09c9e931b8af325d1112ec80811.png">
+                    </div>
+                    <div class="col-sm-9">
+                      <p>
+                        One of the easiest and most reliable tools for science journalism.
+                      </p>
+                      <small>
+                        <a href="https://gfycat.com/@popsci">Popular Science (@popsci)</a>
+                      </small>
+                    </div>
+                  </div>
+                </blockquote>
+              </div>
+              <!-- Quote 2 -->
+              <div class="item">
+                <blockquote>
+                  <div class="row">
+                    <div class="col-sm-3 text-center">
+                      <img class="img-circle" src="https://profiles.gfycat.com/e75c15c7aeca9c2448c8eba18b34724c4efd4e173a3b67b2fdfbba21caa4b05d.png">
+                    </div>
+                    <div class="col-sm-9">
+                      <p>
+                        As an artist I need my work to appear in stunning quality and to remain attributed to me even when it's shared--both things Gfycat excels at.
+                      </p>
+                      <small>
+                        <a href="https://gfycat.com/@matjoez">Matthew Vandeputte (@matjoez)</a>
+                      </small>
+                    </div>
+                  </div>
+                </blockquote>
+              </div>
+              <!-- Quote 3 -->
+              <div class="item">
+                <blockquote>
+                  <div class="row">
+                    <div class="col-sm-3 text-center">
+                      <img class="img-circle" src="https://profiles.gfycat.com/6b92dcfd156e3bda3be4a279d6571dc584c644ec685425277e64b88a5789a05f.png">
+                    </div>
+                    <div class="col-sm-9">
+                      <p>
+                        Gfycat enables our team to efficiently communicate with AirConsole users using high-quality GIFs. GIFs are a vital part of our communication strategy and Gfycat never lets us down.
+                      </p>
+                      <small>
+                        <a href="https://gfycat.com/@airconsole">AirConsole (@airconsole)</a>
+                      </small>
+                    </div>
+                  </div>
+                </blockquote>
+              </div>
+              <!-- Quote 4 -->
+              <div class="item">
+                <blockquote>
+                  <div class="row">
+                    <div class="col-sm-3 text-center">
+                      <img class="img-circle" src="https://profiles.gfycat.com/0c08b595a80ff54b932375f44dec54a8a6427d13967ebd4d245eafffbadcc1ea.png">
+                    </div>
+                    <div class="col-sm-9">
+                      <p>
+                        I was blown away by the sudden upgrade in image quality, loading speed, and cross-platform shareability. Gfycat is by far the best way to present my art to the world.
+                      </p>
+                      <small>
+                        <a href="https://gfycat.com/@joewinograd">Joe Winograd (@joewinograd)</a>
+                      </small>
+                    </div>
+                  </div>
+                </blockquote>
+              </div>
+            </div>
+            
+            <!-- Carousel Buttons Next/Prev -->
+            <a data-slide="prev" href="#quote-carousel" class="left carousel-control"><i class="ic ic-angle-left ic-angle-left--blue"></i></a>
+            <a data-slide="next" href="#quote-carousel" class="right carousel-control"><i class="ic ic-angle-right ic-angle-right--blue"></i></a>
+          </div>                          
+        </div>
+      </div>
+    </div>
+
+    <div class="row title-row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <span class="title">Featured Partners</span>
+      </div>
+    </div>
+
+    <div class="row partners-row">
+      <div class="col-lg-3 col-md-4 col-sm-4 col-xs-6" data-ng-repeat="partner in partnerList" ng-init="isLast($last)">
+        <a class="profile-link" href="{{partner.profile}}" target="_blank">
+          <div class="gif-div masked">
+            <div class="gfyitem" data-id="{{ partner.gfyId }}" data-optimize=true data-hd=false></div>
+            <div class="text-content">
+              <div class="partner-name">{{partner.text}}</div>
+              <div class="partner-desc">{{partner.description}}</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+</div>

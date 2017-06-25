@@ -1,0 +1,174 @@
+<section class="editVideo">
+    <div class="container">
+        <div class="row title" data-ng-class="{'error': gfyFileToEdit.errorTitleSave}">
+            <div class="col-xs-12">
+                <label>Gfycat Title</label>
+                <div class="input-group">
+                    <input class="form-control" type="text" id="title" data-ng-model="gfyFileToEdit.usersGfyTitle" data-ng-init="gfyFileToEdit.usersGfyTitle=gfyFileToEdit.title; gfyFileToEdit.usersGfyTitleTemp=gfyFileToEdit.title;" ng-change="gfyEdit.changeOfInfo(gfyFileToEdit)" placeholder="{{ gfyFileToEdit.title || 'Untitled'}}" data-char-limit="60" onkeyup="displayCharLimit(this);" ng-class="{'saveError': gfyFileToEdit.errorTitleSave,'saveEnabled': gfyFileToEdit.titleSaving}">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-8">
+                <div class="vidWrap">
+                    <video autoplay="autoplay" loop>
+                        <source data-ng-src="{{ gfyFileToEdit.webmUrl }}" type="video/webm"/>
+                        <source data-ng-src="{{ gfyFileToEdit.mp4Url }}" type="video/mp4"/>
+                    </video>
+                </div>
+            </div>
+            <div class="col-xs-4 sidebar">
+                <ul class="list-group">
+                    <li class="list-group-item disabled">
+                        Duration
+                        <span class="value">{{ (gfyFileToEdit.numFrames/gfyFileToEdit.frameRate | number : 1) || 'error' }} s</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Uploaded on
+                        <span class="value">{{gfyFileToEdit.createDate | date:'MMMM d, y h:mma'}}</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Original Size
+                        <span class="value">{{gfyFileToEdit.gifSize | gfyBytes: 'dec' }}</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Converted Size
+                        <span class="value">{{gfyFileToEdit.webmSize | gfyBytes: 'dec' }}</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Compression Ratio
+                        <span class="value">{{gfyFileToEdit.gifSize/gfyFileToEdit.webmSize | number : 1}} : 1</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Current Viewers
+                        <span class="value" gfyid="{{gfyFileToEdit.gfyId}}" viewtype="live" livecounter>1</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Total Views
+                        <span class="value" gfyid="{{gfyFileToEdit.gfyId}}" livecounter>{{gfyFileToEdit.views | number}}</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Likes
+                        <span class="value">{{gfyFileToEdit.likes | number}}</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Dislikes
+                        <span class="value">{{gfyFileToEdit.dislikes | number}}</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Shares
+                        <span class="value">{{gfyFileToEdit.shares | number}}</span>
+                    </li>
+                    <!--<li class="list-group-item disabled">-->
+                        <!--Comments-->
+                        <!--<span class="value">{{gfyFileToEdit.commentCount || '-'}}</span>-->
+                    <!--</li>-->
+                </ul>
+            </div>
+        </div>
+        <div class="row thumbs">
+            <div class="col-xs-4 gfyUrl">
+                <label>Gfycat Url</label>
+                <div class="input-group">
+                    <a href="/{{gfyFileToEdit.gfyName}}" target="_blank">https://gfycat.com/{{gfyFileToEdit.gfyName}}</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="gfycatHeader clearfix">
+                    <h2>Gfycat Info</h2>
+                    <!--<a href="#">Replace or Re-upload the Gfycat</a>-->
+                </div>
+            </div>
+        </div>
+        <div class="row descWrap">
+            <div class="col-xs-8 description" data-ng-class="{'error': gfyFileToEdit.errorDescriptionSave}">
+                <label>Description</label>
+                <div class="input-group">
+                    <textarea class="form-control" rows="3" id="description" placeholder="Enter Description" data-ng-model="gfyFileToEdit.usersDescription" data-ng-init="gfyFileToEdit.usersDescription=gfyFileToEdit.description; gfyFileToEdit.usersDescriptionTemp=gfyFileToEdit.description;" ng-change="gfyEdit.changeOfInfo(gfyFileToEdit)" data-char-limit="1000" onkeyup="displayCharLimit(this);"></textarea>
+                </div>
+            </div>
+            <div class="col-xs-4 settings">
+                <ul class="list-group">
+                    <!--<li class="list-group-item">-->
+                        <!--<input id="allowComments" type="checkbox" class="checkbox" data-ng-model="gfyFileToEdit.usersGfyComments" ng-change="gfyEdit.changeOfInfo(gfyFileToEdit)" data-ng-init="gfyFileToEdit.usersGfyComments=(gfyFileToEdit.allowComments || true); gfyFileToEdit.usersGfyCommentsTemp=(gfyFileToEdit.allowComments || true);"/><label for="allowComments">Allow Comments</label>-->
+                    <!--</li>-->
+                    <li class="list-group-item">
+                        <input id="publish" type="checkbox" class="checkbox" data-ng-model="gfyFileToEdit.usersGfyPublish" ng-change="gfyEdit.changeOfInfo(gfyFileToEdit)" data-ng-init="gfyFileToEdit.usersGfyPublish=gfyFileToEdit.published; gfyFileToEdit.usersGfyPublishTemp=gfyFileToEdit.published;"/><label for="publish">Publish (visible to public)</label>
+                    </li>
+                    <div class="radioBtnGroup" data-ng-init="gfyFileToEdit.usersGfyNsfw=gfyFileToEdit.nsfw; gfyFileToEdit.usersGfyNsfwTemp=gfyFileToEdit.nsfw;" data-ng-style="{true:{'border': 'dashed', 'color': 'black', 'margin-top': '4px', 'background-color': '#eeeeee'},false : {}} [gfyFileToEdit.usersGfyNsfw==undefined]">
+                        <input type="radio" data-ng-model="gfyFileToEdit.usersGfyNsfw" ng-change="gfyEdit.changeOfInfo(gfyFileToEdit)" value="Clean">
+                        <label >Clean</label>
+                        <input data-ng-if="gfyFileToEdit.usersGfyNsfw!='Porn'" type="radio" data-ng-model="gfyFileToEdit.usersGfyNsfw" ng-change="gfyEdit.changeOfInfo(gfyFileToEdit)" value="NSFW">
+                        <input data-ng-if="gfyFileToEdit.usersGfyNsfw=='Porn'" type="radio" data-ng-model="gfyFileToEdit.usersGfyNsfw" ng-change="gfyEdit.changeOfInfo(gfyFileToEdit)" value="Porn">
+                        <label data-ng-if="gfyFileToEdit.usersGfyNsfw=='Clean' || gfyFileToEdit.usersGfyNsfw==undefined">Possibly Offensive or NSFW</label>
+                        <div data-ng-if="gfyFileToEdit.usersGfyNsfw=='NSFW' || gfyFileToEdit.usersGfyNsfw=='Porn'" class="btn-group" data-ng-init="(gfyFileToEdit.usersGfyNsfw=='NSFW')? button.text='Offensive' : button.text='NSFW'">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                {{button.text}} <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" data-ng-click="button.text='Offensive'; gfyFileToEdit.usersGfyNsfw='NSFW'; gfyEdit.changeOfInfo(gfyFileToEdit)">Possibly Offensive</a></li>
+                                <li><a href="#" data-ng-click="button.text='NSFW'; gfyFileToEdit.usersGfyNsfw='Porn'; gfyEdit.changeOfInfo(gfyFileToEdit)">Definitely NSFW</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+        </div>
+        <div class="row tagsWrap">
+            <div class="tags" data-ng-controller="autoCtrl">
+                <div class="col-xs-3 tag" data-ng-class="{'error': gfyFileToEdit.errorTag1Save}">
+                    <label>Tag 1</label>
+                    <autocomplete ng-model="gfyFileToEdit.usersGfyTag1" ng-click="gfyEdit.changeOfInfo(gfyFileToEdit)" attr-placeholder="Tag 1" ng-init="gfyFileToEdit.usersGfyTag1=gfyFileToEdit.userTags[0]; gfyFileToEdit.tag1=gfyFileToEdit.userTags[0];" click-activation="true" data="gfyTags" on-type="doSomething" on-select="doSomethingElse"></autocomplete>
+                </div>
+                <div class="col-xs-3 tag" data-ng-class="{'error': gfyFileToEdit.errorTag2Save}">
+                    <label>Tag 2</label>
+                    <autocomplete ng-model="gfyFileToEdit.usersGfyTag2" ng-click="gfyEdit.changeOfInfo(gfyFileToEdit)" attr-placeholder="Tag 2" ng-init="gfyFileToEdit.usersGfyTag2=gfyFileToEdit.userTags[1]; gfyFileToEdit.tag2=gfyFileToEdit.userTags[1];" click-activation="true" data="gfyTags" on-type="doSomething" on-select="doSomethingElse"></autocomplete>
+                </div>
+                <div class="col-xs-3 tag" data-ng-class="{'error': gfyFileToEdit.errorTag3Save}">
+                    <label>Tag 3</label>
+                    <autocomplete ng-model="gfyFileToEdit.usersGfyTag3" ng-click="gfyEdit.changeOfInfo(gfyFileToEdit)" attr-placeholder="Tag 3" ng-init="gfyFileToEdit.usersGfyTag3=gfyFileToEdit.userTags[2]; gfyFileToEdit.tag3=gfyFileToEdit.userTags[2];" click-activation="true" data="gfyTags" on-type="doSomething" on-select="doSomethingElse"></autocomplete>
+                </div>
+            </div>
+
+
+            <!--<div class="col-xs-3 addToAlbum">-->
+                <!--<label>Add to</label>-->
+                <!--<div class="btn-group">-->
+                    <!--<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">-->
+                        <!--Choose Album-->
+                        <!--<span class="caret"></span>-->
+                    <!--</button>-->
+                    <!--<ul class="dropdown-menu multi-level" role="menu" aria-labelledby="btnBatchCmd">-->
+                        <!--<li class="dropdown-submenu" ng-repeat="item in accountTree.userAlbums" ng-include="'upfolder'"></li>-->
+                    <!--</ul>-->
+                    <!--&lt;!&ndash;this is a script function to generate a recursive array of items/nodes from the account folders in the function button&ndash;&gt;-->
+                    <!--<script type="text/ng-template" id="upfolder">-->
+                        <!--<a data-ng-class="{noSubFolders: !item.nodes.length}" href="#" ng-click="setUploadFolder(item)">{{ item.title }}</a>-->
+                        <!--<ul class="dropdown-menu" ng-if="item.nodes">-->
+                            <!--<li class="dropdown-submenu" ng-repeat="item in item.nodes" ng-include="'upfolder'"></li>-->
+                        <!--</ul>-->
+                    <!--</script>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+        <div class="bottomButtons">
+            <button data-ng-if="!gfyEdit.savingUsersInfo(gfyFileToEdit)" type="button" class="btn btn-default blueBtn"  style="width:58px;" ng-click="gfyEdit.saveUsersInfo(gfyFileToEdit)">
+                <span data-ng-if="!gfyFileToEdit.saved">Save</span>
+                <i data-ng-if="gfyFileToEdit.saved && !gfyEdit.isErrorSavingUsersInfo(gfyFileToEdit)" class="success glyphicon glyphicon-ok"></i>
+                <i data-ng-if="gfyFileToEdit.saved && gfyEdit.isErrorSavingUsersInfo(gfyFileToEdit)" class="error glyphicon glyphicon-exclamation-sign"></i>
+            </button> <!-- ng-click='updateChanges(); resetCurrentSearch(); toggleSettingsOffa();'-->
+            <button data-ng-if="gfyEdit.savingUsersInfo(gfyFileToEdit)" type="button" class="btn btn-default blueBtn pending" style="width:58px;padding:16px 9px;" ng-click=""> <!--place holder button...click all you want-->
+                <spinner-animation color="white"></spinner-animation>
+            </button>
+            <button data-ng-if="currentFolderRootId==accountTree.userFolders[0].id" class="btn btn-default cancelBtn" ng-click='resetCurrentSearch();toggleEditPageOff();'>Back</button><!-- ng-click='toggleSettingsOffa()''-->
+            <!--<button data-ng-if="currentFolderRootId==accountTree.userAlbums[0].id" class="btn btn-default cancelBtn" ng-click='toggleEditPageOff();'>Back</button>&lt;!&ndash; ng-click='toggleSettingsOffa()''&ndash;&gt;-->
+            <!--<button class="btn btn-default deleteBtn">Delete Gfycat</button>--> <!-- blank this out for now-->
+        </div>
+
+        <div data-ng-if="gfyFileToEdit.saved && gfyEdit.isErrorSavingUsersInfo(gfyFileToEdit)" style="color: red;" data-ng-repeat="itemError in gfyFileToEdit.errorMsg">
+            <div><i class="error glyphicon glyphicon-exclamation-sign"></i> {{itemError}} </div>
+        </div>
+    </div>
+</section>

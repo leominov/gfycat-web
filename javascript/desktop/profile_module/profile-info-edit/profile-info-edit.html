@@ -1,0 +1,45 @@
+<div class="profile-info-edit-container" ng-class="{'show': isEditOpened}">
+  <form name="profileInfoForm" class="form profile-info-form" novalidate>
+    <div class="user-image" ng-class="{'pending': isUploadImagePending}">
+      <img ng-src="{{currInfo.profileImageUrl ? currInfo.profileImageUrl : imageSrc}}">
+      <i class="ic ic-camera ic-camera--white"></i>
+      <spinner-animation class="large white"></spinner-animation>
+      <input type="file" translate translate-attr-title="{{'PROFILE.CHANGE_PICTURE'}}"
+        class="input-image" name="image" accept="image/*" />
+    </div>
+    <form class="form" name="changePasswordForm" novalidate ng-keyup="onChangePasswordFormKeyup($event)">
+      <div class="user-info">
+        <div class="form-group name">
+          <div class="form-input-group">
+            <input class="form-control input-name" name="name" ng-model="info.name"
+              translate translate-attr-placeholder="{{'PROFILE.ADD_NAME'}}" ng-change="clearError('name')" maxlength="80">
+            <i class="field-status-icon field-status-icon--invalid" ng-show="profileInfoForm.name.$invalid || error.name"></i>
+          </div>
+        </div>
+        <span class="gfycat-username">@{{info.username}}</span> |
+        <span class="views" translate translate-value-views="{{toLocaleNumber(currInfo.views)}}">{{'PROFILE.TOTAL_VIEWS'}}</span>
+        <div class="form-group url">
+          <i class="ic ic-link ic-link--grey"></i>
+          <div class="form-input-group">
+            <input class="form-control input-url" name="url" ng-model="info.profileUrl"
+              translate translate-attr-placeholder="{{'PROFILE.ADD_URL'}}" ng-change="clearError('url')">
+            <i class="field-status-icon field-status-icon--invalid" ng-show="profileInfoForm.url.$invalid || error.url"></i>
+            <span class="help-block help-block--input-error"
+              ng-show="profileInfoForm.url.$invalid || error.url" translate>{{'PROFILE.NOT_VALID_URL'}}</span>
+          </div>
+        </div>
+        <div class="form-group description">
+          <textarea class="form-control textarea-description" ng-model="info.description"
+            translate translate-attr-placeholder="{{'PROFILE.ADD_DESCRIPTION'}}"
+            ng-change="clearError('description')" maxlength="150"></textarea>
+          <span class="help-block help-block--input-error" ng-show="profileInfoForm.description.$invalid || error.description"
+            translate>{{'PROFILE.NOT_VALID_DESCRIPTION'}}</span>
+        </div>
+      </div>
+      <button class="btn btn-blue-filled btn-large" ng-click="submitProfileInfoForm()"
+        ng-class="{'disabled btn-grey-filled': isFormError(), 'pending': formSubmitPending}">
+        <spinner-animation class="white"></spinner-animation>
+        <span class="button-text" translate>{{'PROFILE.SAVE'}}</span>
+      </button>
+  </form>
+</div>

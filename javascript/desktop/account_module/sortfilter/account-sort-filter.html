@@ -1,0 +1,14 @@
+<div id="ddlFilter" class="btn-group">
+    <span class="lblSortBy">{{msgs.sortByText}}</span>
+    <button type="button" class="btn btn-default dropdown-toggle sortBy" data-toggle="dropdown">
+        {{sortButtonText}}<span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+        <li><a href="#" ng-click="setFilter(1)">{{msgs.textSortButtonDropNewest}}</a></li>
+        <li><a href="#" ng-click="setFilter(2)">{{msgs.textSortButtonDropOldest}}</a></li>
+        <li><a href="#" ng-click="setFilter(3)">{{msgs.textSortButtonDropAZ}}</a></li>
+        <li><a href="#" ng-click="setFilter(4)">{{msgs.textSortButtonDropZA}}</a></li>
+        <li><a href="#" ng-click="setFilter(5)">{{msgs.textSortButtonDropViewMost}}</a></li>
+        <li><a href="#" ng-click="setFilter(6)">{{msgs.textSortButtonDropViewLeast}}</a></li>
+    </ul>
+</div>

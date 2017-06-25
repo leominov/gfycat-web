@@ -1,0 +1,110 @@
+<div id="myid12">
+    <div class="itemWrap"
+         ng-repeat="gfyitem in accountTree.accountGfys | filter:gfyitem.gfyName | orderBy:orderProperty "> <!-- | filter:usersLibQuery-->
+        <div id="item1" data-item-name="Item 1" class="item clearfix" ng-class="{highlightSelectedGfy: gfyitem.selected==true}">
+            <div class="chkWrap">
+                <input type="checkbox" ng-model="gfyitem.selected" ng-change="gfySelectedChange(gfyitem.selected)" >
+            </div>
+            <div class="thumbWrap">
+                <img id={{gfyitem.gfyNumber}} draggable class="itemImage" alt="item image" ng-src="https://thumbs.gfycat.com/{{ gfyitem.gfyName }}-thumb100.jpg">  
+                <div class="tags">
+                    <span data-ng-if="gfyitem.userTags[0]" class="tag" data-ng-click="goToPage('/tag/',gfyitem.userTags[0])">{{gfyitem.userTags[0]}}</span> <!--tag 1-->
+                    <span data-ng-if="gfyitem.userTags[1]" class="tag" data-ng-click="goToPage('/tag/',gfyitem.userTags[1])">{{gfyitem.userTags[1]}}</span> <!--tag 2-->
+                    <span data-ng-if="gfyitem.userTags[2]" class="tag" data-ng-click="goToPage('/tag/',gfyitem.userTags[2])">{{gfyitem.userTags[2]}}</span> <!--tag 3-->
+                </div>
+            </div>
+            <div class="itemDetails">
+                <h2>
+                    <a data-ng-if="currentFolderRootId == accountTree.userFolders[0].id" data-ng-click="toggleEditPage(gfyitem)"> {{ gfyitem.title || 'Untitled' }}</a>
+                    <a data-ng-if="currentFolderRootId == accountTree.userBookmarks[0].id" data-ng-click="toggleBookmark(gfyitem)"> {{ gfyitem.title || 'Untitled' }}</a>
+                </h2>
+                <div class="copy-url">
+                  <span class="share-link" id="share-link-{{$index}}">{{globalSiteUrl}}/{{gfyitem.gfyName}}</span>
+                  <span class="copy-btn" ngclipboard data-clipboard-target="#share-link-{{$index}}">
+                    <i class="copy-icon"></i></span>
+                </div>
+                <ul class="itemStats">
+                    <li class="liveViews" title="Live views">
+                        <span class="icon-png liveViews999999"></span>
+                        <span gfyid="{{gfyitem.gfyId}}" viewtype="live" livecounter>1</span>
+                    </li>
+                    <li class="views" title="Total views">
+                        <span class="glyphicon glyphicon-eye-open"></span>
+                        <span gfyid="{{gfyitem.gfyId}}" livecounter>{{gfyitem.views | number}}</span>
+                    </li>
+                    <li class="likes" title="Likes">
+                        <span class="glyphicon glyphicon-thumbs-up"></span> {{gfyitem.likes | number}}
+                    </li>
+                    <li class="shares" title="Shares">
+                        <span class="glyphicon glyphicon-share-alt"></span> {{gfyitem.shares | number}}
+                    </li>
+                </ul>
+                <div class="actions" data-ng-hide="currentFolderRootId == accountTree.userBookmarks[0].id">
+
+                    <div class="delete">
+                        <i ng-click="gfyitem.reallyDelete=true" class="glyphicon glyphicon-trash"></i>
+                        <div class="confirm" ng-show="gfyitem.reallyDelete==true">
+                            {{msgs.askReallyDeleteMsg}}
+                            <span ng-click="deleteThisOne(this,$index)">{{msgs.askReallyDeleteMsgYes}}</span>
+                            <span ng-click="gfyitem.reallyDelete=false">{{msgs.askReallyDeleteMsgNo}}</span>
+                            <span ng-show="gfyitem.deleteBusy==true">{{msgs.askReallyDeleteMsgStatus}}</span>
+                        </div>
+                    </div>
+                    <div class="publish" ng-show="gfyitem.reallyDelete==false">
+                        <div class="yes" ng-show="gfyitem.published==true && gfyitem.savingPublishState==false" ng-click="gfyitem.publishStateChangingToFalse=true">
+                            <i class='glyphicon glyphicon-ok-circle'></i>
+                            <span>PUBLISHED</span>
+                        </div>
+                        <div class="saving" ng-show="gfyitem.savingPublishState">
+                            <i class='glyphicon glyphicon-time'></i>
+                            <span>Saving...</span>
+                        </div>
+                        <div class="no" ng-show="gfyitem.published==false && !gfyitem.savingPublishState && gfyitem.publishStateChangingToFalse==false" ng-click="publishSingleSelected(gfyitem,$index)">
+                            <i class='glyphicon glyphicon-ban-circle'></i>
+                            <span>NOT PUBLISHED</span>
+                        </div>
+                        <div class="confirm" ng-init="moreinfo=false" ng-show="gfyitem.published==true && gfyitem.publishStateChangingToFalse==true">
+                            {{msgs.askReallyUnpublishMsg}}
+                            <span ng-click="publishSingleSelected(gfyitem,$index)">Yes</span>
+                            <span ng-click="gfyitem.publishStateChangingToFalse=false; moreinfo=false;">No</span>
+                            <span ng-show="moreinfo==false" ng-click="moreinfo=true">?</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="itemCreatedDate">
+                {{ gfyitem.createDate | date:'MMMM d, y h:mma' }}
+            </div>
+        </div>
+        <div class="morePublishInfo" ng-show="moreinfo==true" ng-click="moreinfo=false">
+            {{msgs.warnUnpublishMsg}}
+        </div>
+    </div>
+</div>
+<!--<div data-ng-if="busySignal">{{msgs.busyLoadingAccountContent}}</div>-->
+<div data-ng-if="busySignal" class="loading" >
+    <div class="bounce1" ></div>
+    <div class="bounce2" ></div>
+    <div class="bounce3" ></div>
+</div>
+<div class="empty" ng-show="isGfyListEmpty===true && !busySignal">
+    <div class="tumbleweed"></div>
+    <i class="glyphicon glyphicon-facetime-video"></i>
+    <h3 ng-show="currentFolderRootId==accountTree.userFolders[0].id && !accountTree.searchingAccount">{{msgs.folderEmptyGfycats}}</h3>
+    <h3 ng-show="currentFolderRootId==accountTree.userFolders[0].id && accountTree.searchingAccount">{{msgs.folderSearchEmptyGfycats}}</h3>
+    <!--<h3 ng-show="currentFolderRootId==accountTree.userAlbums[0].id">{{msgs.folderEmptyAlbums}}</h3>-->
+    <h3 ng-show="currentFolderRootId==accountTree.userBookmarks[0].id">{{msgs.folderEmptyBookmarks}}</h3>
+    <p class="hint" data-folder-category="{{ currentFolderRootTitle }}" data-ng-if="!accountTree.searchingAccount">
+        {{msgs.hintMoveFilesMsg}}
+        <br>
+        <button id="btnUploadToFolder" class="btn btn-default orangeBtn" type="button" ui-sref="uploader" ng-click="setTempUploadFolder(currentFolderTitle,currentFolderId)">
+            {{msgs.folderSuggestUpload}}{{ currentFolderTitle }}
+        </button>
+    </p>
+</div>
+
+<div class="paging" data-ng-show="gfyCount>gfyPage.fetchLimiter && !busySignal">
+    <div class="btn-group" role="group">
+        <a type="button" class="btn btn-default" data-ng-class="{'selectedPage': gfyPage.isCurrentPage($index),'Prev':$index==1,'Next':$index==7}"  data-ng-repeat="page in gfyPage.pageLimits" data-ng-if="!gfyPage.hideCheck($index)" data-ng-click="gfyPage.setCurrentPage($index,gfyCount) ? resetCurrentSearch(gfyPage.currentPage) : null">{{page}}</a>
+    </div>
+</div>

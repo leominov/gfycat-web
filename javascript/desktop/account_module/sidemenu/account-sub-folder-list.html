@@ -1,0 +1,105 @@
+
+<!-- This if the Sub-FOLDERS listing-->
+<div class="folders" ng-model="currentFolderChildren" data-ng-if="!accountTree.searchingAccount">
+    <div data-ng-if="currentFolderRootId==accountTree.userFolders[0].id">
+        <div ng-repeat="item in currentFolderChildren">
+            <div ng-class="{highlightSelectedGfysFolder: item.selected ==  true}">
+                <div id="item1" data-item-name="Item 1" class="item clearfix">
+                    <div class="chkWrap">
+                        <!--<input type="checkbox" ng-model="item.selected" ng-change="folderSelectedChange(item.selected)">-->
+                    </div>
+                    <div ng-click="setFolderView(item,currentFolderRootId)">
+                        <div class="thumbWrap">
+                            <i id={{item.id}} class="icon-png folder-lg" droppable drop="handleDrop(item.id,accountTree.userFolders[0].id)"></i> <!-- itemImage (it's a class)-->
+                        </div>
+                        <div class="itemDetails">
+                            <h2>
+                                <a align="left" href="#">{{ item.title }}</a>
+                            </h2>
+                            <ul class="itemStats">
+                                <li data-ng-if="!item.gfyCount && busySignal" class="views">
+                                    <spinner-animation color="#999"></spinner-animation>
+                                </li>
+                                <li data-ng-if="item.gfyCount==1" class="views">
+                                    {{ item.gfyCount }} Gfycat
+                                </li>
+                                <li data-ng-if="item.gfyCount>1  || (item.gfyCount==0 && !busySignal)" class="views">
+                                    {{ item.gfyCount }} Gfycats
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- This if the Sub-ALBUM-folders listing-->
+    <div data-ng-if="currentFolderRootId==accountTree.userAlbums[0].id">
+        <div ng-repeat="item in currentFolderChildren">
+            <div data-ng-if="item.folderSubType!='Album'" ng-class="{highlightSelectedGfysFolder: item.selected ==  true}">
+                <div id="item1" data-item-name="Item 1" class="item clearfix">
+                    <div class="chkWrap">
+                        <!--<input type="checkbox" ng-model="item.selected" ng-change="folderSelectedChange(item.selected)">-->
+                    </div>
+                    <div ng-click="setFolderView(item,currentFolderRootId)">
+                        <div class="thumbWrap">
+                            <i id={{item.id}} class="icon-png folder-lg" droppable drop="handleDrop(item.id,accountTree.userAlbums[0].id)"></i>
+                        </div>
+                        <div class="itemDetails">
+                            <h2>
+                                <a align="left" href="#">{{ item.title }}</a>
+                            </h2>
+                            <ul class="itemStats">
+                                <li data-ng-if="!item.albumCount && busySignal" class="views">
+                                  <spinner-animation color="#999"></spinner-animation>
+                                </li>
+                                <li ng-show="item.albumCount==1" class="views">
+                                    {{ item.albumCount }} Album
+                                </li>
+                                <li ng-show="item.albumCount>1 || (item.albumCount==0 && !busySignal)" class="views">
+                                    {{ item.albumCount }} Albums
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- This if the Sub-BOOKMARKS-folders listing-->
+    <div data-ng-if="currentFolderRootId==accountTree.userBookmarks[0].id">
+        <div ng-repeat="item in currentFolderChildren">
+            <div ng-class="{highlightSelectedGfysFolder: item.selected ==  true}">
+                <div id="item1" data-item-name="Item 1" class="item clearfix">
+                    <div class="chkWrap">
+                        <!--<input type="checkbox" ng-model="item.selected" ng-change="folderSelectedChange(item.selected)">-->
+                    </div>
+                    <div ng-click="setFolderView(item,currentFolderRootId)">
+                        <div class="thumbWrap">
+                            <i id={{item.id}} class="icon-png folder-lg" droppable drop="handleDrop(item.id,accountTree.userBookmarks[0].id)"></i>
+                        </div>
+                        <div class="itemDetails">
+                            <h2>
+                                <a align="left" href="#">{{ item.title }}</a>
+                            </h2>
+                            <ul class="itemStats">
+                                <li data-ng-if="!item.gfyCount && busySignal" class="views">
+                                    <spinner-animation color="#999"></spinner-animation>
+                                </li>
+                                <li ng-show="item.gfyCount==1" class="views">
+                                    {{ item.gfyCount }} Bookmark
+                                </li>
+                                <li ng-show="item.gfyCount>1 || (item.gfyCount==0 && !busySignal)" class="views">
+                                    {{ item.gfyCount }} Bookmarks
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

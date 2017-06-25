@@ -1,0 +1,243 @@
+<div class="static_container">
+  <div class="container-fluid">
+
+    <div class="row title-row">
+      <p>
+        <strong>
+          We have released a brand new API with a lot more features!  Our new API is very developer-friendly and includes great documentation. Get started <a href=http://developers.gfycat.com>here</a>.
+        </strong>
+      </p>
+      <p>
+        <strong>
+          The API described below is deprecated but we will do our best to support you. 
+        </strong>
+      </p>
+    </div>
+
+    <div class="row title-row">
+        <span class="title">Developer Access</span>
+    </div>
+    <div class="row content-block">
+      <p>
+        While Gfycat does not yet have a full fledged API with access credentials and advanced access control, the core features
+        are exposed through easy to use JSON endpoints.
+      </p>
+
+      <p>
+        <strong>Note:</strong> If you are considering making a reddit bot, you probably shouldn't! There are a number of bots
+        already in operation and they MUST follow specific rules (moderators permission in every sub they run in, and "come when
+        called" rather than converting all gifs). See /r/gfycat for more info.
+      </p>
+
+      <p>
+        There are three things you may want to do:
+      </p>
+
+      <ul>
+        <li><strong>Convert:</strong> Convert a gif from a url or file upload</li>
+        <li><strong>Query:</strong> Get video and gif URLs, along with other relevant information for a gfycat link</li>
+        <li><strong>Check link:</strong> Test a gif URL to see if gfycat has already converted it.</li>
+      </ul>
+    </div>
+
+    <div class="row title-row">
+        <span class="title">Converting GIF/Video programmatically:<br>fetching a URL</span>
+    </div>
+    <div class="row content-block">
+        <p>
+          To convert a gif from a url, you would call the following endpoint:
+        </p>
+
+        <div class="msg-block">
+          <div class="info">
+            https://upload.gfycat.com/transcode?fetchUrl=i.imgur.com/lKi99vn.gif
+          </div>
+        </div>
+
+        <p>
+          <strong>Or:</strong>
+        </p>
+
+        <div class="msg-block">
+          <div class="info">
+            https://upload.gfycat.com/transcodeRelease/YourOwnRandomString?fetchUrl=i.imgur.com/lKi99vn.gif
+          </div>
+        </div>
+
+        <p>
+          This requires you to provide one input:
+        </p>
+
+        <ul>
+          <li>fetchUrl - you should set the fetchUrl parameter to the url you want to convert. The url must be url encoded.</li>
+        </ul>
+
+        <p>
+          Optional:
+        </p>
+
+        <ul>
+          <li>YourOwnRandomString - this part of the url can be any 5-10 letter/number key that you make up, but it must be
+            unique for each request.</li>
+        </ul>
+
+        <p>
+          The first format (/transcode) will hold the connection open until your conversion is completed-- up to a maximum of 30
+          seconds. It will then respond with a JSON object with the completed conversion information (or a JSON object containing
+          "error" with error information). See below for output:
+        </p>
+
+        <div class="msg-block">
+          <div class="info">
+            {"gfyname":"ScaryGrizzledComet","gfyName":"ScaryGrizzledComet","gfysize":368876,"gifSize":378641,"gifWidth":374,"mp4Url":"https://zippy.gfycat.com/ScaryGrizzledComet.mp4","webmUrl":"https://zippy.gfycat.com/ScaryGrizzledComet.webm","frameRate":1,"gifUrl":"https://zippy.gfycat.com/ScaryGrizzledComet.gif"}
+          </div>
+        </div>
+
+        <p>
+          You would then be able to access the result at gfycat.com/gfyname. The conversion will go forward even if the client
+          disconnects before receving the response. Checking the same link again, with the same fetchUrl, will immediately return
+          the result.
+        </p>
+
+        <p>
+          The second request format above (/transcodeRelease) will immediately respond and close the connection. In order to
+          determine when your conversion is complete, you will need to follow up with a request to upload.gfycat.com/status/YourOwnRandomString.
+          This is the purpose of the random string-- it is a tracking key so that you can monitor your conversions.
+        </p>
+    </div>
+
+    <div class="row title-row">
+        <span class="title">Converting GIF/Video programmatically:<br>Uploading a file</span>
+    </div>
+
+    <div class="row content-block">
+      <p>
+        To upload a GIF or Video, you would POST the data using the following aprameters:
+      </p>
+
+      <div class="msg-block">
+        <div class="info">
+          key=YourOwnRandomString<br>
+          file=YOUR_FILE<br>
+          acl=private<br>
+          AWSAccessKeyId=AKIAIT4VU4B7G2LQYKZQ<br>
+          policy=eyAiZXhwaXJhdGlvbiI6ICIyMDIwLTEyLTAxVDEyOjAwOjAwLjAwMFoiLAogICAgICAgICAgICAiY29uZGl0aW9ucyI6IFsKICAgICAgICAgICAgeyJidWNrZXQiOiAiZ2lmYWZmZSJ9LAogICAgICAgICAgICBbInN0YXJ0cy13aXRoIiwgIiRrZXkiLCAiIl0sCiAgICAgICAgICAgIHsiYWNsIjogInByaXZhdGUifSwKCSAgICB7InN1Y2Nlc3NfYWN0aW9uX3N0YXR1cyI6ICIyMDAifSwKICAgICAgICAgICAgWyJzdGFydHMtd2l0aCIsICIkQ29udGVudC1UeXBlIiwgIiJdLAogICAgICAgICAgICBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgNTI0Mjg4MDAwXQogICAgICAgICAgICBdCiAgICAgICAgICB9<br>
+          success_action_status=200<br>
+          signature=mk9t/U/wRN4/uU01mXfeTe2Kcoc=<br>
+          Content-Type=image/gif<br>
+        </div>
+      </div>
+
+      <p>
+        POST to this url: https://gifaffe.s3.amazonaws.com/<br>
+        An example using linux curl from the command line:
+      </p>
+
+      <div class="msg-block">
+        <div class="info">
+          curl -i -F "key=YourOwnRandomString"<br>
+          -F "acl=private"<br>
+          -F "AWSAccessKeyId=AKIAIT4VU4B7G2LQYKZQ"<br>
+          -F "policy=eyAiZXhwaXJhdGlvbiI6ICIyMDIwLTEyLTAxVDEyOjAwOjAwLjAwMFoiLAogICAgICAgICAgICAiY29uZGl0aW9ucyI6IFsKICAgICAgICAgICAgeyJidWNrZXQiOiAiZ2lmYWZmZSJ9LAogICAgICAgICAgICBbInN0YXJ0cy13aXRoIiwgIiRrZXkiLCAiIl0sCiAgICAgICAgICAgIHsiYWNsIjogInByaXZhdGUifSwKCSAgICB7InN1Y2Nlc3NfYWN0aW9uX3N0YXR1cyI6ICIyMDAifSwKICAgICAgICAgICAgWyJzdGFydHMtd2l0aCIsICIkQ29udGVudC1UeXBlIiwgIiJdLAogICAgICAgICAgICBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgNTI0Mjg4MDAwXQogICAgICAgICAgICBdCiAgICAgICAgICB9"<br>
+          -F "success_action_status=200"<br>
+          -F "signature=mk9t/U/wRN4/uU01mXfeTe2Kcoc="  <br>
+          -F "Content-Type=image/gif"  <br>
+          -F "file=@image.gif"  <br>
+          https://gifaffe.s3.amazonaws.com/  <br>
+        </div>
+      </div>
+
+      <p>
+        You would then need to call upload.gfycat.com/transcode/YourOwnRandomString
+      </p>
+    </div>
+
+    <div class="row title-row">
+        <span class="title">Querying a gfy name for urls and more information</span>
+    </div>
+
+    <div class="row content-block">
+      <p>
+        You can query gfycat using the following url pattern:
+      </p>
+      <div class="msg-block">
+        <div class="info">
+          https://gfycat.com/cajax/get/ScaryGrizzledComet
+        </div>
+      </div>
+
+      <p>
+        This will return a JSON object in this form:
+      </p>
+
+      <div class="msg-block">
+        <div class="info">
+          {"gfyItem":{"gfyId":"scarygrizzledcomet","gfyName":"ScaryGrizzledComet","gfyNumber":"170977436","userName":"anonymous","width":374,"height":286,"frameRate":1,"numFrames":12,"mp4Url":"https:\/\/zippy.gfycat.com\/ScaryGrizzledComet.webm","webmUrl":"https:\/\/zippy.gfycat.com\/ScaryGrizzledComet.webm","gifUrl":"https:\/\/zippy.gfycat.com\/ScaryGrizzledComet.gif","gifSize":378641,"mp4Size":368876,"webmSize":327469,"createDate":"1384004433","views":"2","title":null,"md5":null,"tags":null,"nsfw":null,"sar":null,"url":null,"source":null,"dynamo":null,"uploadGifName":null}}
+        </div>
+      </div>
+
+      <p>
+        Any popular programming language will have a JSON library available that will turn this into an easy to use object.
+        (eg you can use gfyItem->mp4Url or gfyItem->views)
+      </p>
+    </div>
+
+    <div class="row title-row">
+        <span class="title">Checking if a URL has already been converted</span>
+    </div>
+
+    <div class="row content-block">
+      <p>
+        You can quickly ping gfycat to see if a url has already been converted and receive an instant response. A request will
+        call on /cajax/checkUrl/ with an encoded url. Note that the url should be encoded-- even if it sometimes works with a
+        plain text url, it will not always. The response should look like this:
+      </p>
+
+      <div class="msg-block">
+        <div class="info">
+          https://gfycat.com/cajax/checkUrl/https%3A%2F%2Flh3.googleusercontent.com%2F-f5skV0pyX2Y%2FUrJ5ZHh8rNI%2FAAAAAAAACW8%2FgMvlhiuTp_U%2Fw480-h360-no%2Fkathleenfabo.gif
+        </div>
+      </div>
+
+      <p>
+        The reponse from gfycat will be in JSON notation and look like this:
+      </p>
+
+      <div class="msg-block">
+        <div class="info">
+          {"urlKnown":true,"gfyUrl":"https://gfycat.com/RespectfulRecentKarakul","webmUrl":"https://zippy.gfycat.com/RespectfulRecentKarakul.webm","mp4Url":"https://zippy.gfycat.com/RespectfulRecentKarakul.mp4","gifUrl":"https://giant.gfycat.com/RespectfulRecentKarakul.gif","frameRate":33,"gfyName":"RespectfulRecentKarakul"}
+        </div>
+      </div>
+
+      <p>
+        The JSON object contains a key "urlKnown" which will be true if the url exists, and false if not. The response will
+        also contain the gfycat url:
+      </p>
+
+      <div class="msg-block">
+        <div class="info">
+          gfyUrl =>  https://gfycat.com/RespectfulRecentKarakul<br>
+          gfyName => RespectfulRecentKarakul
+        </div>
+      </div>
+    </div>
+
+    <div class="row title-row">
+        <span class="title">oEmbed support</span>
+    </div>
+
+    <div class="row content-block">
+      <p>
+        Gfycat supports the oEmbed format. The resource is as follows:
+      </p>
+      <div class="msg-block">
+        <div class="info">
+          https://api.gfycat.com/v1/oembed?url=URL&maxwidth=MAXWIDTH&maxheight=MAXHEIGHT
+        </div>
+      </div>
+      <p>
+        The URL must be encoded. maxwidth and maxheight are optional and should be set to a positive integer.
+      </p>
+    </div>
+  </div>
+</div>

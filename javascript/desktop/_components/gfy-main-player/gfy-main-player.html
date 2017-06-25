@@ -1,0 +1,131 @@
+<div class="main-player-container">
+  <div class="tv">
+    <div class="container-fluid">
+      <div class="row tango-row">
+        <a href="https://web.tango.me/" target="_blank">
+          <img src="images/tango/img_gfycat_tango.png" srcset="images/tango/img_gfycat_tango@2x.png 2x" />
+        </a>
+      </div>
+      <div class="row header-row">
+        <div class="wrap-social">
+          <share-buttons></share-buttons>
+        </div>
+        <a class="api-banner" href="https://developers.gfycat.com">Developer? Check out our API</a>
+      </div>
+      <div class="row tv-row">
+        <div class="player-container">
+          <a class="video-container flex-center" href="/detail/{{feeds.currentGfyFrame.gfyName}}?tagname={{feeds.currentGfyChannel.tag}}&tvmode=1">
+            <video id="mainVid0" class="video main-player-video" ng-attr-poster="{{feeds.currentGfyFrame.posterUrl}}" autoplay muted playsinline>
+              <source data-ng-src="{{isMobile ? feeds.currentGfyFrame.mobileUrl : ''}}" type="video/mp4"/>
+              <source data-ng-src="{{feeds.currentGfyFrame.webmUrl}}" type="video/webm"/>
+              <source data-ng-src="{{feeds.currentGfyFrame.mp4Url}}" type="video/mp4"/>
+            </video>
+            <span data-ng-if="feeds.currentGfyChannel.nowIndex > 0" class="arrow arrow-prev flex-center-all"
+              data-ng-click="autoJumpToPrevVideo($event)"><i class="ic ic-angle-left ic-angle-left--white"></i></span>
+            <span data-ng-if="feeds.currentGfyChannel.nowIndex + 1 < feeds.currentGfyChannel.gfycats.length"
+              class="arrow arrow-next flex-center-all" data-ng-click="autoJumpToNextVideo($event)">
+             <i class="ic ic-angle-right ic-angle-right--white"></i></span>
+          </a>
+          <div class="detail-container flex-center-all">
+            <div class="detail-wrapper">
+              <div class="first-row">
+                <div class="left flex-center">
+                  <span class="author" data-ng-if="feeds.currentGfyFrame.userName && feeds.currentGfyFrame.userName !== 'anonymous'"><a class="username" href="/@{{feeds.currentGfyFrame.userName}}">{{feeds.currentGfyFrame.userName}}</a> &nbsp;</span>
+                  <span class="date" data-ng-if="feeds.currentGfyFrame.createDate">{{toLocaleDate(feeds.currentGfyFrame.createDate * 1000)}}</span>
+                  <div class="tag-group">
+                    <a data-ng-if="feeds.currentGfyFrame.tags[0]" class="tag first" href="/gifs/tag/{{feeds.currentGfyFrame.tags[0]}}" target="_self" ng-click="$event.stopPropagation()">#{{feeds.currentGfyFrame.tags[0]}} &nbsp;</a>
+                    <a data-ng-if="feeds.currentGfyFrame.tags[1]" class="tag" href="/gifs/tag/{{feeds.currentGfyFrame.tags[1]}}" target="_self" ng-click="$event.stopPropagation()">#{{feeds.currentGfyFrame.tags[1]}} &nbsp;</a>
+                    <a data-ng-if="feeds.currentGfyFrame.tags[2]" class="tag" href="/gifs/tag/{{feeds.currentGfyFrame.tags[2]}}" target="_self" ng-click="$event.stopPropagation()">#{{feeds.currentGfyFrame.tags[2]}}</a>
+                  </div>
+                </div>
+                <div class="right flex-center">
+                  <i class="ic ic-user ic-user--grey"></i>
+                  <span class="icon-right-text" gfyid="{{feeds.currentGfyFrame.gfyId}}" viewtype="live" livecounter>1</span>
+                  <!--<span class="icon-right-text">{{toLocaleNumber(feeds.currentGfyFrame.liveViews)}}</span>-->
+                  <i class="ic ic-eye ic-eye--grey total-view-icon"></i>
+                  <span class="icon-right-text" gfyid="{{feeds.currentGfyFrame.gfyId}}" livecounter>{{toLocaleNumber(feeds.currentGfyFrame.views)}}</span>
+                  <!--<span class="icon-right-text">{{toLocaleNumber(feeds.currentGfyFrame.views)}}</span>-->
+                </div>
+              </div>
+              <div class="second-row">
+                <div class="pull-left flex-center">
+                  <span data-ng-if="feeds.currentGfyFrame.title && feeds.currentGfyFrame.title !== 'Untitled'" class="vid-name">{{ feeds.currentGfyFrame.title }}</span>
+                </div>
+              </div>
+              <div class="third-row">
+                <div class="pull-left flex-center">
+                  <a ng-click="share_enabled = !share_enabled; onShareButtonClick();" class="button">
+                    <i class="ic ic-share"></i>
+                    <span translate class="share-icon-text">{{'MAIN_PLAYER.SHARE'}}</span>
+                  </a>
+                  <a ng-click="videoPageBookmark(feeds.currentGfyFrame)" class="button" ng-if="!share_enabled">
+                    <i class="ic" ng-class="{'ic-bookmark ic-bookmark--blue': feeds.currentGfyFrame.bookmarkState,
+                      'ic-bookmark-o': feeds.currentGfyFrame.bookmarkState !== 1}"></i>
+                    <span translate class="bookmark-icon-text">{{'MAIN_PLAYER.BOOKMARK'}}</span>
+                  </a>
+                  <div class="share-panel" ng-if="share_enabled">
+                    <a ng-click="openUploadDialog();onShareAttempt('facebook')"><img src="/javascript/shared/share-page/assets/images/facebook_icon.png" alt="facebook" /></a>
+                    <a ng-click="onShareAttempt('twitter')" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fgfycat.com%2F{{feeds.currentGfyFrame.gfyName}}&text={{feeds.currentGfyFrame.title}}" target="_blank"><img src="/javascript/shared/share-page/assets/images/twitter_icon.png" alt="twitter" /></a>
+                    <a ng-click="onShareAttempt('tumblr')" href="https://www.tumblr.com/share/link?url=https%3A%2F%2Fgfycat.com%2F{{feeds.currentGfyFrame.gfyName}}&amp;name={{feeds.currentGfyFrame.title}}" target="_blank"><img src="/javascript/shared/share-page/assets/images/tumblr_icon.png" alt="tumblr" /></a>
+                    <a ng-click="onShareAttempt('reddit')" href="https://www.reddit.com/submit?url=https%3A%2F%2Fgfycat.com%2F{{feeds.currentGfyFrame.gfyName}}&title={{feeds.currentGfyFrame.title}}" target="_blank"><img src="/javascript/shared/share-page/assets/images/reddit_icon.png" alt="reddit" /></a>
+                    <a ng-click="onShareAttempt('pinterest')" href="https://pinterest.com/pin/create/button/?url=https%3A%2F%2Fgfycat.com%2Fgifs%2Fdetail%2F{{feeds.currentGfyFrame.gfyName}}&media=https%3A%2F%2Fthumbs.gfycat.com%2F{{feeds.currentGfyFrame.gfyName}}-size_restricted.gif&description={{feeds.currentGfyFrame.title}}" target="_blank"><img src="/javascript/shared/share-page/assets/images/pinterest_icon.png" alt="pinterest" /></a>
+                    <span class="url-box" >
+                      URL
+                      <input id="share-link" ng-copy="onShareAttempt('URL')" value="{{globalSiteUrl}}/{{feeds.currentGfyFrame.gfyName}}">
+                      <button id="copy-btn" ngclipboard data-toggle="tooltip" data-placement="bottom" title="{{'MAIN_PLAYER.URL_COPIED' | translate}}" data-clipboard-target="#share-link" ngclipboard-success="copySuccess(e);" class="icon-btn"><i class="ic ic-clipboard ic-clipboard--grey"></i></button>
+                    </span>
+                  </div>
+                </div>
+                <div class="pull-right flex-center" ng-if="!share_enabled">
+                  <i class="ic" ng-class="{'ic-thumbs-up ic-thumbs-up--blue': feeds.currentGfyFrame.likeState === 1,
+                    'ic-thumbs-o-up': feeds.currentGfyFrame.likeState !== 1}"
+                    data-ng-click="videoPageLike(feeds.currentGfyFrame)"></i>
+                  <span data-ng-if="feeds.currentGfyFrame.likes>0" class="icon-right-text">{{toLocaleNumber(feeds.currentGfyFrame.likes)}}</span>
+                  <span data-ng-if="feeds.currentGfyFrame.likes==0 || feeds.currentGfyFrame.likes==null" class="icon-right-text">0</span>
+                  <i class="ic dislike-icon" data-ng-click="videoPageDislike(feeds.currentGfyFrame)"
+                    ng-class="{'ic-thumbs-down ic-thumbs-down--blue': feeds.currentGfyFrame.likeState === -1,
+                    'ic-thumbs-o-down': feeds.currentGfyFrame.likeState !== -1}"></i>
+                  <span data-ng-if="feeds.currentGfyFrame.dislikes>0" class="icon-right-text">{{toLocaleNumber(feeds.currentGfyFrame.dislikes)}}</span>
+                  <span data-ng-if="feeds.currentGfyFrame.dislikes==0 || feeds.currentGfyFrame.dislikes==null" class="icon-right-text">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="channel-container">
+          <div ng-repeat="channel in feeds.channels.tags" ng-if="$index < 9" class="channel hot" data-ng-click="switchChannel(channel);" ng-style="{'background-image': 'url({{ channel.gfycats[0].thumb360PosterUrl}})'}">
+            <div ng-class="{'layer flex-center-all':true,'selected':channel.tag === msgs.defaultJiffiestHeading}">
+              <span>{{channel.tag}}</span>
+            </div>
+          </div>
+          <a class="channel flex-center-all more" data-ng-if="feeds.channels.busy === false"
+             href="/channels" target="_self" ng-click="$event.stopPropagation()">
+           <div class="layer">
+             <i class="ic ic-more-channels more-icon"></i>
+             <div class="more-text" translate>{{'MAIN_PLAYER.ALL_CHANNELS'}}</div>
+           </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mvpFeeds">
+    <div class="scrollable">
+      <span class="extra"></span>
+      <div class="mvp" data-ng-repeat="item in feeds.currentGfyChannel.gfycats">
+        <div class="thumb" data-ng-click="loadToCurrentFrame($index)" data-ng-mouseenter="hoverVideo($index)" data-ng-mouseleave="leaveVideo($index)" ng-style="{'background-image': 'url({{item.thumb360PosterUrl}})'}">
+          <div data-ng-if="$index === feeds.currentGfyChannel.nowIndex" class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="{{mainGfyPercent}}" aria-valuemin="0" aria-valuemax="100" style="width:{{mainGfyPercent}}%;">
+              <span class="sr-only" translate translate-value-persent="{{mainGfyPercent}}">{{'MAIN_PLAYER.PROGRESS_BAR_COMPLETE'}}</span>
+            </div>
+          </div>
+          <video data-ng-if="autoPlayVideo[$index]" ng-attr-poster="{{item.thumb360PosterUrl}}" class="mvpVideo" autoplay="autoplay" muted >
+            <source data-ng-src="{{item.thumb360Url}}" type="video/mp4"/>
+          </video>
+        </div>
+      </div>
+    </div>
+    <span data-ng-show="showLeftArrow" class="arrow-prev flex-center-all" data-ng-click="mvpMoveLeft()"><i class="ic ic-angle-left ic-angle-left--white"></i></span>
+    <span data-ng-hide="feeds.currentGfyChannel.busy || hideRightArrow()" class="arrow-next flex-center-all" data-ng-click="mvpMoveRight()"><i class="ic ic-angle-right ic-angle-right--white"></i></span>
+  </div>
+</div>

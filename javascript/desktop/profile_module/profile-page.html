@@ -1,0 +1,21 @@
+<div class="profile-container container-fluid">
+  <not-found ng-if="profileNotFound" text="PROFILE.NOT_FOUND" keyword="{{userName}}"></not-found>
+  <div ng-if="!profileNotFound">
+    <profile-info ng-if="!isPrivate" type="public"></profile-info>
+    <profile-info ng-if="isPrivate" type="private"></profile-info>
+    <div class="overlay" ng-if="isPrivate" ng-show="isEditOpened" ng-click="closeEdit($event)">
+      <profile-info-edit></profile-info-edit>
+    </div>
+    <nav>
+      <div class="toolbox" ng-class="{mobile: isMobile, desktop: !isMobile}">
+        <div class="item">
+          <button class="tab-btn" ui-sref="profile.gifs.public" ui-sref-opts="{location: 'replace'}" ng-class="{active: $state.includes('profile.gifs.public')}"><p class="number">{{tabCounts.gifs}}</p><span translate>{{'PROFILE.GIFS'}}</span></button>
+        </div>
+        <div class="item">
+          <button class="tab-btn" ui-sref="profile.albums.public" ui-sref="{location: false}" ng-class="{active: $state.includes('profile.albums')}"><p class="number">{{tabCounts.albums}}</p><span translate>{{'PROFILE.ALBUMS'}}</span></button>
+        </div>
+      </div>
+    </nav>
+    <div ui-view></div>
+  </div>
+</div>

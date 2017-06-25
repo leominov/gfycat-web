@@ -1,0 +1,23 @@
+<section class="search-page">
+    <div class="tagname" ng-if="tagname"><h1>#{{tagname}}</h1></div>
+    <div class="tagname" ng-if="query">
+      <h1 class="search-title">{{toLocaleNumber(searchService.foundCount)}} {{'SEARCH_PAGE.RESULT' | translate:translationData }}</h1>
+    </div>
+    <div class="deckgridContainer" itemscope itemtype="http://schema.org/SearchResultsPage">
+      <div smart-infinite-scroll-v2 smart-repeat="gif in searchService.gfycats"
+      more-data="loadNextPage(24)" more-data-disable="isNextPageLoading()"
+      max-columns="4" max-column-width="500" min-column-width="250" border-width="10">
+        <gfy-small-thumb noreflow="true" data="gif" ng-mouseenter="$parent.$parent.sendViewAnalytics(gif.gfyId)"
+          ng-mouseleave="$parent.$parent.onMouseLeaveThumb()" show-video-info="true" round-border="true"
+          video-size="original" link="$parent.$parent.generateURL(gif)" style="display:block;"></gfy-small-thumb>
+      </div>
+    </div>
+    <div class="no-result" data-ng-if="isNoNextPage()">
+      <div class="image"></div>
+      <span class="text" translate>{{'SEARCH_PAGE.REACHED_END'}}</span>
+      <h3 data-ng-if="showServerError()">Encountered Server Error! Please Try Again Shortly.</h3>
+    </div>
+
+    <spinner-animation class="blue large center" ng-if="isNextPageLoading() && !isNoNextPage()"></spinner-animation>
+
+</section>

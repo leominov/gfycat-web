@@ -1,0 +1,60 @@
+<div class="static_container">
+  <div class="jumbotron">
+    <div class="container">
+      <h1 class="display-3">Gfycat for Slack</h1>
+      <p class="lead">Get your point across in style with Gfycat for Slack.
+      Access our library of over 25 million unique GIFs, all without ever leaving Slack.</p>
+      <hr class="my-2">
+
+      <div class="message-container row" ng-switch="vm.auth" ng-class="vm.class">
+        <p class="message col-md-12" ng-switch-when="success">
+          Thank you for installing Gfycat for Slack! If you have any feature requests, please don't hesitate to let us know by clicking the "Request Features" button below!
+        </p>
+        <p class="message col-md-12" ng-switch-when="fail">
+          Sorry, we failed to install Gfycat for your Slack team. Please try again or contact us by clicking the "Get Support" button below.
+        </p>
+      </div>
+
+      <div ng-hide="vm.showMessage">
+        <p>Choose the perfect GIF to send, or play GIF roulette</p>
+        <a target="_blank" href="https://slack.com/oauth/authorize?scope=commands&client_id=3026719252.85834663812"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+        <div class="row">
+          <div class="col-md-4">
+            <h2>Step 1</h2>
+            <p>Click the "Add to Slack" button above and sign in to your Slack team if you haven't done so already.</p>
+          </div>
+          <div class="col-md-4">
+            <h2>Step 2</h2>
+            <p>Confirm the team you would like to add Gfycat to and click "Authorize".</p>
+          </div>
+          <div class="col-md-4">
+            <h2>Step 3</h2>
+            <p>Gfycat for Slack is now ready to use! Go to your team's Slack channel and try it out by typing <code>/gfycat hello</code></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="padding-top: 25px;">
+        <h3 style="padding-left:15px;">Features</h3>
+        <div class="col-md-6" style="padding-top: 16px;">
+          <div style='position:relative;padding-bottom:58%'><iframe src='https://gfycat.com/ifr/TameGreenCanine' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0;' allowfullscreen></iframe></div>
+          <p>Let Gfycat choose for you with the command <code>/gfycat hello</code></p>
+        </div>
+        <div class="col-md-6">
+          <div style='position:relative;padding-bottom:61%'><iframe src='https://gfycat.com/ifr/SilkyEasyIndianspinyloach' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0;' allowfullscreen></iframe></div>
+          <p>Choose your favorite GIF from our massive library with <code>/gfycats hello</code></p>
+        </div>
+      </div>
+      <div class="support-button">
+        <a href="mailto:support@gfycat.com" ng-switch="vm.auth">
+          <div class="btn btn-blue" ng-switch-when="success">
+            Request Features
+          </div>
+          <div class="btn btn-blue" ng-switch-default>
+            Get Support
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

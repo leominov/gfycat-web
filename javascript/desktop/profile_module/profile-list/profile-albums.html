@@ -1,0 +1,12 @@
+<section class="profile-list-container noselect">
+  <div class="albums-container">
+    <div class="album-container" ng-repeat="gif in gifList" ui-sref="profile.album({albumId: gif.id, linkText: gif.linkText})">
+      <gfy-album-thumb data="gif"></gfy-album-thumb>
+    </div>
+  </div>
+  <div class="no-result" ng-if="empty">
+    <div class="cat-image"></div>
+    <span class="text" translate="">{{'PROFILE.NO_ALBUMS_PUBLIC'}}</span>
+  </div>
+  <spinner-animation style="padding-top:30px" class="blue large center" ng-if="isLoading"></spinner-animation>
+</section>

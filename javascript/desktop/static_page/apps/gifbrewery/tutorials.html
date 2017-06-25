@@ -1,0 +1,15 @@
+<div class="tutorials" ng-hide="!$state.is('gifbrewery.tutorials')">
+  <h4>GIF Brewery 3 Tutorials</h4>
+  <p>Need help getting started? Fret not, for we have tutorials!</p>
+
+  <a class="tutorial-link" href="{{gifBr.siteUrl}}/gifbrewery/tutorials/basics">
+    <div ui-sref="gifbrewery.tutorials.basics">The Basics</div>
+  </a>
+  <a class="tutorial-link" href="{{gifBr.siteUrl}}/gifbrewery/tutorials/frames">
+    <div ui-sref="gifbrewery.tutorials.frames">Frames</div>
+  </a>
+  <a class="tutorial-link" href="{{gifBr.siteUrl}}/gifbrewery/tutorials/recordings">
+    <div ui-sref="gifbrewery.tutorials.recordings">Make a Recording</div>
+  </a>
+</div>
+<div ui-view></div>

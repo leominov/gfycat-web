@@ -1,0 +1,19 @@
+<div class="notifications-container">
+  <div class="form" name="notificationsForm" novalidate>
+    <div class="preference-list">
+      <div class="list-item">
+        <span class="title" translate>{{'SETTINGS.NEW_GIF_NOTIFICATION'}}</span>
+        <div class="switch" ng-class="{on: notifications.newUpload, off: !notifications.newUpload}">
+          <div class="toggle"></div>
+          <input type="checkbox" ng-model="notifications.newUpload" name="newUpload">
+        </div>
+      </div>
+    </div>
+    <button type="button" class="btn btn-blue btn-block"
+      ng-class="{'disabled btn-grey': !isDataChanged(), pending: isPending}"
+      ng-click="saveNotificationForm()">
+      <spinner-animation class="blue"></spinner-animation>
+      <span translate>{{'SETTINGS.SAVE_CHANGES'}}</span>
+    </button>
+  </div>
+</div>

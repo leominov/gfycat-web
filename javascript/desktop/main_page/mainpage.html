@@ -1,0 +1,30 @@
+<main-player></main-player>
+
+<div class="trending__container">
+  <div class="trending__content" infinite-scroll='tagService.nextPage(9)'
+    infinite-scroll-distance='1' infinite-scroll-disable='tagService.busy'>
+    <div data-ng-repeat="list in tagService.tags" class="container-fluid trending-module">
+    <div class="row header-tag">
+      <h2>
+        <a href="/gifs/tag/{{list.tag}}" target="_self" ng-click="$event.stopPropagation()">
+          <span class="tag-text">#{{ list.tag }}</span><i class="ic ic-angle-right ic-angle-right--blue"></i>
+        </a>
+      </h2>
+    </div>
+    <div class="row slide-list">
+      <div class="slide-track" ng-style="list.transform">
+        <div class="cell" data-ng-repeat="item in list.gfycats"
+          ng-mouseenter="sendViewAnalytics(item.gfyId, list.tag)" ng-mouseleave="onMouseLeaveThumb()">
+          <gfy-small-thumb data="item" video-size="fixed" link="generateThumbURL(list,item)"></gfy-small-thumb>
+        </div>
+      </div>
+      <span class="arrow-prev flex-center-all" ng-if="list.current > 0" ng-click="scrollTrack(list,-scrollNum)">
+        <i class="ic ic-angle-left ic-angle-left--white"></i></i></span>
+      <span class="arrow-next flex-center-all" ng-if="list.gfycats.length - list.current - scrollNum > 0"
+        ng-click="scrollTrack(list,scrollNum)"><i class="ic ic-angle-right ic-angle-right--white"></i></span>
+    </div>
+    </div>
+  </div>
+  <p ng-if="feeds.reachedGalleryEnd">{{msgs.textEndOfGalleryTags}}</p>
+  <spinner-animation ng-if="tagService.busy" class="blue large center"></spinner-animation>
+</div>

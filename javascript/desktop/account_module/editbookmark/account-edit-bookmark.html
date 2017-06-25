@@ -1,0 +1,85 @@
+<section class="editVideo">
+    <div class="container">
+        <div class="row title">
+            <div class="col-xs-12">
+                <div class="input-group">
+                    <!--<input class="form-control" type="text" id="title" data-ng-model="gfyFileToEdit.usersGfyTitle" data-ng-init="gfyFileToEdit.usersGfyTitle=gfyFileToEdit.title; gfyFileToEdit.usersGfyTitleTemp=gfyFileToEdit.title;" ng-change="gfyEdit.changeOfInfo(gfyFileToEdit)" placeholder="{{ gfyFileToEdit.gfyName }}" data-char-limit="60" onkeyup="displayCharLimit(this);" ng-class="{'saveError': errorTitleSave,'saveEnabled': titleSaving}"> &lt;!&ndash; ng-init="gfyFileToEdit.usersGfyTitleTemp={{ gfyitem.title || gfyitem.gfyName }}"  style="border-color: red; box-shadow: 0 0 10px #ff0000;"&ndash;&gt;-->
+                    {{ gfyitem.title || 'Untitled' }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-8">
+                <div class="vidWrap">
+                    <video autoplay="autoplay" loop>
+                        <source data-ng-src="{{gfyFileToEdit.webmUrl}}" type="video/webm"/>
+                        <source data-ng-src="{{gfyFileToEdit.mp4Url}}" type="video/mp4"/>
+                    </video>
+                </div>
+            </div>
+            <div class="col-xs-4 sidebar">
+                <ul class="list-group">
+                    <li class="list-group-item disabled">
+                        Duration
+                        <span class="value">{{ (gfyFileToEdit.numFrames/gfyFileToEdit.frameRate | number : 1) || 'error' }} s</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Uploaded on
+                        <span class="value">{{gfyFileToEdit.createDate | date:'MMMM d, y h:mma'}}</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Original Size
+                        <span class="value">{{gfyFileToEdit.gifSize | gfyBytes: 'dec' }}</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Converted Size
+                        <span class="value">{{gfyFileToEdit.webmSize | gfyBytes: 'dec' }}</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Compression Ratio
+                        <span class="value">{{gfyFileToEdit.gifSize/gfyFileToEdit.webmSize | number : 1}} : 1</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Current Viewers
+                        <span class="value" gfyid="{{gfyFileToEdit.gfyId}}" viewtype="live" livecounter>1</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Total Views
+                        <span class="value" gfyid="{{gfyFileToEdit.gfyId}}" livecounter>{{gfyFileToEdit.views | number}}</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Likes
+                        <span class="value">{{gfyFileToEdit.likes | number}}</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Dislikes
+                        <span class="value">{{gfyFileToEdit.dislikes | number}}</span>
+                    </li>
+                    <li class="list-group-item disabled">
+                        Shares
+                        <span class="value">{{gfyFileToEdit.shares | number}}</span>
+                    </li>
+                    <!--<li class="list-group-item disabled">-->
+                    <!--Comments-->
+                    <!--<span class="value">{{gfyFileToEdit.commentCount || '-'}}</span>-->
+                    <!--</li>-->
+                </ul>
+            </div>
+        </div>
+        <div class="col-xs-4 gfyUrl">
+                <label>Gfycat Url</label>
+                <div class="input-group">
+                    <a href="/{{gfyFileToEdit.gfyName}}" target="_blank">https://gfycat.com/{{gfyFileToEdit.gfyName}}</a>
+                </div>
+            </div>
+        </div>
+        <div class="bottomButtons">
+            <button data-ng-if="!gfyFileToEdit.savingBookmark" class="btn btn-default deleteBtn" data-ng-click="removeBookmark(gfyFileToEdit)" style="width:154px;">Remove Bookmark</button>
+            <button data-ng-if="gfyFileToEdit.savingBookmark" class="btn btn-default deleteBtn pending" data-ng-click="" style="width:154px;padding: 18px 12px;">
+              <spinner-animation color="#d23236"></spinner-animation>
+            </button>
+        </div>
+
+
+    </div>
+</section>

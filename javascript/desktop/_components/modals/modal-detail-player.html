@@ -1,0 +1,112 @@
+<div class='ng-modal detail-player' ng-show='show'>
+  <div class='ng-modal-overlay' ng-click='share_enabled = false; hideModal()'></div>
+  <div class="close-btn" ng-click='share_enabled = false; hideModal()'></div>
+  <div class='ng-modal-dialog' ng-style='dialogStyle'>
+    <div class="detail-header container-fluid">
+      <div class="row-fluid">
+        <span class="username" ng-if="currentGfycat.userName != 'anonymous'"><a href="/@{{currentGfycat.userName}}">@{{currentGfycat.userName}}</a></span>&nbsp
+      </div>
+      <div class="row-fluid">
+        <span ng-repeat="tag in currentGfycat.tags">
+          <a href="/tag/{{tag}}">#{{tag}}</a>
+        </span>
+        <div class="pull-right" translate translate-value-number="{{toLocaleNumber(currentGfycat.views)}}">
+           {{'MODAL_DETAIL_PLAYER.VIEWS'}}
+        </div>
+      </div>
+    </div>
+    <div class="video-container">
+      <video autoplay="autoplay" muted ng-attr-poster="{{ detailPlayer.list[detailPlayer.index].thumbnail}}" loop>
+          <source data-ng-src="{{ currentGfycat.webmUrl === undefined ? '' : currentGfycat.webmUrl}}" type="video/webm"/>
+          <source data-ng-src="{{ currentGfycat.mp4Url === undefined ? '' : currentGfycat.mp4Url}}" type="video/mp4"/>
+      </video>
+      <div ng-if="share_enabled" class="overlay">
+        <div class="share-panel">
+          <div class="social-buttons">
+            <a class="facebook-button" ng-click="openUploadDialog();onShareAttempt('facebook')">
+              <img class="share-icon" src="/images/iframe/sharing-facebook.svg" alt="facebook">
+            </a>
+            <a class="twitter-button" ng-click="onShareAttempt('twitter')" target="_blank"
+            ng-href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fgfycat.com%2F{{currentGfycat.gfyName}}&text={{currentGfycat.title}}">
+              <img class="share-icon" src="/images/iframe/sharing-twitter.svg" alt="twitter">
+            </a>
+            <a class="tumblr-button" target="_blank" ng-click="onShareAttempt('tumblr')"
+            ng-href="https://www.tumblr.com/share/link?url=https%3A%2F%2Fgfycat.com%2F{{currentGfycat.gfyName}}&amp;name={{currentGfycat.title}}">
+              <img class="share-icon" src="/images/iframe/sharing-tumblr.svg"  alt="tumblr">
+            </a>
+            <a class="reddit-button" target="_blank" ng-click="onShareAttempt('reddit')"
+            ng-href="https://www.reddit.com/submit?url=https%3A%2F%2Fgfycat.com%2F{{currentGfycat.gfyName}}&title={{currentGfycat.title}}">
+              <img class="share-icon" src="/images/iframe/sharing-reddit.svg" alt="reddit">
+            </a>
+            <a class="pinterest-button" target="_blank" ng-click="onShareAttempt('pinterest')"
+            ng-href="https://pinterest.com/pin/create/button/?url=https%3A%2F%2Fgfycat.com%2Fgifs%2Fdetail%2F{{currentGfycat.gfyName}}&media=https%3A%2F%2Fthumbs.gfycat.com%2F{{currentGfycat.gfyName}}-size_restricted.gif&description={{currentGfycat.title}}">
+              <img class="share-icon" src="/images/iframe/sharing-pinterest.svg" alt="pinterest">
+            </a>
+          </div>
+          <div class="url-box">
+            <button class="copy-url-button" ngclipboard data-clipboard-target="#urlShare"><i class="ic ic-clipboard ic-clipboard--white"></i></button>
+            <span class="url-input-wrapper"><input class="url-input" ng-copy="onShareAttempt('URL')" value="{{globalSiteUrl}}/{{currentGfycat.gfyName}}" readonly id="urlShare" type="text"></span>
+          </div>
+        </div>
+      </div>
+      <div ng-if="embed_enabled" class="overlay">
+        <div class="share-panel">
+          <div class="url-box url-box--embed">
+            <div class="url-box-title">Fixed IFRAME</div>
+            <button class="copy-url-button copy-url-button--fixed-iframe" ngclipboard data-clipboard-target="#urlEmbedFixedSize"><i class="ic ic-clipboard ic-clipboard--white"></i></button>
+            <span class="url-input-wrapper">
+              <input class="url-input url-input--embed-fixed-size" readonly ng-copy="onCopyEmbedUrl('fixed_iframe')"
+              value="<iframe src='{{globalSiteUrl}}/ifr/{{currentGfycat.gfyName}}' frameborder='0' scrolling='no' width='640' height='{{height640Ratio}}' allowfullscreen></iframe>" id="urlEmbedFixedSize" type="text">
+            </span>
+          </div>
+          <div class="url-box url-box--embed">
+            <div class="url-box-title">Responsive IFRAME</div>
+            <button class="copy-url-button copy-url-button--responsive-iframe" ngclipboard data-clipboard-target="#urlEmbedResponsive"><i class="ic ic-clipboard ic-clipboard--white"></i></button>
+            <span class="url-input-wrapper">
+              <input class="url-input url-input--embed-responsive" readonly ng-copy="onCopyEmbedUrl('responsive_iframe')"
+              value="<div style='position:relative;padding-bottom:calc(100% / {{ratio}})'><iframe src='{{globalSiteUrl}}/ifr/{{currentGfycat.gfyName}}' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0;' allowfullscreen></iframe></div>" id="urlEmbedResponsive" type="text">
+            </span>
+          </div>
+          <div class="url-box url-box--embed">
+            <div class="url-box-title">JS EMBED</div>
+            <button class="copy-url-button copy-url-button--js-embed" ngclipboard data-clipboard-target="#jsEmbed"><i class="ic ic-clipboard ic-clipboard--white"></i></button>
+            <span class="url-input-wrapper">
+              <input class="url-input url-input--embed-js" readonly ng-copy="onCopyEmbedUrl('JS')" value="<div class='gfyitem' data-id='{{currentGfycat.gfyName}}'></div>" id="jsEmbed" type="text">
+            </span>
+          </div>
+        </div>
+      </div>
+      <div ng-if="busy" class="overlay"><spinner-animation class="white large center"></spinner-animation></div>
+      <span class="detail-next" ng-if="detailPlayer.index < detailPlayer.list.gfycats.length - 1 && detailPlayer.list.gfycats.length > 1 || detailPlayer.list.loadMore && !busy" ng-click="goRight()"><i ng-hide="detailPlayer.list.noNextPage && detailPlayer.index == detailPlayer.list.gfycats.length - 1" class="ic ic-angle-right ic-angle-right--white"></i></span>
+      <span class="detail-prev" ng-if="detailPlayer.index > 0" ng-click="goLeft()"><i class="ic ic-angle-left ic-angle-left--white"></i></span>
+    </div>
+    <div class="detail-footer">
+      <div class="pull-left flex-center">
+        <a ng-click="share_enabled = !share_enabled; embed_enabled = false; onShareButtonClick();" ng-style="share_enabled && {'text-decoration': 'underline'}" class="button">
+          <i class="ic ic-share ic-share--white"></i><span translate class="share-icon-text">{{'MODAL_DETAIL_PLAYER.SHARE'}}</span></a>
+        <a ng-click="embed_enabled = !embed_enabled; share_enabled = false; onEmbedButtonClick();" ng-style="embed_enabled && {'text-decoration': 'underline'}" class="button">
+          <i class="ic ic-embed ic-embed--white"></i><span translate class="embed-icon-text">{{'MODAL_DETAIL_PLAYER.EMBED'}}</span></a>
+        <a ng-click="$event.stopPropagation()" href="/gifs/detail/{{currentGfycat.gfyName}}" target="_self" class="button"><i class="ic ic-ellipsis ic-ellipsis--white"></i> <span translate class="details-icon-text">{{'MODAL_DETAIL_PLAYER.MORE_DETAILS'}}</span></a>
+      </div>
+      <div class="pull-right flex-center">
+        <a ng-click="videoPageBookmark(currentGfycat)" class="button" >
+          <i class="ic" ng-class="{'ic-bookmark-o ic-bookmark-o--white': currentGfycat.bookmarkState !== 1,
+            'ic-bookmark ic-bookmark--white': currentGfycat.bookmarkState}"></i>
+          <span translate class="bookmark-icon-text">{{'MODAL_DETAIL_PLAYER.BOOKMARK'}}</span></a>
+        <span class="like-module">
+          <i class="ic" ng-class="{'ic-thumbs-o-up ic-thumbs-o-up--white':currentGfycat.likeState !== 1,
+            'ic-thumbs-up ic-thumbs-up--white':currentGfycat.likeState === 1}" data-ng-click="videoPageLike(currentGfycat)"></i>
+          <span data-ng-if="currentGfycat.likes>0" class="icon-right-text">{{currentGfycat.likes | number}}</span>
+          <span data-ng-if="currentGfycat.likes==0 || currentGfycat.likes==null" class="icon-right-text">0</span>
+        </span>
+        <span class="unlike-module">
+          <i class="ic" ng-class="{'ic-thumbs-o-down ic-thumbs-o-down--white':currentGfycat.likeState !== -1,
+            'ic-thumbs-down ic-thumbs-down--white':currentGfycat.likeState === -1}"
+            data-ng-click="videoPageDislike(currentGfycat)"></i>
+          <span data-ng-if="currentGfycat.dislikes>0" class="icon-right-text">{{currentGfycat.dislikes | number}}</span>
+          <span data-ng-if="currentGfycat.dislikes==0 || currentGfycat.dislikes==null" class="icon-right-text">0</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

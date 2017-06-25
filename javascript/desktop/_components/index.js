@@ -1,0 +1,20 @@
+angular.module('ngModal', ['gfyVideo', 'cfp.hotkeys']);
+
+require('./spinner/spinner.js');
+require('./not-found/not_found.js');
+require('./gfy-video/gfy-video-directive.js');
+require('./gfy-main-player/gfy-main-player.js');
+require('./modals/ng-modal.js');
+require('./modals/modal-detail-player.js');
+require('./modals/modal-account-login.js');
+require('./dragndrop/dragndrop.js');
+require('./autocomplete/autocomplete.js');
+require('./autocomplete/app.js');
+require('./upload/videoupload_controller.js');
+require('./gfy-header-bar/gfy-header-bar.js');
+require('./gfy-small-thumb/gfy-small-thumb.js');
+require('./gfy-smart-infinitescroll/gfy-smart-infinitescroll.js');
+require('./gfy-album-thumb/gfy-album-thumb.js');
+require('./share-buttons/share-buttons.js');
+require('./gfy-page-footer/gfy_page_footer.js');
+require('./gfy-uploader/gfy.uploader.js');

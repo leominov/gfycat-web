@@ -1,0 +1,329 @@
+<!--TODO - this is override for the small large screen testing-->
+<!--small={{useSmallScreen=true}}-->
+<div>
+<section id="viewVideo" data-ng-if="feeds.videoPageGfyFrame.error==false" >
+    <div class="header">
+        <h1>{{ feeds.videoPageGfyFrame.title || 'Untitled' }}</h1>
+        <div class="inlineGroup">
+            <span class="created">
+                <a href="/@{{feeds.videoPageGfyFrame.userName}}">By {{feeds.videoPageGfyFrame.userName}}</a><i>   &#8226;   </i>{{feeds.videoPageGfyFrame.createDate * 1000 | date:'MMMM d, y'}} <!-- User friendly date format -->
+            </span>
+            <div class="tags">
+                <span data-ng-if="feeds.videoPageGfyFrame.tagName" class="tag" data-ng-click="goToPage('/tag/',feeds.videoPageGfyFrame.tagName)">{{feeds.videoPageGfyFrame.tagName}}</span>
+                <span data-ng-if="feeds.videoPageGfyFrame.usertags[0]" class="tag" data-ng-click="goToPage('/tag/',feeds.videoPageGfyFrame.usertags[0])">{{feeds.videoPageGfyFrame.tags[0]}}</span>
+                <span data-ng-if="feeds.videoPageGfyFrame.usertags[1]" class="tag" data-ng-click="goToPage('/tag/',feeds.videoPageGfyFrame.usertags[1])">{{feeds.videoPageGfyFrame.tags[1]}}</span>
+                <span data-ng-if="feeds.videoPageGfyFrame.usertags[2]" class="tag" data-ng-click="goToPage('/tag/',feeds.videoPageGfyFrame.tags[2])">{{feeds.videoPageGfyFrame.tags[2]}}</span>
+            </div>
+        </div>
+        <div class="dropdown tests" style="display: none;position: absolute;top: 0;right: 0;">
+            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                Tests
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" href="#" onclick="likeVideo(true);">"Like" this video"</a>
+                </li>
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" href="#" onclick="likeVideo(false);">"Dislike" this video</a>
+                </li>
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" href="#" onclick="likeVideo();">Clear liked/disliked status</a>
+                </li>
+                <li role="presentation" class="divider"></li>
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" href="#" onclick="bookmarkVideo();">Toggle "Bookmarked" status</a>
+                </li>
+                <li role="presentation" class="divider"></li>
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" href="#" onclick="videoSize('small');">Show "small" video layout</a>
+                </li>
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" href="#" onclick="videoSize('big');">Show "big" video layout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="container-fixed content" ng-class="{'big' : !useSmallScreen, 'small' : useSmallScreen}">
+        <div class="row pnlNowPlaying">
+            <div class="vidWrap">
+                <video id="videoGfy0" autoplay="autoplay" muted loop ng-attr-poster="//thumbs.gfycat.com/{{ feeds.videoPageGfyFrame.gfyName }}-poster.jpg">
+                    <source data-ng-src="{{ feeds.videoPageGfyFrame.webmUrl }}" type="video/webm"/>
+                    <source data-ng-src="{{ feeds.videoPageGfyFrame.mp4Url }}" type="video/mp4"/>
+                </video>
+            </div>
+            <div class="sidebar">
+                <div class="pnlTop">
+                    <div class="btn-toolbar vidActions" role="toolbar" aria-label="..." ng-class="{'liked': feeds.videoPageGfyFrame.likeState==1, 'disliked': feeds.videoPageGfyFrame.likeState==-1}">
+                        <div class="btn-group like" role="group" aria-label="Like">
+                            <button data-ng-if="!feeds.videoPageGfyFrame.savingLike" type="button" class="btn btn-default" ng-click="videoPageLike(feeds.videoPageGfyFrame)">
+                                <i class="glyphicon glyphicon-thumbs-up"></i>
+                                <span class="selected">Liked</span>
+                                <span>Like</span>
+                            </button>
+                            <button data-ng-if="feeds.videoPageGfyFrame.savingLike" type="button" class="btn btn-default pending" ng-click=""> <!-- fake button-->
+                                <spinner-animation color="#00adef"></spinner-animation>
+                            </button>
+
+                        </div>
+                        <div class="btn-group dislike" role="group" aria-label="Dislike">
+                            <button data-ng-if="!feeds.videoPageGfyFrame.savingDislike" type="button" class="btn btn-default" ng-click="videoPageDislike(feeds.videoPageGfyFrame)">
+                                <i class="glyphicon glyphicon-thumbs-down"></i>
+                                <span class="selected">Disliked</span>
+                                <span>Dislike</span>
+                            </button>
+                            <button data-ng-if="feeds.videoPageGfyFrame.savingDislike" type="button" class="btn btn-default pending" ng-click=""> <!-- fake button-->
+                                <spinner-animation color="#00adef"></spinner-animation>
+                            </button>
+                        </div>
+                        <div class="btn-group bookmark" role="group" aria-label="Bookmark" gfytooltip gfytooltip-content="Bookmark this Gfycat" gfytooltip-placement="auto left">
+                            <button data-ng-if="!feeds.videoPageGfyFrame.savingBookmark" type="button" class="btn btn-default" ng-click="videoPageBookmark(feeds.videoPageGfyFrame)" ng-class="{'bookmarked': feeds.videoPageGfyFrame.bookmarkState}">
+                                <i class='glyphicon glyphicon-bookmark'></i>
+                                <span class="selected">Bookmarked</span>
+                                <span>Bookmark</span>
+                            </button>
+                            <button data-ng-if="feeds.videoPageGfyFrame.savingBookmark" type="button" class="btn btn-default pending" ng-click=""> <!-- fake button-->
+                                <spinner-animation color="#00adef"></spinner-animation>
+                            </button>
+                        </div>
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <i class="icon-png liveViews darkGrey"></i>Current Viewers
+                            <span class="value" gfyid="{{feeds.videoPageGfyFrame.gfyId}}" viewtype="live" livecounter>1</span>
+                            <!--<span data-ng-if="feeds.videoPageGfyFrame.liveViews" class="value">{{feeds.videoPageGfyFrame.liveViews | number}}</span>-->
+                            <!--<span data-ng-if="!feeds.videoPageGfyFrame.liveViews" class="value">1</span>-->
+                        </li>
+                        <li class="list-group-item">
+                            <i class="ic ic-eye ic-eye--black"></i>Total Views
+                            <span class="value" gfyid="{{feeds.videoPageGfyFrame.gfyId}}" livecounter>{{feeds.videoPageGfyFrame.views | number}}</span>
+                        </li>
+                        <li class="list-group-item">
+                            <i class="glyphicon glyphicon-thumbs-up"></i>Likes
+                            <span data-ng-if="feeds.videoPageGfyFrame.likes" class="value">{{feeds.videoPageGfyFrame.likes | number}}</span>
+                            <span data-ng-if="!feeds.videoPageGfyFrame.likes" class="value">0</span>
+                        </li>
+                        <li class="list-group-item">
+                            <i class="glyphicon glyphicon-thumbs-down"></i>Dislikes
+                            <span data-ng-if="feeds.videoPageGfyFrame.dislikes" class="value">{{feeds.videoPageGfyFrame.dislikes | number}}</span>
+                            <span data-ng-if="!feeds.videoPageGfyFrame.dislikes" class="value">0</span>
+                        </li>
+                        <li class="list-group-item disabled">
+                            <i class="icon-png turtle darkGrey"></i>Original Size
+                            <span class="value">{{feeds.videoPageGfyFrame.gifSize | gfyBytes: 'dec'}}</span>
+                        </li>
+                        <li class="list-group-item disabled">
+                            <i class="icon-png rabbit darkGrey"></i>Converted Size
+                            <span class="value">{{feeds.videoPageGfyFrame.webmSize | gfyBytes: 'dec'}}</span>
+                        </li>
+                        <li class="list-group-item disabled">
+                            <i class="glyphicon glyphicon-dashboard"></i>Bandwidth Saved
+                            <span class="value">{{ ((feeds.videoPageGfyFrame.gifSize-feeds.videoPageGfyFrame.webmSize)*feeds.videoPageGfyFrame.views) | gfyBytes: 'dec' }}</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="pnlMenu">
+                    <div class="btn-group btn-group-lg" role="group" aria-label="...">
+                        <button type="button" class="btn btn-default" data-ng-class="{'show': showShare}" ng-click="toggleNavs('share')" gfytooltip gfytooltip-content="Share this Gfycat" gfytooltip-placement="auto right">
+                            <i class='glyphicon glyphicon-share-alt'></i>
+                            <span>Share</span>
+                        </button>
+                        <div id="share" class="menuPane" data-ng-class="{'show': showShare}">
+                            <div class="title">
+                                <i class="glyphicon glyphicon-share-alt"></i>
+                                <span class="text">Share this Gfycat!</span>
+                            </div>
+                            <div class="container">
+                                <div class="row choices">
+                                    <a class="shareOption facebook col-xs-3" ng-click="openUploadDialog();onSocialButtonClick('facebook')">
+                                        <div class="wrapper">
+                                            <span class="ic ic-logo-fb ic-logo-fb--dark-blue"></span>
+                                        </div>
+                                    </a>
+                                    <a class="shareOption twitter col-xs-3" ng-click="onSocialButtonClick('twitter')" href="https://twitter.com/intent/tweet?url=http%3A%2F%2Fwww.gfycat.com%2F{{feeds.videoPageGfyFrame.gfyName}}&text={{feeds.videoPageGfyFrame.title | escape }}" target="_blank">
+                                        <div class="wrapper">
+                                            <span class="ic ic-logo-tw ic-logo-tw--light-blue"></span>
+                                        </div>
+                                    </a>
+                                    <a class="shareOption google col-xs-3" ng-click="onSocialButtonClick('googlePlus')" href="https://plus.google.com/share?url=http%3A%2F%2Fwww.gfycat.com%2F{{feeds.videoPageGfyFrame.gfyName}}" target="_blank">
+                                        <div class="wrapper">
+                                            <span class="ic ic-logo-gp ic-logo-gp--red"></span>
+                                        </div>
+                                    </a>
+                                    <a class="shareOption reddit col-xs-3" ng-click="onSocialButtonClick('reddit')" href="https://www.reddit.com/submit?url=http%3A%2F%2Fwww.gfycat.com%2F{{feeds.videoPageGfyFrame.gfyName}}&title={{feeds.videoPageGfyFrame.title | escape }}" target="_blank">
+                                        <div class="wrapper">
+                                            <span class="ic ic-logo-redd ic-logo-redd--black"></span>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="row email">
+                                    <a class="shareOption email col-xs-12" ng-click="onSocialButtonClick('facebook')" href="mailto:?body=Check%20this%20out%20on%20Gfycat%3A%20%20http%3A%2F%2Fwww.gfycat.com%2F{{feeds.videoPageGfyFrame.gfyName}}&amp;subject={{feeds.videoPageGfyFrame.title | escape }}">
+                                        <div class="wrapper">
+                                            <div class="icon">
+                                                <span class="glyphicon glyphicon-envelope"></span>
+                                                <span class="text">Launch an email</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <!--<div style="margin-top: 15px;"></div>-->
+                                <div class="row url input-group">
+                                    <span class="input-group-addon" id="embedGfycatZZZ">URL</span>
+                                    <input type="text" class="form-control" placeholder="gfycat" aria-describedby="embedGfycatZZZ" select-url value="{{globalSiteUrl}}/{{feeds.videoPageGfyFrame.gfyName}}">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <button type="button" class="btn btn-default" data-ng-class="{'show': showEmbed}" ng-click="toggleNavs('embed')" gfytooltip gfytooltip-content="Source code to embed this Gfy" gfytooltip-placement="auto right">
+                            <i class="ic ic-embed ic-embed--grey"></i>
+                            <span>Embed</span>
+                        </button>
+                        <div id="embed" class="menuPane" data-ng-class="{'show': showEmbed}">
+                            <!--<div class="input-group">
+                                <span class="input-group-addon" id="embedGfycat">GFYCAT</span>
+                                <input type="text" class="form-control" placeholder="gfycat" aria-describedby="embedGfycat" value="https://gfycat.com/{{feeds.videoPageGfyFrame.gfyName}}">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon" id="embedGif">GIF</span>
+                                <input type="text" class="form-control" placeholder="gfycat" aria-describedby="embedGif" value="https://giant.gfycat.com/{{feeds.videoPageGfyFrame.gfyName}}">
+                            </div>-->
+                            <div class="input-group">
+                                <span class="input-group-addon" id="embedFrame">FIXED IFRAME</span>
+                                <input type="text" readonly onclick="this.select();" class="form-control default-cursor" ng-copy="onEmbedCodeCopy('fixed_iframe')" placeholder="gfycat" aria-describedby="embedIframe" value="<iframe src='{{globalSiteUrl}}/ifr/{{feeds.videoPageGfyFrame.gfyName}}' frameborder='0' scrolling='no' width='640' height='{{height640Ratio}}' allowfullscreen></iframe>">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon" id="embedFrame">RESPONSIVE IFRAME</span>
+                                <input type="text" readonly onclick="this.select();" class="form-control default-cursor" ng-copy="onEmbedCodeCopy('responsive_iframe')" placeholder="gfycat" aria-describedby="embedIframe" value="<div style='position:relative;padding-bottom:calc(100% / {{ratio}})'><iframe src='{{globalSiteUrl}}/ifr/{{feeds.videoPageGfyFrame.gfyName}}' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0;' allowfullscreen></iframe></div>">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon" id="embedGfycat">JS EMBED</span>
+                                <input type="text" readonly onclick="this.select();" class="form-control default-cursor" ng-copy="onEmbedCodeCopy('JS')" placeholder="gfycat" aria-describedby="embedJS" value="<div class='gfyitem' data-id='{{feeds.videoPageGfyFrame.gfyName}}'></div>">
+                            </div>
+                        </div>
+                        <!--button to show if Reddit-->
+                        <button type="button" class="btn btn-default" data-ng-class="{'show': showWebb}" ng-click="toggleNavs('webb')" gfytooltip gfytooltip-content="See where this was posted" gfytooltip-placement="auto right">
+                            <i data-ng-if="feeds.videoPageGfyFrame.redditId!=null" class="ic ic-logo-redd ic-logo-redd--black"></i>
+                            <span data-ng-if="feeds.videoPageGfyFrame.redditId!=null">Reddit</span>
+                            <i data-ng-if="feeds.videoPageGfyFrame.redditId==null && feeds.videoPageGfyFrame.url!=null" class='glyphicon glyphicon-globe'></i>
+                            <span data-ng-if="feeds.videoPageGfyFrame.redditId==null && feeds.videoPageGfyFrame.url!=null">Web</span>
+                        </button>
+                        <div id="reddit" class="menuPane" data-ng-class="{'show': showWebb}">
+                            <!--<div style="margin-top: 80px;"></div>-->
+                            <span data-ng-if="feeds.videoPageGfyFrame.redditId==null">No reddit link for this Gfycat.</span>
+                            <span data-ng-if="feeds.videoPageGfyFrame.redditId!=null">This Gfycat is on Reddit: <a href="https://www.reddit.com/r/all/comments/{{feeds.videoPageGfyFrame.redditId}}/{{feeds.videoPageGfyFrame.redditIdText}}" target="_blank">{{feeds.videoPageGfyFrame.redditIdText}}</a></span>
+                            <span data-ng-if="feeds.videoPageGfyFrame.redditId==null && feeds.videoPageGfyFrame.url!=null">Original Post: <a href="{{feeds.videoPageGfyFrame.url}}" target="_blank">{{feeds.videoPageGfyFrame.url}}</a></span>
+                        </div>
+
+                        <button type="button" class="btn btn-default" data-ng-class="{'show': showReport}" ng-click="toggleNavs('report')" gfytooltip gfytooltip-content="Report NSFW content" gfytooltip-placement="auto left">
+                            <i class="glyphicon glyphicon-flag"></i>
+                            <span>Report</span>
+                        </button>
+                        <div id="report" class="menuPane" data-ng-class="{'show': showReport}">
+                            <a data-ng-click="reportGfy(feeds.videoPageGfyFrame)">Report</a> this Gfy as inappropriate.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row menuBar">
+            <div class="left">
+                <!--<div class="dropdown" style="display:none">-->
+                <!--<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">-->
+                <!--Dropdown-->
+                <!--<span class="caret"></span>-->
+                <!--</button>-->
+                <!--<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">-->
+                <!--<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>-->
+                <!--<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>-->
+                <!--<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>-->
+                <!--<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>-->
+                <!--</ul>-->
+                <!--</div>-->
+                <div class="tags">
+                    <span data-ng-if="feeds.videoPageGfyFrame.tagName" class="tag" data-ng-click="goToPage('/tag/',feeds.videoPageGfyFrame.tagName)">{{feeds.videoPageGfyFrame.tagName}}</span>
+                    <span data-ng-if="feeds.videoPageGfyFrame.tags[0]" class="tag" data-ng-click="goToPage('/tag/',feeds.videoPageGfyFrame.tags[0])">{{feeds.videoPageGfyFrame.tags[0]}}<!--i class="glyphicon glyphicon-remove-circle"></i--></span>
+                    <span data-ng-if="feeds.videoPageGfyFrame.tags[1]" class="tag" data-ng-click="goToPage('/tag/',feeds.videoPageGfyFrame.tags[1])">{{feeds.videoPageGfyFrame.tags[1]}}<!--i class="glyphicon glyphicon-remove-circle"></i--></span>
+                    <span data-ng-if="feeds.videoPageGfyFrame.tags[2]" class="tag" data-ng-click="goToPage('/tag/',feeds.videoPageGfyFrame.tags[2])">{{feeds.videoPageGfyFrame.tags[2]}}<!--i class="glyphicon glyphicon-remove-circle"></i--></span>
+                </div>
+                <!--<div class="input-group" style="display:none">-->
+                <!--<input type="text" class="form-control" placeholder="Type more tags here" aria-describedby="More tags">-->
+                <!--</div>-->
+            </div>
+            <div class="right">
+                <div class="btn-toolbar" role="toolbar" aria-label="...">
+                    <div data-ng-if="feeds.videoPageList.length>1" class="btn-group autoPlay" role="group" aria-label="Auto Play">
+                        <button type="button" class="btn btn-default" data-ng-class="{'selected': feeds.videoPageAutoPlay}" data-ng-click="enableVideoPageAutoPlay()"><span><i class="glyphicon glyphicon-refresh"></i>Auto Play</span>
+                        </button>
+                    </div>
+                    <!--<div class="btn-group expand" role="group" aria-label="Expand to show more">-->
+                        <!--<button type="button" class="btn btn-default"><span>Expand to show more</span></button>-->
+                    <!--</div>-->
+                </div>
+            </div>
+        </div>
+        <div class="row thumbs mvpFeeds" data-position="0">
+            <div class="scroll">
+                <div class="col-xs-2" data-ng-repeat="item in feeds.videoPageList.slice(feeds.videoPageList.start,feeds.videoPageList.start+7)"> <!--  data-ng-repeat="item in feeds.videoPageList.slice(feeds.videoPageList.start,feeds.videoPageList.start+7)" -->
+                    <div data-ng-hide="$last && feeds.videoPageList.length>6 && !feeds.videoPageList.reachedEnd">
+                        <a data-ng-href="/{{ item.gfyName }}">
+                            <div class="thumb" data-ng-mouseenter="mouseHover($parent.$index)" data-ng-if="!showVideo[$index]" style="background-image: url('https://thumbs.gfycat.com/{{ item.gfyName }}-thumb100.jpg')">
+                                <div class="progress" data-ng-if="item.gfyId==feeds.videoPageGfyFrame.gfyId && feeds.videoPageAutoPlay" style="min-width: 0px;">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="{{videoGfyPercent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{videoGfyPercent}}%; min-width: 0px;">
+                                        <span class="sr-only">{{videoGfyPercent}}% Complete</span>
+                                    </div>
+                                </div>
+                                <!--<div class="progress" data-ng-if="item.gfyId==feeds.videoPageGfyFrame.gfyId && videoGfyLoaded<100" style="background-color: black; height:5px;">-->
+                                    <!--<div class="progress-bar" role="progressbar" aria-valuenow="{{videoGfyLoaded}}" aria-valuemin="0" aria-valuemax="100" style="width: {{videoGfyLoaded}}%; background-color: greenyellow; min-width: 0px;">-->
+                                        <!--<span class="sr-only">{{videoGfyLoaded}}% Complete</span>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <div class="tags">
+                                    <span data-ng-if="item.usertags[0]" class="tag" data-ng-click="goToPage('/tag/',item.usertags[0])">{{item.usertags[0]}}</span>
+                                    <span data-ng-if="item.usertags[1]" class="tag" data-ng-click="goToPage('/tag/',item.usertags[1])">{{item.usertags[1]}}</span>
+                                    <span data-ng-if="item.usertags[2]" class="tag" data-ng-click="goToPage('/tag/',item.usertags[2])">{{item.usertags[2]}}</span>
+                                </div>
+                            </div>
+
+                            <video loop class="thumb" style="display:block;" autoplay="autoplay" ng-attr-poster="{{item.thumb360PosterUrl}}" muted data-ng-mouseleave="mouseLeft($parent.$index)" data-ng-if="showVideo[$index]" data-ng-click="refreshVideoPage(item,$index)">
+                                <source data-ng-src="{{ item.url360 }}" type="video/webm"/>
+                                <source data-ng-src="{{ item.url360 }}" type="video/mp4"/>
+                            </video>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="next" data-multiplier="-1"><i class="icon-png chevron-right" data-ng-if="!feeds.videoPageList.loading && (feeds.videoPageList.length-feeds.videoPageList.start)>6" data-ng-click="refreshIndexRight(feeds.videoPageList)"></i></span>
+        <span class="prev" data-multiplier="1"><i class="icon-png chevron-left" data-ng-if="feeds.videoPageList.start" data-ng-click="indexLeft(feeds.videoPageList)"></i></span>
+
+        <div class="row description" data-ng-if="feeds.videoPageGfyFrame.description">
+            <label>Description</label>
+            <span>
+                {{feeds.videoPageGfyFrame.description}}
+            </span>
+        </div>
+    </div>
+
+
+    <!-- extra rows displayed by "show 30 more"-->
+    <div class="row thumbs extra" style="display: none">
+    </div>
+
+
+</section>
+<section id="viewVideo" data-ng-if="feeds.videoPageGfyFrame.error">
+    <div class="header">
+        <h1>Oops! We don't have that page.</h1>
+        <div class="info">
+            <div class="">
+                We don't have a gfy link called "{{params.gfycatname}}"
+            </div>
+            <div class="">
+                Double check the spelling of the page you're looking for.
+            </div>
+        </div>
+    </div>
+</section>
+
+</div>
