@@ -1,7 +1,7 @@
 .PHONY: dist serve
 
 dist:
-	./node_modules/.bin/webpack javascript/desktop/init.js dist.js
+	./node_modules/.bin/webpack public/javascript/desktop/init.js public/dist.js
 
 serve:
-	php -S 127.0.0.1 -t ./
+	php -S 127.0.0.1 -t public/
